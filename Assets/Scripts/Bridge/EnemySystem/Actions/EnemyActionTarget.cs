@@ -1,0 +1,1 @@
+public enum EnemyActionTarget { Self, Hero, Member, Group }
