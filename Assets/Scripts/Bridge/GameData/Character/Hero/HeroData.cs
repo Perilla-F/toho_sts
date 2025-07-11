@@ -9,10 +9,9 @@ public class HeroData : ScriptableObject, IBattleHeroData
     [SerializeField] private String battlerName;
     [SerializeField] private int maxHP;
     [SerializeField] private int maxMana;
-    [SerializeField] private int attack;
     [SerializeField] public GameObject Live2DModelPrefab { get; set; }
     [SerializeField] private Sprite portrait;
-    [SerializeField] public List<SourceCard> startingDeck;
+    [SerializeField] public List<CardData> startingDeck;
     [SerializeField] public AnimationClip IdleMotionClip { get; set; }
     // [SerializeField] private string attackAnimationName;
     public String BattlerName => battlerName;

@@ -26,7 +26,10 @@ public class GameManager : MonoBehaviour
     public void InitializePlayer()
     {
         heroBattler = new HeroBattler(selectedHeroData, selectedHeroData.MaxHP);
-        playerDeck = new List<SourceCard>(selectedHeroData.startingDeck);
+        for (int i = 0; i < selectedHeroData.startingDeck.Count; i++)
+        {
+            AddCard(new SourceCard(selectedHeroData.startingDeck[i]));
+        }
     }
 
     public List<SourceCard> GetPlayerDeck()

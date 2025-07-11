@@ -10,21 +10,16 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 59fb85d134a17e6479cfe3bd4d2758ed, type: 3}
-  m_Name: NijuKekkai
+  m_Name: Block(Reimu)
   m_EditorClassIdentifier: 
-  cardName: "\u5922\u7B26\u300C\u4E8C\u91CD\u7D50\u754C\u300D"
+  cardName: "\u7D50\u754C"
   artwork: {fileID: 0}
   costs:
   - Type: 0
     amount: 0
-  - Type: 0
-    amount: 0
   triggerTime: 1
-  description: "\u5373\u5E2D\u7D50\u754C10, \u7D50\u754C10\u3092\u5F97\u308B"
+  description: "\u7D50\u754C5\u3092\u5F97\u308B"
   cardEffects:
-  - type: 3
-    value: 10
-    target: 0
   - type: 4
-    value: 10
+    value: 5
     target: 0
