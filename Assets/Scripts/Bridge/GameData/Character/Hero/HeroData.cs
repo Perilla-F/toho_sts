@@ -16,7 +16,6 @@ public class HeroData : ScriptableObject, IBattleHeroData
     // [SerializeField] private string attackAnimationName;
     public String BattlerName => battlerName;
     public int MaxHP => maxHP;
-    public int Attack => attack;
     public Sprite Portrait => portrait;
     public RuntimeAnimatorController AnimatorController { get; }
     // public string AttackAnimation => attackAnimationName; public String BattlerName => battlerName;
