@@ -54,4 +54,33 @@ public class BattleDeck : IBattleDeck
     {
         return deckCards.Count <= 0;
     }
+
+    List<CardObj> PeekTopCards(Queue<CardObj> deck, int count)
+    {
+        List<CardObj> list = new List<CardObj>(deck);
+        return list.GetRange(0, Mathf.Min(count, list.Count));
+    }
+
+    Queue<CardObj> RebuildDeckWithTopCard(Queue<CardObj> deck, CardObj selectedCard)
+    {
+        List<CardObj> deckList = new List<CardObj>(deck);
+        deckList.Remove(selectedCard); // 選んだカードを除く
+
+        // シャッフル（Fisher-Yates）
+        for (int i = deckList.Count - 1; i > 0; i--)
+        {
+            int j = Random.Range(0, i + 1);
+            (deckList[i], deckList[j]) = (deckList[j], deckList[i]);
+        }
+
+        // 新しいデッキ構成：選んだカード + シャッフル済みカード
+        Queue<CardObj> newDeck = new Queue<CardObj>();
+        newDeck.Enqueue(selectedCard);
+        foreach (var card in deckList)
+        {
+            newDeck.Enqueue(card);
+        }
+
+        return newDeck;
+    }
 }

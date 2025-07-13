@@ -58,6 +58,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _moc: {fileID: 11400000, guid: 0cd25900b6821d346824476d7529af29, type: 2}
+  _isOverriddenParameterRepeat: 1
 --- !u!114 &114524724953595766
 MonoBehaviour:
   m_ObjectHideFlags: 16
@@ -254,6 +255,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _unmanagedIndex: 1
   Value: 0
+  _isOverriddenUserParameterRepeat: 0
+  _isParameterRepeated: 0
 --- !u!1 &1212145916086742
 GameObject:
   m_ObjectHideFlags: 0
@@ -644,6 +647,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _unmanagedIndex: 0
   Value: 0
+  _isOverriddenUserParameterRepeat: 0
+  _isParameterRepeated: 0
 --- !u!1 &1859190643628140
 GameObject:
   m_ObjectHideFlags: 0
