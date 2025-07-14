@@ -1,1 +1,0 @@
-public enum NodeType { Battle, Elite, Boss, Event, Camp, Shop, treasure }
