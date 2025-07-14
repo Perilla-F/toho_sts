@@ -14,87 +14,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   battlerName: "\u535A\u9E97 \u970A\u5922"
   maxHP: 100
-  maxMana: 0
-  attack: 0
+  maxMana: 3
   portrait: {fileID: 0}
   startingDeck:
-  - data: {fileID: 0}
-    sourceCost: 0
-    damage: 0
-    drawAmount: 0
-    blockAmount: 0
-    upgradedLevel: 0
-    isUpgraded: 0
-    cardType: 0
-  - data: {fileID: 0}
-    sourceCost: 0
-    damage: 0
-    drawAmount: 0
-    blockAmount: 0
-    upgradedLevel: 0
-    isUpgraded: 0
-    cardType: 0
-  - data: {fileID: 0}
-    sourceCost: 0
-    damage: 0
-    drawAmount: 0
-    blockAmount: 0
-    upgradedLevel: 0
-    isUpgraded: 0
-    cardType: 0
-  - data: {fileID: 0}
-    sourceCost: 0
-    damage: 0
-    drawAmount: 0
-    blockAmount: 0
-    upgradedLevel: 0
-    isUpgraded: 0
-    cardType: 0
-  - data: {fileID: 0}
-    sourceCost: 0
-    damage: 0
-    drawAmount: 0
-    blockAmount: 0
-    upgradedLevel: 0
-    isUpgraded: 0
-    cardType: 0
-  - data: {fileID: 0}
-    sourceCost: 0
-    damage: 0
-    drawAmount: 0
-    blockAmount: 0
-    upgradedLevel: 0
-    isUpgraded: 0
-    cardType: 0
-  - data: {fileID: 0}
-    sourceCost: 0
-    damage: 0
-    drawAmount: 0
-    blockAmount: 0
-    upgradedLevel: 0
-    isUpgraded: 0
-    cardType: 0
-  - data: {fileID: 0}
-    sourceCost: 0
-    damage: 0
-    drawAmount: 0
-    blockAmount: 0
-    upgradedLevel: 0
-    isUpgraded: 0
-    cardType: 0
-  - data: {fileID: 0}
-    sourceCost: 0
-    damage: 0
-    drawAmount: 0
-    blockAmount: 0
-    upgradedLevel: 0
-    isUpgraded: 0
-    cardType: 0
-  - data: {fileID: 0}
-    sourceCost: 0
-    damage: 0
-    drawAmount: 0
-    blockAmount: 0
-    upgradedLevel: 0
-    isUpgraded: 0
-    cardType: 0
+  - {fileID: 11400000, guid: f6595ab218264dc4db71469d35dbdb84, type: 2}
+  - {fileID: 11400000, guid: f6595ab218264dc4db71469d35dbdb84, type: 2}
+  - {fileID: 11400000, guid: f6595ab218264dc4db71469d35dbdb84, type: 2}
+  - {fileID: 11400000, guid: f6595ab218264dc4db71469d35dbdb84, type: 2}
+  - {fileID: 11400000, guid: 71ad6175df69fe14cb0c46c964df1b70, type: 2}
+  - {fileID: 11400000, guid: 71ad6175df69fe14cb0c46c964df1b70, type: 2}
+  - {fileID: 11400000, guid: 71ad6175df69fe14cb0c46c964df1b70, type: 2}
+  - {fileID: 11400000, guid: 71ad6175df69fe14cb0c46c964df1b70, type: 2}
+  - {fileID: 11400000, guid: 9f6dafda4b1f3fa469e2056a7f08e6f8, type: 2}
+  - {fileID: 11400000, guid: 9f6dafda4b1f3fa469e2056a7f08e6f8, type: 2}
