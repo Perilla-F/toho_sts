@@ -10,6 +10,7 @@ public class Cell : MonoBehaviour
     public GameObject currentIcon; // 現在地用アイコン
     public GameObject selectableEffect; // 選択可能エフェクト
     public bool isWide;
+    public EventBase assignedEvent;
 
     public void Initialize(CellType cellType, Vector2Int pos, Sprite icon, bool wide = false)
     {

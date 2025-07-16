@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 
 public class MapGenerator : MonoBehaviour
@@ -10,11 +11,28 @@ public class MapGenerator : MonoBehaviour
     [SerializeField] public int width = 5;
     [SerializeField] public int height = 10;
     public float spacing = 1.1f;
+    public List<EventBase> eventList;
+    public TextAsset jsonFile;
+    public EventDatabase eventDatabase;
+    public JsonEventList jsonData;
 
     [SerializeField] public Sprite startIcon, goalIcon, battleIcon, eliteBattleIcon, bossBattleIcon, shopIcon, treasureIcon, restIcon, eventIcon;
 
     private Dictionary<Vector2Int, Cell> mapCells = new();
     private Cell currentCell;
+
+    [System.Serializable]
+    public class JsonEvent
+    {
+        public string id;
+        public string type;
+    }
+
+    [System.Serializable]
+    public class JsonEventList
+    {
+        public List<JsonEvent> events;
+    }
 
     void Awake() => Instance = this;
 
@@ -26,6 +44,8 @@ public class MapGenerator : MonoBehaviour
 
     void GenerateMap()
     {
+        jsonData = JsonUtility.FromJson<JsonEventList>(jsonFile.text);
+
         // STARTマス
         CreateCell(wideCellPrefab, CellType.Start, new Vector2Int(2, 0), startIcon, true);
 
@@ -81,6 +101,7 @@ public class MapGenerator : MonoBehaviour
         Cell cell = obj.GetComponent<Cell>();
         AssignBehavior(cell, type);
         cell.Initialize(type, pos, icon, isWide);
+        cell.assignedEvent = type == CellType.Event ? GetRandomEvent() : null;
         mapCells[pos] = cell;
     }
 
@@ -112,13 +133,19 @@ public class MapGenerator : MonoBehaviour
         return CellType.Battle; // フォールバック
     }
 
-    public void AssignBehavior(Cell cell, CellType type, string eventId = "")
+    EventBase GetRandomEvent()
+    {
+        int index = Random.Range(0, jsonData.events.Count);
+        return eventDatabase.GetEventById(jsonData.events[index].id);
+    }
+
+    public void AssignBehavior(Cell cell, CellType type, EventBase assignedEvent = null)
     {
         switch (type)
         {
             case CellType.Event:
                 var evt = cell.gameObject.AddComponent<EventCell>();
-                evt.eventId = eventId;
+                evt.assignedEvent = assignedEvent;
                 break;
             case CellType.Rest:
                 cell.gameObject.AddComponent<RestCell>();
@@ -192,8 +219,10 @@ public class MapGenerator : MonoBehaviour
         // Camera.main.GetComponent<CameraFollow>().SetTarget(currentCell.transform);
     }
 
-    public void StartEvent(string id)
-    { }
+    public void StartEvent(EventBase assingedEvent)
+    {
+        assingedEvent.Execute();
+    }
 
     public void StartRest()
     { }
