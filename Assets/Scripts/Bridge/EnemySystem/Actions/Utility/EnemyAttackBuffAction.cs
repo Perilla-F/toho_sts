@@ -2,10 +2,10 @@ using System.Collections.Generic;
 
 public class EnemyAttackBuffAction : BattleAction
 {
-    public int amount;
+    public int Amount;
     public EnemyAttackBuffAction(EnemyUnit self, int amount, EnemyActionTarget targets, HeroUnit hero, EnemyManager enemies)
     {
-        this.amount = amount;
+        this.Amount = amount;
         Targets = targets;
         Self = self;
         Hero = hero;
@@ -14,7 +14,7 @@ public class EnemyAttackBuffAction : BattleAction
 
     public override void Execute()
     {
-        List<IBattlerUnit> targets = new List<IBattlerUnit>();
+        List<IBattleUnit> targets = new List<IBattleUnit>();
         switch (Targets)
         {
             case EnemyActionTarget.Self:
@@ -35,7 +35,7 @@ public class EnemyAttackBuffAction : BattleAction
         }
         foreach (var target in targets)
         {
-            target.ApplyAttackBuff(amount);
+            target.ApplyAttackBuff(Amount);
         }
     }
 }

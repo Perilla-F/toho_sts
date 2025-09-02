@@ -1,1 +1,1 @@
-public enum EnemyActionType { Attack, AttackBuff, Debuff, Defend, Special }
+public enum EnemyActionType { Attack, AttackBuff, Debuff, AttackDebuff, Defend, Special }

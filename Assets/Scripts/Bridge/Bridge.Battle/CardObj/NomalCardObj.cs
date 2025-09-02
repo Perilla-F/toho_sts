@@ -5,16 +5,16 @@ using UnityEngine;
 public class NomalCardObj : CardObj
 {
 
-    public SourceCard sourceCard;
-    public CardData cardData;
-    public Mana mana;
+    public SourceCard SourceCard;
+    public CardData CardData;
+    public Mana Mana;
     Dictionary<CardEffectType, ICardEffectExecutor> _effectExecutors;
-    private int ChangedManaCost = 0;
+    private int _changedManaCost = 0;
 
     public NomalCardObj(SourceCard source, ResourceRegistry resourceRegistry, Mana mana) : base(source, resourceRegistry)
     {
-        cardData = source.data;
-        this.mana = mana;
+        CardData = source.Data;
+        this.Mana = mana;
 
         _effectExecutors = new Dictionary<CardEffectType, ICardEffectExecutor>
     {
@@ -26,21 +26,21 @@ public class NomalCardObj : CardObj
 
     public bool Use(CardContext context)
     {
-        foreach (var cost in sourceCard.data.costs)
+        foreach (var cost in SourceCard.Data.Costs)
         {
-            var res = resourceRegistry.Get(cost.Type);
-            if (res == null || res.CurrentMana < cost.amount)
+            var res = ResourceRegistry.Get(cost.Type);
+            if (res == null || res.CurrentMana < cost.Amount)
                 return false; // どれか足りなければ中断
         }
 
-        foreach (var cost in cardData.costs)
+        foreach (var cost in CardData.Costs)
         {
-            resourceRegistry.Get(cost.Type)?.TryConsume(cost.amount);
+            ResourceRegistry.Get(cost.Type)?.TryConsume(cost.Amount);
         }
 
-        foreach (var effect in cardData.cardEffects)
+        foreach (var effect in CardData.CardEffects)
         {
-            if (_effectExecutors.TryGetValue(effect.type, out var executor))
+            if (_effectExecutors.TryGetValue(effect.Type, out var executor))
             {
                 executor.Execute(effect, context);
             }

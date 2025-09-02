@@ -7,16 +7,16 @@ using UnityEngine;
 
 public class BattleSetUpState : IBattleState
 {
-    BattleSystem battle;
+    private BattleSystem _battle;
     public BattleSetUpState(BattleSystem battle)
     {
-        this.battle = battle;
+        this._battle = battle;
     }
 
     public void OnEnter()
     {
         Debug.Log("SetUpのEnter");
-        battle.TransitionToState(BattleStateType.Stanby);
+        _battle.TransitionToState(BattleStateType.Stanby);
     }
 
     public void OnExit()

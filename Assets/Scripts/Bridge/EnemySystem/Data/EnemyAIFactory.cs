@@ -3,19 +3,18 @@ using System.Collections.Generic;
 
 public static class EnemyAIFactory
 {
-    public static EnemyAI Build(EnemyAIData data, EnemyUnit self, HeroUnit Hero, EnemyManager enemies)
+    public static EnemyAI Build(EnemyAIData data)
     {
         var enemyAI = new EnemyAI();
 
-        foreach (var patternData in data.patterns)
+        foreach (var patternData in data.Patterns)
         {
-            IEnemyCondition condition = CreateCondition(patternData.conditionType, patternData.conditionValue, patternData.status);
+            IEnemyCondition condition = CreateCondition(patternData.ConditionType, patternData.ConditionValue, patternData.Status);
             List<BattleAction> actions = new();
 
-
-            foreach (var actionData in patternData.actions)
+            foreach (var actionData in patternData.Actions)
             {
-                BattleAction action = CreateAction(actionData.actionType, actionData.value, actionData.target, self, Hero, enemies);
+                BattleAction action = new BattleAction(actionData);
                 actions.Add(action);
             }
 
@@ -25,7 +24,7 @@ public static class EnemyAIFactory
                 Actions = actions
             };
 
-            enemyAI.patterns.Add(pattern);
+            enemyAI.Patterns.Add(pattern);
         }
 
         return enemyAI;
@@ -40,17 +39,6 @@ public static class EnemyAIFactory
             EnemyConditionType.HPBelow => new HpBelowCondition(value),
             EnemyConditionType.PlayerHasStatus => new PlayerHasStatusCondition(status),
             _ => throw new ArgumentException($"Unknown condition: {type}")
-        };
-    }
-
-    private static BattleAction CreateAction(EnemyActionType type, int value, EnemyActionTarget targets, EnemyUnit self, HeroUnit hero, EnemyManager enemies)
-    {
-        return type switch
-        {
-            EnemyActionType.Attack => new EnemyAttackAction(self, value, targets, hero, enemies),
-            EnemyActionType.Defend => new EnemyDefendAction(self, value, targets, hero, enemies),
-            EnemyActionType.AttackBuff => new EnemyAttackBuffAction(self, value, targets, hero, enemies),
-            _ => throw new ArgumentException($"Unknown action: {type}")
         };
     }
 }

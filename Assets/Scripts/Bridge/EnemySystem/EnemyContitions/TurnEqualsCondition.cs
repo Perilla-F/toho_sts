@@ -1,20 +1,20 @@
 [System.Serializable]
 public class TurnEqualsCondition : IEnemyCondition
 {
-    private int count;
-    public int turnNumber;
+    private int Count;
+    public int TurnNumber;
 
-    public TurnEqualsCondition(int value) => this.count = value;
+    public TurnEqualsCondition(int value) => this.Count = value;
 
     public bool Evaluate(ConditionContext context, IEnemyUnit self)
     {
-        return context.EnemyTurnCount <= count;
+        return context.EnemyTurnCount <= Count;
     }
 
     public bool IsMet(IEnemyUnit self, int turn, ConditionContext context)
     {
-        return turn <= count;
+        return turn <= Count;
     }
 
-    public string Description => $"{count}ターン目まで実行";
+    public string Description => $"{Count}ターン目まで実行";
 }

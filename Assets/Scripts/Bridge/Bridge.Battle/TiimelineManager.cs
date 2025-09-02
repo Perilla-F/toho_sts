@@ -8,11 +8,11 @@ public class TimelineManager
 {
     public float CurrentTime { get; private set; }
 
-    private SortedSet<BattleAction> actionQueue = new();
+    private SortedSet<BattleAction> _actionQueue = new();
 
     public void Enqueue(BattleAction action)
     {
-        actionQueue.Add(action);
+        _actionQueue.Add(action);
     }
 
     public void AdvanceTime(float amount)
@@ -23,20 +23,20 @@ public class TimelineManager
 
     public BattleAction DequeueNext()
     {
-        if (actionQueue.Count == 0) return null;
-        var next = actionQueue.Min;
-        actionQueue.Remove(next);
+        if (_actionQueue.Count == 0) return null;
+        var next = _actionQueue.Min;
+        _actionQueue.Remove(next);
         return next;
     }
 
     private void CheckActions()
     {
-        foreach (var ac in actionQueue.ToList())
+        foreach (var ac in _actionQueue.ToList())
         {
-            if (CurrentTime >= ac.scheduledTime)
+            if (CurrentTime >= ac.ScheduledTime)
             {
                 ac.Execute();
-                actionQueue.Remove(ac);
+                _actionQueue.Remove(ac);
             }
         }
     }
@@ -45,6 +45,6 @@ public class TimelineManager
     public void ResetTime()
     {
         CurrentTime = 0f;
-        actionQueue.Clear();
+        _actionQueue.Clear();
     }
 }

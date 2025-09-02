@@ -5,9 +5,9 @@ using UnityEngine;
 
 public class DiscardAreaView : MonoBehaviour
 {
-    [SerializeField] private TextMeshProUGUI discordCountText;
+    [SerializeField] private TextMeshProUGUI _discordCountText;
     public void UpdateDiscardCount(string deckCount)
     {
-        discordCountText.text = deckCount;
+        _discordCountText.text = deckCount;
     }
 }

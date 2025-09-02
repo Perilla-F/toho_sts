@@ -4,11 +4,11 @@ using UnityEngine;
 
 public class EnemyGenerator : MonoBehaviour
 {
-    [SerializeField] private List<EnemyData> enemyDataList;
-    [SerializeField] private GameObject enemyPrefab;
+    [SerializeField] private List<EnemyData> _enemyDataList;
+    [SerializeField] private GameObject _enemyPrefab;
 
-    [SerializeField] Transform enemyArea;
-    [SerializeField] EnemyManager enemyManager;
+    [SerializeField] Transform EnemyArea;
+    [SerializeField] EnemyManager EnemyManager;
 
     /// <summary>
     /// 敵の生成
@@ -19,17 +19,17 @@ public class EnemyGenerator : MonoBehaviour
         List<EncounterData> bosses = EncounterLoader.LoadEncounters(category);
         var selectedEncounter = bosses[Random.Range(0, bosses.Count)];
 
-        foreach (var id in selectedEncounter.enemyIds)
+        foreach (var id in selectedEncounter.EnemyIds)
         {
-            GameObject enemyObj = Instantiate(enemyPrefab, enemyArea);
+            GameObject enemyObj = Instantiate(_enemyPrefab, EnemyArea);
             EnemyUnit enemyUnit = enemyObj.GetComponent<EnemyUnit>();
             EnemyViewer enemyView = new EnemyViewer();
             EnemyAIData enemyAiData = EncounterLoader.LoadEnemyAI(id);
-            EnemyData enemyData = EnemyDatabase.GetEnemyDataById(enemyAiData.enemyId);
-            var enemyAI = EnemyAIFactory.Build(enemyAiData, enemyUnit, Hero, enemyManager);
+            EnemyData enemyData = EnemyDatabase.GetEnemyDataById(enemyAiData.EnemyId);
+            var enemyAI = EnemyAIFactory.Build(enemyAiData);
             enemyView.transform.localPosition = GetEnemyPosition(1); // 適切に配置
             enemyUnit.Setup(enemyData, enemyAI);
-            enemyManager.RegisterEnemy(enemyUnit);
+            EnemyManager.RegisterEnemy(enemyUnit);
         }
     }
 

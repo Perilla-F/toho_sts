@@ -5,6 +5,6 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "Game/EnemyAIData")]
 public class EnemyAIData : ScriptableObject
 {
-    public string enemyId;
-    public List<EnemyPatternData> patterns;
+    public string EnemyId;
+    public List<EnemyPatternData> Patterns;
 }

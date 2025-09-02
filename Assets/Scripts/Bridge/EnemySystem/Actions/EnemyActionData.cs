@@ -1,10 +1,13 @@
+using System.Collections.Generic;
+
 [System.Serializable]
 public class EnemyActionData
 {
-    public EnemyActionType actionType;
-    public int value;
-    public int delay;
-    public string targetId;
-    public string parametersJson;
-    public EnemyActionTarget target;
+    public string ActionName;
+    public EnemyActionType ActionType;
+    public int Value;
+    public List<EffectEntry> Effects = new List<EffectEntry>();
+    public int Delay;
+    public int SimpleBlock;
+    public EnemyActionTarget Target;
 }

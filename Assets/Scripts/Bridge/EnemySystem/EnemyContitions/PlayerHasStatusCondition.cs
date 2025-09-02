@@ -1,18 +1,18 @@
 [System.Serializable]
 public class PlayerHasStatusCondition : IEnemyCondition
 {
-    public string statusName;
+    public string StatusName;
 
-    public PlayerHasStatusCondition(string status) => this.statusName = status;
+    public PlayerHasStatusCondition(string status) => this.StatusName = status;
 
     public bool Evaluate(ConditionContext context, IEnemyUnit self)
     {
-        return context.heroUnit.HasStatus(statusName);
+        return context.HeroUnit.HasStatus(StatusName);
     }
     public bool IsMet(IEnemyUnit self, int turn, ConditionContext context)
     {
-        return context.heroUnit.HasStatus(statusName);
+        return context.HeroUnit.HasStatus(StatusName);
     }
 
-    public string Description => $"プレイヤーが状態「{statusName}」を持つ";
+    public string Description => $"プレイヤーが状態「{StatusName}」を持つ";
 }

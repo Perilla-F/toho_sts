@@ -12,6 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 489a98eaf67f7d14abfe3043e4208002, type: 3}
   m_Name: Kogasa
   m_EditorClassIdentifier: 
-  enemyId: 
-  rewardGold: 0
-  dropItems: []
+  enemyId: Kogasa
+  rewardGold: 15

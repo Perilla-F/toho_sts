@@ -3,19 +3,19 @@ using UnityEngine.SceneManagement;
 
 public class CharacterSelectUI : MonoBehaviour
 {
-    [SerializeField] private HeroData reimu;
-    [SerializeField] private HeroData marisa;
+    [SerializeField] private HeroData _reimu;
+    [SerializeField] private HeroData _marisa;
 
     public void OnSelectReimu()
     {
-        GameManager.Instance.selectedHeroData = reimu;
+        GameManager.Instance.SelectedHeroData = _reimu;
         GameManager.Instance.InitializePlayer();
         SceneManager.LoadScene("BattleScene");
     }
 
     public void OnSelectMarisa()
     {
-        GameManager.Instance.selectedHeroData = marisa;
+        GameManager.Instance.SelectedHeroData = _marisa;
         GameManager.Instance.InitializePlayer();
         SceneManager.LoadScene("BattleScene");
     }

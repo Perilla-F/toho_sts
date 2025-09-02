@@ -5,15 +5,15 @@ using UnityEngine;
 
 public class BattleDeck : IBattleDeck
 {
-    private Queue<CardObj> deckCards = new Queue<CardObj>();
+    private Queue<CardObj> _deckCards = new Queue<CardObj>();
 
     /// <summary>
     /// 山札Queue<CardObj>→Queue<CardObj>のシャッフル
     /// </summary>
     public void Shuffle()
     {
-        List<CardObj> tempList = new List<CardObj>(deckCards);
-        deckCards.Clear();
+        List<CardObj> tempList = new List<CardObj>(_deckCards);
+        _deckCards.Clear();
 
         for (int i = 0; i < tempList.Count; i++)
         {
@@ -24,35 +24,35 @@ public class BattleDeck : IBattleDeck
         }
 
         foreach (var card in tempList)
-            deckCards.Enqueue(card);
+            _deckCards.Enqueue(card);
     }
 
     /// <summary>
     /// 現在の山札の残り枚数
     /// </summary>
-    public int Count => deckCards.Count;
+    public int Count => _deckCards.Count;
 
     /// <summary>
     /// 山札に追加
     /// </summary>
-    public void AddCard(CardObj card) => deckCards.Enqueue(card);
+    public void AddCard(CardObj card) => _deckCards.Enqueue(card);
 
     /// <summary>
     /// 山札からカードを1枚引く
     /// </summary>
     public CardObj Draw()
     {
-        return deckCards.Dequeue();
+        return _deckCards.Dequeue();
     }
 
     public List<SourceCard> GetDeckAsSourceCards()
     {
-        return deckCards.Select(card => card.Source()).ToList();
+        return _deckCards.Select(card => card.GetSource()).ToList();
     }
 
     public bool IsEmpty()
     {
-        return deckCards.Count <= 0;
+        return _deckCards.Count <= 0;
     }
 
     List<CardObj> PeekTopCards(Queue<CardObj> deck, int count)

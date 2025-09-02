@@ -15,16 +15,16 @@ public class CardDraggingState : CardStateBase
 
     public override void OnUpdate()
     {
-        behaviour.transform.position = Input.mousePosition;
+        _behaviour.transform.position = Input.mousePosition;
         if (Input.GetMouseButtonDown(1))
         {
-            behaviour.ResetPos();
-            behaviour.ChangeState(behaviour.WaitState);
+            _behaviour.ResetPos();
+            _behaviour.ChangeState(_behaviour.WaitState);
         }
 
-        if (behaviour.transform.localPosition.y > 100)
+        if (_behaviour.transform.localPosition.y > 100)
         {
-            behaviour.ChangeState(behaviour.SelectedState);
+            _behaviour.ChangeState(_behaviour.SelectedState);
         }
     }
 }

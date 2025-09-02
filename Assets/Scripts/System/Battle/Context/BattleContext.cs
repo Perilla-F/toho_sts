@@ -23,7 +23,7 @@ public class BattleContext : IBattleContext
     public Func<ICardObj, UniTask> OnCardDrawn;
     public Func<ICardObj, Transform, UniTask> MoveToHand;
 
-    public void ApplyStatus(IBattlerUnit target, string statusName, int amount)
+    public void ApplyStatus(IBattleUnit target, string statusName, int amount)
     {
         target.ApplyStatus(statusName, amount);
     }

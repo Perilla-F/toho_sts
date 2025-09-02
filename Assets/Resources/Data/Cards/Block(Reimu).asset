@@ -18,8 +18,8 @@ MonoBehaviour:
   - Type: 0
     amount: 0
   triggerTime: 1
-  description: "\u7D50\u754C5\u3092\u5F97\u308B"
+  description: "\u7D50\u754C7\u3092\u5F97\u308B"
   cardEffects:
   - type: 4
-    value: 5
+    value: 7
     target: 0

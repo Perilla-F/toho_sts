@@ -3,37 +3,40 @@ using UnityEngine;
 
 public static class EnemyDatabase
 {
-    private static Dictionary<string, EnemyData> enemyDataMap;
+    private static Dictionary<string, EnemyData> _enemyDataMap;
 
     // 初期化（最初の呼び出し時に自動的にロード）
     private static void EnsureInitialized()
     {
-        if (enemyDataMap != null) return;
+        if (_enemyDataMap != null) return;
 
-        enemyDataMap = new Dictionary<string, EnemyData>();
+        _enemyDataMap = new Dictionary<string, EnemyData>();
 
         // Resources/EnemyAssets フォルダ内の EnemyData をすべて読み込む
         var allEnemyData = Resources.LoadAll<EnemyData>("EnemyAssets");
 
         foreach (var data in allEnemyData)
         {
-            if (!enemyDataMap.ContainsKey(data.enemyId))
+            if (!_enemyDataMap.ContainsKey(data.EnemyId))
             {
-                enemyDataMap.Add(data.enemyId, data);
+                _enemyDataMap.Add(data.EnemyId, data);
             }
             else
             {
-                Debug.LogWarning($"Duplicate enemyId detected: {data.enemyId}");
+                Debug.LogWarning($"Duplicate enemyId detected: {data.EnemyId}");
             }
         }
     }
-
-    // IDから EnemyData を取得
+    /// <summary>
+    /// IDから EnemyData を取得
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
     public static EnemyData GetEnemyDataById(string id)
     {
         EnsureInitialized();
 
-        if (enemyDataMap.TryGetValue(id, out var data))
+        if (_enemyDataMap.TryGetValue(id, out var data))
         {
             return data;
         }
@@ -48,6 +51,6 @@ public static class EnemyDatabase
     public static IEnumerable<EnemyData> GetAll()
     {
         EnsureInitialized();
-        return enemyDataMap.Values;
+        return _enemyDataMap.Values;
     }
 }

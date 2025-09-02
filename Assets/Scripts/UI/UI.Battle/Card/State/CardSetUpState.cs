@@ -11,6 +11,6 @@ public class CardSetUpState : CardStateBase
     public override void OnEnter()
     {
         Debug.Log("CardSetUpState OnEnter");
-        behaviour.ChangeState(behaviour.IdleState);
+        _behaviour.ChangeState(_behaviour.IdleState);
     }
 }

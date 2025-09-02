@@ -2,16 +2,16 @@ using UnityEngine;
 
 public class SpriteOrderExample : MonoBehaviour
 {
-    public SpriteRenderer background;
-    public SpriteRenderer icon;
-    public SpriteRenderer current;
-    public SpriteRenderer selectableEffect;
+    public SpriteRenderer Background;
+    public SpriteRenderer Icon;
+    public SpriteRenderer Current;
+    public SpriteRenderer SelectableEffect;
 
     void Start()
     {
-        background.sortingOrder = 0; // 後ろに描画
-        icon.sortingOrder = 1;       // 前に描画
-        current.sortingOrder = 2;
-        selectableEffect.sortingOrder = 3;
+        Background.sortingOrder = 0; // 後ろに描画
+        Icon.sortingOrder = 1;       // 前に描画
+        Current.sortingOrder = 2;
+        SelectableEffect.sortingOrder = 3;
     }
 }

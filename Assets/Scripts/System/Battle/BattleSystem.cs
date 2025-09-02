@@ -9,61 +9,61 @@ using UnityEngine.SceneManagement;
 public class BattleSystem : MonoBehaviour, IBattleSystem
 {
 
-    [SerializeField] private EnemyManager enemyManager;
-    [SerializeField] private StateManager stateManager;
-    [SerializeField] private DiscardArea discardArea;
-    private BattleDeck battleDeck;
-    private Hand hand;
-    public HeroBattler heroBattler;
-    private HeroUnit heroUnit;
-    private TimelineManager timelineManager;
-    public BattleContext battleContext { get; private set; }
+    [SerializeField] private EnemyManager _enemyManager;
+    [SerializeField] private StateManager _stateManager;
+    [SerializeField] private DiscardArea _discardArea;
+    private BattleDeck _battleDeck;
+    private Hand _hand;
+    public HeroBattler HeroBattler;
+    private HeroUnit _heroUnit;
+    private TimelineManager _timelineManager;
+    public BattleContext BattleContext { get; private set; }
 
-    public Hand Hand { get => hand; }
-    public BattleDeck BattleDeck { get => battleDeck; }
-    public DiscardArea DiscardArea { get => discardArea; }
-    public HeroUnit HeroUnit { get => heroUnit; }
-    public EnemyManager EnemyManager { get => enemyManager; }
-    public TimelineManager TimelineManager { get => timelineManager; }
+    public Hand Hand { get => _hand; }
+    public BattleDeck BattleDeck { get => _battleDeck; }
+    public DiscardArea DiscardArea { get => _discardArea; }
+    public HeroUnit HeroUnit { get => _heroUnit; }
+    public EnemyManager EnemyManager { get => _enemyManager; }
+    public TimelineManager TimelineManager { get => _timelineManager; }
 
     public int TurnCount { get; private set; } = 1;
 
     public void Setup(BattleContext context, HeroUnit heroUnit, BattleDeck battleDeck)
     {
-        battleContext = context;
-        this.heroUnit = heroUnit;
-        this.battleDeck = battleDeck;
+        BattleContext = context;
+        this._heroUnit = heroUnit;
+        this._battleDeck = battleDeck;
         context.DeckView.UpdateDeckCount();
 
-        stateManager.RegisterState(BattleStateType.SetUp, new BattleSetUpState(this));
-        stateManager.RegisterState(BattleStateType.SetUp, new BattleStanbyState(this));
-        stateManager.RegisterState(BattleStateType.Draw, new BattleDrawState(this));
-        stateManager.RegisterState(BattleStateType.CardSelection, new BattleCardSelectionState(this));
+        _stateManager.RegisterState(BattleStateType.SetUp, new BattleSetUpState(this));
+        _stateManager.RegisterState(BattleStateType.SetUp, new BattleStanbyState(this));
+        _stateManager.RegisterState(BattleStateType.Draw, new BattleDrawState(this));
+        _stateManager.RegisterState(BattleStateType.CardSelection, new BattleCardSelectionState(this));
 
-        stateManager.ChangeState(BattleStateType.SetUp);
+        _stateManager.ChangeState(BattleStateType.SetUp);
 
     }
 
     void Update()
     {
-        stateManager.Update();
+        _stateManager.Update();
     }
 
     public void TransitionToState(BattleStateType nextState)
     {
-        stateManager.ChangeState(nextState);
+        _stateManager.ChangeState(nextState);
     }
 
 
     public void AddActionToTimeline()
     {
-        foreach (var enemy in enemyManager.Enemies)
+        foreach (var enemy in _enemyManager.Enemies)
         {
-            ConditionContext context = new ConditionContext(heroUnit);
+            ConditionContext context = new ConditionContext(_heroUnit);
             var actions = enemy.PlanTurn(TurnCount, context);
             foreach (var action in actions)
             {
-                timelineManager.Enqueue(action);
+                _timelineManager.Enqueue(action);
             }
         }
     }
@@ -72,9 +72,9 @@ public class BattleSystem : MonoBehaviour, IBattleSystem
     {
         for (int i = 0; i < count; i++)
         {
-            if (battleDeck.IsEmpty()) break;
-            CardObj card = battleDeck.Draw();
-            hand.AddCard(card);
+            if (_battleDeck.IsEmpty()) break;
+            CardObj card = _battleDeck.Draw();
+            _hand.AddCard(card);
             if (i < count - 1)
             {
                 card.MoveCardAsync().Forget();
@@ -85,8 +85,8 @@ public class BattleSystem : MonoBehaviour, IBattleSystem
                 await card.MoveCardAsync();
             }
         }
-        battleContext.HandView.ArrangeCards();
-        battleContext.DeckView.UpdateDeckCount();
+        BattleContext.HandView.ArrangeCards();
+        BattleContext.DeckView.UpdateDeckCount();
     }
 
     /// <summary>
@@ -95,26 +95,26 @@ public class BattleSystem : MonoBehaviour, IBattleSystem
     /// <returns></returns>
     public async UniTask MoveAllToDiscard()
     {
-        foreach (var card in hand.Cards)
+        foreach (var card in _hand.Cards)
         {
-            discardArea.AddCard(card);
+            _discardArea.AddCard(card);
             await card.MoveDisCardAsync();
         }
-        hand.Clear();
+        _hand.Clear();
     }
 
     public async UniTask OnTurnEndButton()
     {
         TurnCount++;
         await MoveAllToDiscard();
-        stateManager.ChangeState(BattleStateType.Draw);
+        _stateManager.ChangeState(BattleStateType.Draw);
     }
 
     public void EndBattle()
     {
-        List<SourceCard> updatedDeck = battleDeck.GetDeckAsSourceCards();
+        List<SourceCard> updatedDeck = _battleDeck.GetDeckAsSourceCards();
 
-        GameManager.Instance.UpdateAfterBattle(heroBattler, updatedDeck);
+        GameManager.Instance.UpdateAfterBattle(HeroBattler, updatedDeck);
 
         SceneManager.LoadScene("MapScene");
     }

@@ -4,11 +4,11 @@ using UnityEngine;
 
 public class TimelineView : MonoBehaviour
 {
-    private TimelineManager timelineManager;
+    private TimelineManager _timelineManager;
 
     public void Bind(TimelineManager timelineManager)
     {
-        this.timelineManager = timelineManager;
+        this._timelineManager = timelineManager;
     }
 
 }

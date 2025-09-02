@@ -4,7 +4,9 @@ using UnityEngine;
 
 public class KogasaEvent : EventBase
 {
-    public string eventId = "KogasaEvent";
+    public override string EventId => "KogasaEvent";
+    public override string Description => "";
+    public override string DisplayName => "";
     public override void Execute()
     { }
 }

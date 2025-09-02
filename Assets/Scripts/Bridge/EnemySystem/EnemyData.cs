@@ -6,9 +6,9 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "Data/EnemyData")]
 public class EnemyData : ScriptableObject, IBattlerBaseData
 {
-    public string enemyId;
+    public string EnemyId;
     public string BattlerName { get; }
     public int MaxHP { get; }
     public RuntimeAnimatorController AnimatorController { get; }
-    public int rewardGold;
+    public int RewardGold;
 }

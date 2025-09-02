@@ -4,18 +4,18 @@ using UnityEngine;
 
 public class BattleCardSelectionState : IBattleState
 {
-    BattleSystem battle;
+    private BattleSystem _battle;
 
     public BattleCardSelectionState(BattleSystem battle)
     {
-        this.battle = battle;
+        this._battle = battle;
     }
 
     public void OnEnter()
     {
         Debug.Log("SelectionのEnter");
 
-        foreach (var card in battle.Hand.Cards)
+        foreach (var card in _battle.Hand.Cards)
         {
             card.CardStateChange(CardStateName.CardWaitState);
         }
@@ -24,7 +24,7 @@ public class BattleCardSelectionState : IBattleState
     public void OnExit()
     {
         Debug.Log("SelectionのExit");
-        foreach (var card in battle.Hand.Cards)
+        foreach (var card in _battle.Hand.Cards)
         {
             card.CardStateChange(CardStateName.CardIdleState);
         }

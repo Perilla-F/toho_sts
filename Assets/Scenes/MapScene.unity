@@ -441,6 +441,7 @@ GameObject:
   m_Component:
   - component: {fileID: 610484215}
   - component: {fileID: 610484216}
+  - component: {fileID: 610484217}
   m_Layer: 0
   m_Name: MapGenerator
   m_TagString: Untagged
@@ -480,6 +481,42 @@ MonoBehaviour:
   width: 5
   height: 10
   spacing: 1.1
+  eventList: []
+  jsonFile: {fileID: 4900000, guid: 11325c94ebd94064dac62466db5e9f61, type: 3}
+  eventDatabase: {fileID: 0}
+  jsonData:
+    events: []
+  startIcon: {fileID: 0}
+  goalIcon: {fileID: 0}
+  battleIcon: {fileID: 0}
+  eliteBattleIcon: {fileID: 0}
+  bossBattleIcon: {fileID: 0}
+  shopIcon: {fileID: 0}
+  treasureIcon: {fileID: 0}
+  restIcon: {fileID: 0}
+  eventIcon: {fileID: 0}
+--- !u!114 &610484217
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 610484214}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8dc3c799e36effa40aa14343a5aa1b96, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  normalCellPrefab: {fileID: 0}
+  wideCellPrefab: {fileID: 0}
+  width: 5
+  height: 10
+  spacing: 1.1
+  eventList: []
+  jsonFile: {fileID: 0}
+  eventDatabase: {fileID: 0}
+  jsonData:
+    events: []
   startIcon: {fileID: 0}
   goalIcon: {fileID: 0}
   battleIcon: {fileID: 0}

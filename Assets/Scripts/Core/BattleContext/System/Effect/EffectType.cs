@@ -1,0 +1,1 @@
+public enum EffectType { None, Strength, Poison, Fear }

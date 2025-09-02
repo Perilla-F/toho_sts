@@ -5,6 +5,6 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "NewEnemyAI", menuName = "AI/EnemyAI")]
 public class EnemyAIEditorAsset : ScriptableObject
 {
-    public string enemyId;
-    public List<EnemyPatternData> actionPatterns = new();
+    public string EnemyId;
+    public List<EnemyPatternData> ActionPatterns = new();
 }
