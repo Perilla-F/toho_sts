@@ -16,10 +16,4 @@ public static class EncounterLoader
 
         return list;
     }
-
-    public static EnemyAIData LoadEnemyAI(string id)
-    {
-        TextAsset json = Resources.Load<TextAsset>($"Data/Battlers/Enemies/{id}");
-        return JsonUtility.FromJson<EnemyAIData>(json.text);
-    }
 }

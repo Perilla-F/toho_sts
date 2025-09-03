@@ -60,9 +60,10 @@ public class BattleSystem : MonoBehaviour, IBattleSystem
         foreach (var enemy in _enemyManager.Enemies)
         {
             ConditionContext context = new ConditionContext(_heroUnit);
-            var actions = enemy.PlanTurn(TurnCount, context);
-            foreach (var action in actions)
+            var actionDatas = enemy.PlanTurn(context);
+            foreach (var actionData in actionDatas.Actions)
             {
+                BattleAction action = new BattleAction(actionData);
                 _timelineManager.Enqueue(action);
             }
         }

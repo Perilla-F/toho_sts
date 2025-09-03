@@ -1,13 +1,11 @@
 using System;
-using System.Collections.Generic;
 
+[System.Serializable]
 public class BattleAction : IComparable<BattleAction>
 {
     public EnemyActionData Action;
-    public float ScheduledTime;
     public EnemyUnit Self;
     public HeroUnit Hero;
-    public EnemyActionTarget Targets;
     public EnemyManager Enemies;
     public BattleAction(EnemyActionData action)
     {
@@ -16,7 +14,7 @@ public class BattleAction : IComparable<BattleAction>
 
     public int CompareTo(BattleAction other)
     {
-        return ScheduledTime.CompareTo(other.ScheduledTime);
+        return Action.ScheduledTime.CompareTo(other.Action.ScheduledTime);
     }
 
     public virtual void Execute()

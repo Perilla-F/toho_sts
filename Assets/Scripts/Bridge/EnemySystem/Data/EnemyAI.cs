@@ -1,22 +1,23 @@
+using System;
 using System.Collections.Generic;
+using UnityEngine;
 
-
-[System.Serializable]
-public class EnemyAI
+[CreateAssetMenu(menuName = "Game/EnemyAI")]
+public class EnemyAI : ScriptableObject
 {
-    public List<EnemyActionPattern> Patterns = new();
-    private int _turnCounter = 0;
+    public string EnemyId;
+    public List<EnemyConditionData> conditionDatas;
 
-    public List<BattleAction> GetActions(EnemyUnit self, int turn, ConditionContext context)
+    public EnemyTurnActions GetActions(EnemyUnit self, int turn, ConditionContext context)
     {
-        foreach (var pattern in Patterns)
+        foreach (var data in conditionDatas)
         {
-            if (pattern.Condition == null || pattern.Condition.IsMet(self, _turnCounter, context))
+            if (data.IsConditionMet(self.CurrentHP / self.MaxHP, turn, ""))
             {
-                return pattern.Actions;
+                return data.Actions[turn % data.Actions.Count];
             }
         }
-        return new List<BattleAction>(); // fallback
+        return new EnemyTurnActions(); // fallback
     }
 
 }

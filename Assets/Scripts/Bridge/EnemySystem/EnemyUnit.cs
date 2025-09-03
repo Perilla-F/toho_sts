@@ -18,18 +18,22 @@ public class EnemyUnit : IBattleUnit, IEnemyUnit
     public int DefenceBonus { get; private set; } = 0;
     public List<string> Status = new List<string>();
     public List<IEffect> Effects { get; }
+    public EnemyConditionType currentCondition = EnemyConditionType.Turn;
+    private EnemyConditionType _lastCondition;
+    private int _turnCounter = 0;
 
     public RuntimeAnimatorController AnimatorController { get; private set; }
 
     private EnemyAI _enemyAI;
 
-    public void Setup(EnemyData data, EnemyAI enemyAI)
+    public void Setup(EnemyData data)
     {
-        this.BattlerName = data.BattlerName;
-        this._enemyAI = enemyAI;
-        this.MaxHP = data.MaxHP;
-        this.CurrentHP = data.MaxHP;
-        this.AnimatorController = data.AnimatorController;
+        BattlerName = data.BattlerName;
+        _enemyAI = data.EnemyAI;
+        MaxHP = data.MaxHP;
+        CurrentHP = data.MaxHP;
+        AnimatorController = data.AnimatorController;
+        _lastCondition = currentCondition;
     }
 
 
@@ -66,9 +70,20 @@ public class EnemyUnit : IBattleUnit, IEnemyUnit
         return DefenceBonus;
     }
 
-    public List<BattleAction> PlanTurn(int turn, ConditionContext context)
+    /// <summary>
+    /// AIから行動をターン中の行動をリストで引く
+    /// </summary>
+    /// <param name="turn"></param>
+    /// <param name="context"></param>
+    /// <returns></returns>
+    public EnemyTurnActions PlanTurn(ConditionContext context)
     {
-        return _enemyAI.GetActions(this, turn, context);
+        if (currentCondition != _lastCondition)
+        {
+            _turnCounter = 0;
+            _lastCondition = currentCondition;
+        }
+        return _enemyAI.GetActions(this, _turnCounter, context);
     }
 
     public bool HasStatus(string status)

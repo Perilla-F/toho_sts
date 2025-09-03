@@ -11,4 +11,5 @@ public class EnemyData : ScriptableObject, IBattlerBaseData
     public int MaxHP { get; }
     public RuntimeAnimatorController AnimatorController { get; }
     public int RewardGold;
+    public EnemyAI EnemyAI;
 }

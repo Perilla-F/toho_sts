@@ -33,7 +33,7 @@ public class TimelineManager
     {
         foreach (var ac in _actionQueue.ToList())
         {
-            if (CurrentTime >= ac.ScheduledTime)
+            if (CurrentTime >= ac.Action.ScheduledTime)
             {
                 ac.Execute();
                 _actionQueue.Remove(ac);

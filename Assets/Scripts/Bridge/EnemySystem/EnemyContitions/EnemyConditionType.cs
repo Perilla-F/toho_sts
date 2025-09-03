@@ -1,1 +1,1 @@
-public enum EnemyConditionType { Always, Turn, HPBelow, PlayerHasStatus }
+public enum EnemyConditionType { Always, Turn, HP, PlayerEffect }
