@@ -12,10 +12,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1baa3d7e23751fc44afc070e679b1e24, type: 3}
   m_Name: Kogasa
   m_EditorClassIdentifier: 
+  EnemyId: Kogasa
   conditionDatas:
-  - ConditionName: 
+  - ConditionName: "\u901A\u5E38"
     ConditionType: 0
     HpThresholdMin: 0
     HpThresholdMax: 0
     MaxTurn: 0
     RequiredPlayerEffect: 
+    Actions:
+    - Actions:
+      - ActionName: 
+        ScheduledTime: 2
+        Delay: 0
+        Target: 0

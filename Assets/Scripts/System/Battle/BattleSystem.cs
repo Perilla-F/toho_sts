@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Unity.IO.LowLevel.Unsafe;
 
 public class BattleSystem : MonoBehaviour, IBattleSystem
 {
@@ -59,12 +60,16 @@ public class BattleSystem : MonoBehaviour, IBattleSystem
     {
         foreach (var enemy in _enemyManager.Enemies)
         {
-            ConditionContext context = new ConditionContext(_heroUnit);
-            var actionDatas = enemy.PlanTurn(context);
-            foreach (var actionData in actionDatas.Actions)
+            var actionDatas = enemy.PlanTurn(BattleContext);
+            foreach (var actionData in actionDatas)
             {
-                BattleAction action = new BattleAction(actionData);
-                _timelineManager.Enqueue(action);
+                int priority = 2;
+                if (enemy.EnemyType != EnemyType.normal)
+                {
+                    priority = 1;
+                }
+                var enemyEvent = new EnemyActionEvent(enemy, actionData.action, actionData.action.ScheduledTime, priority);
+                _timelineManager.AddEvent(enemyEvent);
             }
         }
     }
@@ -106,6 +111,7 @@ public class BattleSystem : MonoBehaviour, IBattleSystem
 
     public async UniTask OnTurnEndButton()
     {
+        TimelineManager.FlushAll(BattleContext);
         TurnCount++;
         await MoveAllToDiscard();
         _stateManager.ChangeState(BattleStateType.Draw);

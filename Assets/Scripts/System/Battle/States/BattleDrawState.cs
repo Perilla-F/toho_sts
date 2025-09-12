@@ -9,7 +9,7 @@ public class BattleDrawState : IBattleState
     private BattleSystem _battle;
     public BattleDrawState(BattleSystem battle)
     {
-        this._battle = battle;
+        _battle = battle;
     }
 
     public void OnEnter()

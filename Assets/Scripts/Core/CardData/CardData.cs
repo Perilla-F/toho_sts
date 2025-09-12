@@ -9,5 +9,5 @@ public class CardData : ScriptableObject
     public List<ResourceCost> Costs = new();
     public float TriggerTime;
     public string Description;
-    public List<CardEffectData> CardEffects = new();
+    public List<ICardEffect> CardEffects = new();
 }

@@ -15,14 +15,6 @@ public class BattleStarter : MonoBehaviour
 
     private void Start()
     {
-        var context = new BattleContext
-        (
-            _battleSystem,
-            _handView,
-            _deckView,
-            _turnMessagePanel
-        );
-
         if (GameManager.Instance == null || GameManager.Instance.SelectedHeroData == null)
         {
             Debug.LogError("GameManager または selectedHeroData が null です。キャラ選択画面を経由してください。");
@@ -39,6 +31,15 @@ public class BattleStarter : MonoBehaviour
         HeroUnit heroUnit = new HeroUnit();
         heroUnit.Setup(GameManager.Instance.HeroBattler);
         _heroViewer.ShowHero(playerHeroData, heroUnit);
+
+        var context = new BattleContext
+        (
+            _battleSystem,
+            heroUnit,
+            _handView,
+            _deckView,
+            _turnMessagePanel
+        );
 
         List<SourceCard> playerDeck = GameManager.Instance.GetPlayerDeck();
         BattleDeck battleDeck = new BattleDeck();

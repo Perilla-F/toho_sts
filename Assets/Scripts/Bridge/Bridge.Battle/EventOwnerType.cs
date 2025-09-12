@@ -1,0 +1,1 @@
+public enum EventOwnerType { Player, Boss, Enemy }

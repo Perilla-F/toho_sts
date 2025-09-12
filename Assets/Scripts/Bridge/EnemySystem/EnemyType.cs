@@ -1,0 +1,1 @@
+public enum EnemyType { normal, Elite, Boss }

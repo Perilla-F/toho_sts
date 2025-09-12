@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class EnemyUnit : IBattleUnit, IEnemyUnit
+public class EnemyUnit : IBattleUnit
 {
-
     public string BattlerName { get; private set; }
+    public EnemyType EnemyType { get; private set; }
     public float AttackModifier { get; } = 1f;
     public float DefenceModifier { get; } = 1f;
     public int MaxHP { get; private set; }
@@ -14,10 +14,11 @@ public class EnemyUnit : IBattleUnit, IEnemyUnit
     public int Strength { get; set; } = 0;
     public int Defence { get; set; } = 0;
     public int Block { get; private set; } = 0;
+    public int SimpleBlock { get; private set; } = 0;
     public int AttackBonus { get; private set; } = 0;
     public int DefenceBonus { get; private set; } = 0;
     public List<string> Status = new List<string>();
-    public List<IEffect> Effects { get; }
+    public List<StatusEffect> Effects { get; }
     public EnemyConditionType currentCondition = EnemyConditionType.Turn;
     private EnemyConditionType _lastCondition;
     private int _turnCounter = 0;
@@ -32,8 +33,8 @@ public class EnemyUnit : IBattleUnit, IEnemyUnit
         _enemyAI = data.EnemyAI;
         MaxHP = data.MaxHP;
         CurrentHP = data.MaxHP;
-        AnimatorController = data.AnimatorController;
         _lastCondition = currentCondition;
+        EnemyType = data.EnemyType;
     }
 
 
@@ -52,13 +53,13 @@ public class EnemyUnit : IBattleUnit, IEnemyUnit
         Block += amount;
     }
 
+    public void ApplySimpleBlock(int amount)
+    {
+        SimpleBlock += amount;
+    }
+
     public void ApplyStatus(String statusName, int amount)
     { }
-
-    public void ApplyAttackBuff(int amount)
-    {
-        AttackBonus += amount;
-    }
 
     public int GetAttackBonus()
     {
@@ -76,30 +77,42 @@ public class EnemyUnit : IBattleUnit, IEnemyUnit
     /// <param name="turn"></param>
     /// <param name="context"></param>
     /// <returns></returns>
-    public EnemyTurnActions PlanTurn(ConditionContext context)
+    public List<WeightedAction> PlanTurn(IBattleContext context)
     {
         if (currentCondition != _lastCondition)
         {
             _turnCounter = 0;
             _lastCondition = currentCondition;
         }
-        return _enemyAI.GetActions(this, _turnCounter, context);
+        return _enemyAI.GetActions(context, this);
     }
 
-    public bool HasStatus(string status)
+    public void AddEffect(StatusEffectData data, int stacks)
     {
-        return this.Status.Contains(status);
+        var existing = Effects.Find(e => e.Data.effectId == data.effectId);
+        if (existing != null)
+        {
+            existing.AddStacks(stacks);
+        }
+        else
+        {
+            var effect = StatusEffectFactory.Create(data, stacks, this);
+            Effects.Add(effect);
+        }
     }
 
-    public void ApplyEffect(IEffect effect)
+    public bool HasStatus(StatusEffectData data)
     {
-        Effects.Add(effect);
-        effect.OnApply(this);
+        return Effects.Find(e => e.Data.effectId == data.effectId) != null;
     }
 
     public bool IsAlive()
     {
         return CurrentHP > 0;
+    }
+    public bool IsDisabled()
+    {
+        return false;
     }
 
     public int GetCurrentHP()
@@ -116,7 +129,7 @@ public class EnemyUnit : IBattleUnit, IEnemyUnit
     {
         foreach (var e in Effects)
         {
-            e.OnTurnStart(this);
+            e.OnTurnStart();
         }
     }
 
@@ -124,7 +137,7 @@ public class EnemyUnit : IBattleUnit, IEnemyUnit
     {
         foreach (var e in Effects)
         {
-            e.OnTurnEnd(this);
+            e.OnTurnEnd();
         }
     }
 }

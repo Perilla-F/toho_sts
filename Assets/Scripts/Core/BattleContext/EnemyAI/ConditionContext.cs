@@ -1,8 +1,8 @@
 public class ConditionContext
 {
-    public IHeroUnit HeroUnit { get; private set; }
+    public IBattleUnit HeroUnit { get; private set; }
     public int EnemyTurnCount;
-    public ConditionContext(IHeroUnit heroUnit)
+    public ConditionContext(IBattleUnit heroUnit)
     {
         this.HeroUnit = heroUnit;
     }

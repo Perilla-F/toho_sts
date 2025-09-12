@@ -3,7 +3,8 @@ using System.Collections.Generic;
 public class CardContext
 {
     public IBattleSystem BattleSystem;
-    public IHeroUnit User;
-    public List<IEnemyUnit> Enemies;
+    public IBattleUnit User;
+    public List<IBattleUnit> Enemies;
     public ISourceCard SourceCard;
+    public List<IBattleUnit> Targets;
 }

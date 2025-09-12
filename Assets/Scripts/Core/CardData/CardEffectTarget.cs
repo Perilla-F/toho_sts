@@ -1,4 +1,4 @@
 public enum CardEffectTarget
 {
-    Self, Enemy, AllEnemies
+    None, Self, Enemy, Random, AllEnemies, Area
 }

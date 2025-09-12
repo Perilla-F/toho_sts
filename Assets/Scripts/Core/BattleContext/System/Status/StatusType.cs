@@ -1,0 +1,1 @@
+public enum StatusType { Strength, Defence, Poison, Fear, None }

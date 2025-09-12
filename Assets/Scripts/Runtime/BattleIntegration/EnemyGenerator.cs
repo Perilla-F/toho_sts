@@ -9,6 +9,8 @@ public class EnemyGenerator : MonoBehaviour
 
     [SerializeField] Transform EnemyArea;
     [SerializeField] EnemyManager EnemyManager;
+    [SerializeField] GameManager GameManager;
+
 
     /// <summary>
     /// 敵の生成
@@ -16,6 +18,7 @@ public class EnemyGenerator : MonoBehaviour
     /// <param name="spawnCount">敵の数</param>
     public void SpawnEnemies(string category, HeroUnit Hero)
     {
+
         List<EncounterData> bosses = EncounterLoader.LoadEncounters(category);
         var selectedEncounter = bosses[Random.Range(0, bosses.Count)];
 
@@ -24,7 +27,7 @@ public class EnemyGenerator : MonoBehaviour
             GameObject enemyObj = Instantiate(_enemyPrefab, EnemyArea);
             EnemyUnit enemyUnit = enemyObj.GetComponent<EnemyUnit>();
             EnemyViewer enemyView = new EnemyViewer();
-            EnemyData enemyData = EnemyDatabase.GetEnemyDataById(id);
+            EnemyData enemyData = GameManager.EnemyDB.GetEnemyById(id);
             enemyView.transform.localPosition = GetEnemyPosition(1); // 適切に配置
             enemyUnit.Setup(enemyData);
             EnemyManager.RegisterEnemy(enemyUnit);

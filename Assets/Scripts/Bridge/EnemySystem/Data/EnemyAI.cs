@@ -1,23 +1,32 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(menuName = "Game/EnemyAI")]
+[CreateAssetMenu(menuName = "Enemy/AI")]
 public class EnemyAI : ScriptableObject
 {
-    public string EnemyId;
-    public List<EnemyConditionData> conditionDatas;
+    public List<ConditionPattern> ConditionPatterns;
 
-    public EnemyTurnActions GetActions(EnemyUnit self, int turn, ConditionContext context)
+    public List<WeightedAction> GetActions(IBattleContext context, IBattleUnit self)
     {
-        foreach (var data in conditionDatas)
+        foreach (var data in ConditionPatterns)
         {
-            if (data.IsConditionMet(self.CurrentHP / self.MaxHP, turn, ""))
+            if (data.condition.IsSatisfied(context, self))
             {
-                return data.Actions[turn % data.Actions.Count];
+                return data.actions;
             }
         }
-        return new EnemyTurnActions(); // fallback
+        return new List<WeightedAction>(); //fallback;\
     }
 
+    // public EnemyTurnActions GetActions(ConditionContext context)
+    // {
+    //     foreach (var data in conditionDatas)
+    //     {
+    //         if (data.IsConditionMet(context))
+    //         {
+    //             return data.GetRandomPattern();
+    //         }
+    //     }
+    //     return new EnemyTurnActions(); // fallback
+    // }
 }

@@ -5,5 +5,5 @@ public enum CardEffectType
     Draw,
     SimpleBlock,
     ApplyBlock,
-    ApplyStatus,
+    Status
 }

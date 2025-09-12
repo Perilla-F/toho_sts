@@ -6,45 +6,34 @@ using UnityEngine;
 
 public class TimelineManager
 {
-    public float CurrentTime { get; private set; }
+    private SortedSet<BattleEvent> events = new SortedSet<BattleEvent>();
 
-    private SortedSet<BattleAction> _actionQueue = new();
-
-    public void Enqueue(BattleAction action)
+    public void AddEvent(BattleEvent e)
     {
-        _actionQueue.Add(action);
+        events.Add(e);
     }
 
-    public void AdvanceTime(float amount)
+    public void ProcessEventsUntilTurnEnd(IBattleContext context, int currentTurnEndTime)
     {
-        CurrentTime += amount;
-        CheckActions();
-    }
-
-    public BattleAction DequeueNext()
-    {
-        if (_actionQueue.Count == 0) return null;
-        var next = _actionQueue.Min;
-        _actionQueue.Remove(next);
-        return next;
-    }
-
-    private void CheckActions()
-    {
-        foreach (var ac in _actionQueue.ToList())
+        while (events.Count > 0 && events.Min.ScheduledTime <= currentTurnEndTime)
         {
-            if (CurrentTime >= ac.Action.ScheduledTime)
-            {
-                ac.Execute();
-                _actionQueue.Remove(ac);
-            }
+            var e = events.Min;
+            events.Remove(e);
+            e.Execute(context);
         }
     }
 
-    // Reset や巻き戻し用
-    public void ResetTime()
+    /// <summary>
+    /// 残りイベントを一斉消化
+    /// </summary>
+    public void FlushAll(IBattleContext context)
     {
-        CurrentTime = 0f;
-        _actionQueue.Clear();
+        while (events.Count > 0)
+        {
+            var e = events.Min;
+            events.Remove(e);
+            e.Execute(context);
+        }
     }
+
 }

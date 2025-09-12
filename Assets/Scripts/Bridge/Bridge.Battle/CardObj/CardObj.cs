@@ -13,8 +13,8 @@ public class CardObj : ICardObj
 
     public CardObj(SourceCard source, ResourceRegistry resourceRegistry)
     {
-        this.Source = source;
-        this.ResourceRegistry = resourceRegistry;
+        Source = source;
+        ResourceRegistry = resourceRegistry;
     }
 
     public void BindMoveToHand(Func<UniTask> moveFunc)

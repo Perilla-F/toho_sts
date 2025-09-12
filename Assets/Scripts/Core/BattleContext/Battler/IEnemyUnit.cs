@@ -1,6 +1,3 @@
-public interface IEnemyUnit
+public interface IEnemyUnit : IBattleUnit
 {
-    int GetCurrentHP();
-    int GetMaxHP();
-    void TakeDamage(int amount);
 }

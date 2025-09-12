@@ -11,10 +11,10 @@ public class EnemyViewer : MonoBehaviour, IDropHandler
     [SerializeField] Animator Animator;
     [SerializeField] private Slider _hpSlider;
 
-    public void Setup(IBattlerBaseData data)
-    {
-        Animator.runtimeAnimatorController = data.AnimatorController;
-    }
+    // public void Setup(IBattlerBaseData data)
+    // {
+    //     Animator.runtimeAnimatorController = data.AnimatorController;
+    // }
 
     public void UpdateHP(int current, int max)
     {

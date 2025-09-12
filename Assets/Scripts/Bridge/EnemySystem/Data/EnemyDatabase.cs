@@ -1,56 +1,23 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public static class EnemyDatabase
+public class EnemyDatabase
 {
-    private static Dictionary<string, EnemyData> _enemyDataMap;
+    private Dictionary<string, EnemyData> _enemyDict = new();
 
-    // 初期化（最初の呼び出し時に自動的にロード）
-    private static void EnsureInitialized()
+    public void LoadFromJson(string json)
     {
-        if (_enemyDataMap != null) return;
-
-        _enemyDataMap = new Dictionary<string, EnemyData>();
-
-        // Resources/EnemyAssets フォルダ内の EnemyData をすべて読み込む
-        var allEnemyData = Resources.LoadAll<EnemyData>("EnemyAssets");
-
-        foreach (var data in allEnemyData)
+        var wrapper = JsonUtility.FromJson<EnemyDataList>(json);
+        foreach (var enemy in wrapper.Enemies)
         {
-            if (!_enemyDataMap.ContainsKey(data.EnemyId))
-            {
-                _enemyDataMap.Add(data.EnemyId, data);
-            }
-            else
-            {
-                Debug.LogWarning($"Duplicate enemyId detected: {data.EnemyId}");
-            }
-        }
-    }
-    /// <summary>
-    /// IDから EnemyData を取得
-    /// </summary>
-    /// <param name="id"></param>
-    /// <returns></returns>
-    public static EnemyData GetEnemyDataById(string id)
-    {
-        EnsureInitialized();
-
-        if (_enemyDataMap.TryGetValue(id, out var data))
-        {
-            return data;
-        }
-        else
-        {
-            Debug.LogError($"EnemyData with ID '{id}' not found.");
-            return null;
+            // エフェクトをインスタンス化したRuntime版に変換
+            _enemyDict[enemy.EnemyId] = enemy;
         }
     }
 
-    // 全データ取得（必要なら）
-    public static IEnumerable<EnemyData> GetAll()
+    public EnemyData GetEnemyById(string id)
     {
-        EnsureInitialized();
-        return _enemyDataMap.Values;
+        return _enemyDict.TryGetValue(id, out var enemy) ? enemy : null;
     }
+
 }

@@ -1,1 +1,1 @@
-public enum CardType { Attack, Block }
+public enum CardType { Attack, Skill }

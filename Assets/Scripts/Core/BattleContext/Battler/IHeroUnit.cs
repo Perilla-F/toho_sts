@@ -1,6 +1,5 @@
-public interface IHeroUnit
+public interface IHeroUnit : IBattleUnit
 {
-    void ApplyBlock(int amount);
-
-    bool HasStatus(string statusName);
+    void GainMana(int amount);
+    void Draw(int amount, IBattleContext context);
 }
