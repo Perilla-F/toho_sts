@@ -18,6 +18,7 @@ public class BattleSystem : MonoBehaviour, IBattleSystem
     public HeroBattler HeroBattler;
     private HeroUnit _heroUnit;
     private TimelineManager _timelineManager;
+    private bool _isProcessingEvents;
     public BattleContext BattleContext { get; private set; }
 
     public Hand Hand { get => _hand; }
@@ -111,9 +112,9 @@ public class BattleSystem : MonoBehaviour, IBattleSystem
 
     public async UniTask OnTurnEndButton()
     {
-        TimelineManager.FlushAll(BattleContext);
-        TurnCount++;
         await MoveAllToDiscard();
+        await TimelineManager.FlushAll(BattleContext);
+        TurnCount++;
         _stateManager.ChangeState(BattleStateType.Draw);
     }
 

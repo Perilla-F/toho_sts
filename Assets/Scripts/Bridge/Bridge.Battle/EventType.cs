@@ -1,0 +1,1 @@
+public enum EventType { Player, Boss, Enemy }
