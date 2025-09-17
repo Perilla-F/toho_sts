@@ -1,18 +1,11 @@
 using System.Collections.Generic;
+using UnityEngine;
 
-public class CardHealEffect : ICardEffect
+[CreateAssetMenu(menuName = "CardEffect/Heal")]
+public class CardHealEffect : CardEffectDefinition
 {
-    public CardEffectTarget TargetType => CardEffectTarget.Self;
-    private int _amount;
-    public CardEffectType EffectType => CardEffectType.Heal;
-
-    public CardHealEffect(int amount)
+    public override void Apply(int amount, CardContext context)
     {
-        _amount = amount;
-    }
-
-    public void Apply(CardContext context)
-    {
-        context.User.Heal(_amount);
+        context.User.Heal(amount);
     }
 }

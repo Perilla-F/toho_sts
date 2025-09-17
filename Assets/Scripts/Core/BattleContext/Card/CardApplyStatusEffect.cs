@@ -1,24 +1,15 @@
-using System.Collections.Generic;
+using UnityEngine;
 
-public class CardApplyStatusEffect : ICardEffect
+[CreateAssetMenu(menuName = "CardEffect/Status")]
+public class CardApplyStatusEffect : CardEffectDefinition
 {
-    public CardEffectTarget TargetType { get; private set; }
     private StatusEffectData _data;
-    private int _amount;
-    public CardEffectType EffectType => CardEffectType.Status;
 
-    public CardApplyStatusEffect(StatusEffectData effect, int amount, CardEffectTarget targetType)
-    {
-        _data = effect;
-        _amount = amount;
-        TargetType = targetType;
-    }
-
-    public void Apply(CardContext context)
+    public override void Apply(int amount, CardContext context)
     {
         foreach (var target in context.Targets)
         {
-            target.AddEffect(_data, _amount);
+            target.AddEffect(_data, amount);
         }
     }
 }

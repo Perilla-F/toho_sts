@@ -1,9 +1,9 @@
 public class EnemyActionEvent : BattleEvent
 {
-    private IBattleUnit enemy;
+    private EnemyUnit enemy;
     private EnemyAction action;
 
-    public EnemyActionEvent(IBattleUnit enemy, EnemyAction action, int scheduledTime, int priority)
+    public EnemyActionEvent(EnemyUnit enemy, EnemyAction action, int scheduledTime, int priority)
         : base(scheduledTime, priority)
     {
         this.enemy = enemy;
@@ -12,6 +12,6 @@ public class EnemyActionEvent : BattleEvent
 
     public override void Execute(IBattleContext context)
     {
-        action.Perform(context);
+        action.Execute(context, enemy);
     }
 }

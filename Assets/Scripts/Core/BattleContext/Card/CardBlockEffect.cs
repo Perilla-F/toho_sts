@@ -1,18 +1,10 @@
-using System.Collections.Generic;
+using UnityEngine;
 
-public class CardBlockEffect : ICardEffect
+[CreateAssetMenu(menuName = "CardEffect/Block")]
+public class CardBlockEffect : CardEffectDefinition
 {
-    public CardEffectTarget TargetType => CardEffectTarget.Self;
-    private int _amount;
-    public CardEffectType EffectType => CardEffectType.ApplyBlock;
-
-    public CardBlockEffect(int amount)
+    public override void Apply(int amount, CardContext context)
     {
-        _amount = amount;
-    }
-
-    public void Apply(CardContext context)
-    {
-        context.User.ApplyBlock(_amount);
+        context.User.ApplyBlock(amount);
     }
 }

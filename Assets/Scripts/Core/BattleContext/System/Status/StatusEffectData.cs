@@ -9,6 +9,5 @@ public class StatusEffectData : ScriptableObject
     public Sprite icon;
     [TextArea] public string description;
 
-    public int baseValue;
     public bool isBuff;
 }

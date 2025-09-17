@@ -26,10 +26,7 @@ public class NomalCardObj : CardObj
             ResourceRegistry.Get(cost.Type)?.TryConsume(cost.Amount);
         }
 
-        foreach (var effect in Source.Data.CardEffects)
-        {
-            effect.Apply(context);
-        }
+        Source.Data.ApplyEffects(context);
         return true;
     }
 }

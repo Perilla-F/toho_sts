@@ -19,13 +19,13 @@ public class EnemyUnit : IBattleUnit
     public int DefenceBonus { get; private set; } = 0;
     public List<string> Status = new List<string>();
     public List<StatusEffect> Effects { get; }
-    public EnemyConditionType currentCondition = EnemyConditionType.Turn;
-    private EnemyConditionType _lastCondition;
+    public ConditionType currentCondition = ConditionType.Turn;
+    private ConditionType _lastCondition;
     private int _turnCounter = 0;
 
     public RuntimeAnimatorController AnimatorController { get; private set; }
 
-    private EnemyAI _enemyAI;
+    private EnemyAIData _enemyAI;
 
     public void Setup(EnemyData data)
     {
@@ -58,9 +58,6 @@ public class EnemyUnit : IBattleUnit
         SimpleBlock += amount;
     }
 
-    public void ApplyStatus(String statusName, int amount)
-    { }
-
     public int GetAttackBonus()
     {
         return AttackBonus;
@@ -77,14 +74,14 @@ public class EnemyUnit : IBattleUnit
     /// <param name="turn"></param>
     /// <param name="context"></param>
     /// <returns></returns>
-    public List<WeightedAction> PlanTurn(IBattleContext context)
+    public EnemyAction[] PlanTurn(IBattleContext context)
     {
         if (currentCondition != _lastCondition)
         {
             _turnCounter = 0;
             _lastCondition = currentCondition;
         }
-        return _enemyAI.GetActions(context, this);
+        return _enemyAI.DecideActionPattern(context, this, _turnCounter);
     }
 
     public void AddEffect(StatusEffectData data, int stacks)

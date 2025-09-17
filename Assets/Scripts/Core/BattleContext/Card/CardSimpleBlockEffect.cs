@@ -1,18 +1,13 @@
-using System.Collections.Generic;
+using UnityEngine;
 
-public class CardSimpleBlockEffect : ICardEffect
+[CreateAssetMenu(menuName = "CardEffect/SimpleBlock")]
+public class CardSimpleBlockEffect : CardEffectDefinition
 {
     public CardEffectTarget TargetType => CardEffectTarget.Self;
-    private int _amount;
     public CardEffectType EffectType => CardEffectType.SimpleBlock;
 
-    public CardSimpleBlockEffect(int amount)
+    public override void Apply(int amount, CardContext context)
     {
-        _amount = amount;
-    }
-
-    public void Apply(CardContext context)
-    {
-        context.User.ApplySimpleBlock(_amount);
+        context.User.ApplySimpleBlock(amount);
     }
 }

@@ -35,7 +35,7 @@ public class BattleSystem : MonoBehaviour, IBattleSystem
         BattleContext = context;
         this._heroUnit = heroUnit;
         this._battleDeck = battleDeck;
-        context.DeckView.UpdateDeckCount();
+        context.GetDeckView().UpdateDeckCount();
 
         _stateManager.RegisterState(BattleStateType.SetUp, new BattleSetUpState(this));
         _stateManager.RegisterState(BattleStateType.SetUp, new BattleStanbyState(this));
@@ -69,7 +69,7 @@ public class BattleSystem : MonoBehaviour, IBattleSystem
                 {
                     priority = 1;
                 }
-                var enemyEvent = new EnemyActionEvent(enemy, actionData.action, actionData.action.ScheduledTime, priority);
+                var enemyEvent = new EnemyActionEvent(enemy, actionData, actionData.ScheduledTime, priority);
                 _timelineManager.AddEvent(enemyEvent);
             }
         }
@@ -92,8 +92,8 @@ public class BattleSystem : MonoBehaviour, IBattleSystem
                 await card.MoveCardAsync();
             }
         }
-        BattleContext.HandView.ArrangeCards();
-        BattleContext.DeckView.UpdateDeckCount();
+        BattleContext.GetHandView().ArrangeCards();
+        BattleContext.GetDeckView().UpdateDeckCount();
     }
 
     /// <summary>

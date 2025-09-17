@@ -1,18 +1,10 @@
-using System.Collections.Generic;
+using UnityEngine;
 
-public class CardDrawEffect : ICardEffect
+[CreateAssetMenu(menuName = "CardEffect/Draw")]
+public class CardDrawEffect : CardEffectDefinition
 {
-    public CardEffectTarget TargetType => CardEffectTarget.None;
-    private int _amount;
-    public CardEffectType EffectType => CardEffectType.Draw;
-
-    public CardDrawEffect(int amount)
+    public override void Apply(int amount, CardContext context)
     {
-        _amount = amount;
-    }
-
-    public void Apply(CardContext context)
-    {
-        context.BattleSystem.Draw(_amount);
+        context.BattleSystem.Draw(amount);
     }
 }

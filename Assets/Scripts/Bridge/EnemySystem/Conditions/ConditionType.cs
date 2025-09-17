@@ -1,0 +1,1 @@
+public enum ConditionType { Turn, HasStatus, HasNotStatus, HPBellow, Always }

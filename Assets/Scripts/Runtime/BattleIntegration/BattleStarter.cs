@@ -8,6 +8,7 @@ public class BattleStarter : MonoBehaviour
     [SerializeField] private HandView _handView;
     [SerializeField] private DeckView _deckView;
     [SerializeField] private DiscardAreaView _discardAreaView;
+    [SerializeField] private TimelineView _timelineView;
     [SerializeField] private ManaView _manaView;
     [SerializeField] private HeroViewer _heroViewer;
     [SerializeField] private TurnMessagePanel _turnMessagePanel;
@@ -32,17 +33,19 @@ public class BattleStarter : MonoBehaviour
         heroUnit.Setup(GameManager.Instance.HeroBattler);
         _heroViewer.ShowHero(playerHeroData, heroUnit);
 
+        List<SourceCard> playerDeck = GameManager.Instance.GetPlayerDeck();
+        BattleDeck battleDeck = new BattleDeck();
+
         var context = new BattleContext
         (
             _battleSystem,
             heroUnit,
             _handView,
             _deckView,
+            _timelineView,
+            battleDeck,
             _turnMessagePanel
         );
-
-        List<SourceCard> playerDeck = GameManager.Instance.GetPlayerDeck();
-        BattleDeck battleDeck = new BattleDeck();
 
         Hand hand = new Hand();
         _handView.SetHand(hand);

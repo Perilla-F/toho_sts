@@ -8,6 +8,7 @@ public class EnemyGenerator : MonoBehaviour
     [SerializeField] private GameObject _enemyPrefab;
 
     [SerializeField] Transform EnemyArea;
+    [SerializeField] EnemyDatabase EnemyDB;
     [SerializeField] EnemyManager EnemyManager;
     [SerializeField] GameManager GameManager;
 
@@ -27,7 +28,7 @@ public class EnemyGenerator : MonoBehaviour
             GameObject enemyObj = Instantiate(_enemyPrefab, EnemyArea);
             EnemyUnit enemyUnit = enemyObj.GetComponent<EnemyUnit>();
             EnemyViewer enemyView = new EnemyViewer();
-            EnemyData enemyData = GameManager.EnemyDB.GetEnemyById(id);
+            EnemyData enemyData = EnemyDB.GetEnemyById(id);
             enemyView.transform.localPosition = GetEnemyPosition(1); // 適切に配置
             enemyUnit.Setup(enemyData);
             EnemyManager.RegisterEnemy(enemyUnit);

@@ -6,25 +6,26 @@ using UnityEngine;
 
 public class TimelineManager
 {
-    private List<BattleEvent> events = new List<BattleEvent>();
+    private List<BattleEvent> _events = new List<BattleEvent>();
 
     public void AddEvent(BattleEvent e)
     {
-        events.Add(e);
+        _events.Add(e);
         SortEvents();
     }
+
     public BattleEvent PopNextEvent()
     {
-        if (events.Count == 0) return null;
-        events = events.OrderBy(e => e.Time).ThenBy(e => e.Priority).ToList();
-        var next = events[0];
-        events.RemoveAt(0);
+        if (_events.Count == 0) return null;
+        _events = _events.OrderBy(e => e.Time).ThenBy(e => e.Priority).ToList();
+        var next = _events[0];
+        _events.RemoveAt(0);
         return next;
     }
 
     private void SortEvents()
     {
-        events.Sort((a, b) =>
+        _events.Sort((a, b) =>
         {
             int cmp = a.Time.CompareTo(b.Time);
             if (cmp != 0) return cmp;
@@ -43,7 +44,7 @@ public class TimelineManager
     /// </summary>
     public IEnumerator FlushAll(IBattleContext context)
     {
-        while (events.Count > 0)
+        while (_events.Count > 0)
         {
             var e = PopNextEvent();
             e.Execute(context);
@@ -54,7 +55,7 @@ public class TimelineManager
             // ちょっと間を置く演出
             yield return new WaitForSeconds(0.3f);
 
-            events.Remove(e);
+            _events.Remove(e);
             e.Execute(context);
         }
     }

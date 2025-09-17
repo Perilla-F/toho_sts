@@ -14,7 +14,7 @@ public class BattleStanbyState : IBattleState
     {
         Debug.Log("StanbyのEnter");
         _battle.AddActionToTimeline();
-        await _battle.BattleContext.TurnMessagePanel.ShowMessage($"{KanjiNumberConverteUtil.ConvertToKanjiWithUnits(_battle.TurnCount)}巡目");
+        await _battle.BattleContext.GetTurnMessagePanel().ShowMessage($"{KanjiNumberConverteUtil.ConvertToKanjiWithUnits(_battle.TurnCount)}巡目");
         _battle.TransitionToState(BattleStateType.Draw);
     }
 

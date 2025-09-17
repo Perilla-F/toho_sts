@@ -7,7 +7,7 @@ public class PoisonEffect : StatusEffect
 
     public override void OnTurnEnd()
     {
-        int damage = Stacks * Data.baseValue;
+        int damage = Stacks;
         Owner.TakeDamage(damage);
         RemoveStacks(1);
     }

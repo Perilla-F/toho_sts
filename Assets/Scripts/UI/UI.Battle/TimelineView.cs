@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TimelineView : MonoBehaviour
+public class TimelineView : MonoBehaviour, ITimelineView
 {
     private TimelineManager _timelineManager;
 

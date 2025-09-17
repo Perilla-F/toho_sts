@@ -10,8 +10,6 @@ public class GameManager : MonoBehaviour
     public HeroBattler HeroBattler;
     public List<SourceCard> PlayerDeck = new List<SourceCard>();
     public int CurrentHP;
-    public EnemyDatabase EnemyDB { get; private set; }
-
 
     private void Awake()
     {
@@ -24,18 +22,6 @@ public class GameManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
-    }
-
-    private void LoadMasterData()
-    {
-        string enemyJson = LoadJsonFromResources("Data/enemies");
-        string effectJson = LoadJsonFromResources("Data/effects");
-    }
-
-    private string LoadJsonFromResources(string path)
-    {
-        TextAsset jsonFile = Resources.Load<TextAsset>(path);
-        return jsonFile != null ? jsonFile.text : throw new Exception($"JSON not found: {path}");
     }
 
     public void InitializePlayer()

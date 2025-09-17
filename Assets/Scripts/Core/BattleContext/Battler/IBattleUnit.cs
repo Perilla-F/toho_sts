@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
 
-public interface IBattleUnit : IBattlerBaseData
+public interface IBattleUnit
 {
+    string BattlerName { get; }
+    int MaxHP { get; }
     public int Strength { get; set; }
     public int Defence { get; set; }
     public List<StatusEffect> Effects { get; }

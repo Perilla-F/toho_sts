@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6edabe9fe89488943a86912369e786f0, type: 3}
+  m_Name: OdorokiFlash
+  m_EditorClassIdentifier: 
+  actionName: 
+  icon: {fileID: 0}
+  target: 1
+  ScheduledTime: 3
+  IsCanceled: 0
+  effects:
+  - {fileID: 11400000, guid: 02d3b6412637a04419a6f9a94204bdbe, type: 2}
+  - {fileID: 11400000, guid: 78cdfd7e8802285408b0bdf3f14b2d0b, type: 2}
