@@ -24,6 +24,10 @@ public class HeroUnit : IHeroUnit
     public List<string> Status = new List<string>();
     public List<StatusEffect> Effects { get; }
 
+    public GameObject UIPrefab;    // HPバーなどのUIPrefab
+    public GameObject ModelPrefab;  // Live2DモデルPrefab
+    public float ModelYOffset;      // モデルのUI下の高さ調整
+
     public RuntimeAnimatorController AnimatorController { get; private set; }
 
     public void Setup(HeroBattler heroBattler)
@@ -34,6 +38,10 @@ public class HeroUnit : IHeroUnit
         BattlerName = heroBattler.BaseData.BattlerName;
         AnimatorController = heroBattler.BaseData.AnimatorController;
         Mana = new Mana(MaxMana);
+
+        UIPrefab = heroBattler.BaseData.UIPrefab;
+        ModelPrefab = heroBattler.BaseData.ModelPrefab;
+        ModelYOffset = heroBattler.BaseData.ModelYOffset;
     }
 
     public void TakeDamage(int amount)

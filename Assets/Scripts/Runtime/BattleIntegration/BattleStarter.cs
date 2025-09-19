@@ -14,6 +14,7 @@ public class BattleStarter : MonoBehaviour
     [SerializeField] private TurnMessagePanel _turnMessagePanel;
     [SerializeField] private EnemyGenerator _enemyGenerator;
 
+
     private void Start()
     {
         if (GameManager.Instance == null || GameManager.Instance.SelectedHeroData == null)
@@ -55,13 +56,13 @@ public class BattleStarter : MonoBehaviour
 
         foreach (var sourceCard in playerDeck)
         {
-            CardObj cardObj = CardFactory.CreateCard(sourceCard, _deckView.transform, _deckView, _handView, _discardAreaView, mana);
+            CardObj cardObj = CardFactory.Instance.CreateCard(sourceCard, _deckView.transform, _deckView, _handView, _discardAreaView, mana);
             battleDeck.AddCard(cardObj);
         }
         battleDeck.Shuffle();
         _deckView.SetBattleDeck(battleDeck);
 
-        _enemyGenerator.SpawnEnemies("elite", heroUnit);
+        _enemyGenerator.SpawnEnemies("elite");
 
         TimelineManager timelineManager = new TimelineManager();
         TimelineView timelineView = new TimelineView();

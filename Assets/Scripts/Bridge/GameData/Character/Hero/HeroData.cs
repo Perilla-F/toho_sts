@@ -13,11 +13,13 @@ public class HeroData : ScriptableObject, IBattleHeroData
     [SerializeField] private Sprite _portrait;
     [SerializeField] public List<CardData> StartingDeck;
     [SerializeField] public AnimationClip IdleMotionClip { get; set; }
-    // [SerializeField] private string attackAnimationName;
+    [SerializeField] public GameObject UIPrefab;    // HPバーなどのUIPrefab
+    [SerializeField] public GameObject ModelPrefab;
+    public float ModelYOffset;
+
     public String BattlerName => _battlerName;
     public int MaxHP => _maxHP;
     public Sprite Portrait => _portrait;
     public RuntimeAnimatorController AnimatorController { get; }
-    // public string AttackAnimation => attackAnimationName; public String BattlerName => battlerName;
 
 }

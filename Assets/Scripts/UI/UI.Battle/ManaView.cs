@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class ManaView : MonoBehaviour
 {
-    [SerializeField] TextMeshPro _manaText;
+    [SerializeField] private TextMeshProUGUI _manaText;
     public Mana Mana { get; private set; }
 
     public void Init(Mana mana)

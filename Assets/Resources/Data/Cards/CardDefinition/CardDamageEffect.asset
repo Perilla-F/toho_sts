@@ -9,9 +9,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 19710f11e63f4604fa15ca4b6f98716d, type: 3}
-  m_Name: FearEffectDebuff
+  m_Script: {fileID: 11500000, guid: 96799c7bdf0e36d41a98b401e6cf7cef, type: 3}
+  m_Name: CardDamageEffect
   m_EditorClassIdentifier: 
-  effectName: Fear
-  amount: 1
-  effectData: {fileID: 11400000, guid: 6758a09a836841344aba42a48a3f9efb, type: 2}

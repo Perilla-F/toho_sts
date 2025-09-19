@@ -9,6 +9,7 @@ public class EnemyViewer : MonoBehaviour, IDropHandler
 {
 
     [SerializeField] Animator Animator;
+    [SerializeField] private GameObject _enemyPrefab;
     [SerializeField] private Slider _hpSlider;
 
     // public void Setup(IBattlerBaseData data)

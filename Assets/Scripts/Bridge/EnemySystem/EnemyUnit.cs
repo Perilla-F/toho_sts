@@ -23,6 +23,10 @@ public class EnemyUnit : IBattleUnit
     private ConditionType _lastCondition;
     private int _turnCounter = 0;
 
+    public GameObject UIPrefab;    // HPバーなどのUIPrefab
+    public GameObject ModelPrefab;  // Live2DモデルPrefab
+    public float ModelYOffset;      // モデルのUI下の高さ調整
+
     public RuntimeAnimatorController AnimatorController { get; private set; }
 
     private EnemyAIData _enemyAI;
@@ -35,6 +39,9 @@ public class EnemyUnit : IBattleUnit
         CurrentHP = data.MaxHP;
         _lastCondition = currentCondition;
         EnemyType = data.EnemyType;
+        UIPrefab = data.UIPrefab;
+        ModelPrefab = data.ModelPrefab;
+        ModelYOffset = data.ModelYOffset;
     }
 
 

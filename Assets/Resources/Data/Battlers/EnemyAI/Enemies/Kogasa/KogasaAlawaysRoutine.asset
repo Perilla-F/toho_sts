@@ -14,5 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   patterns:
   - entries:
-    - action: {fileID: 11400000, guid: 944077cc52fd0da49927c9e09b5135e6, type: 2}
-      amountOverride: 10
+    - actions:
+      - action: {fileID: 11400000, guid: 944077cc52fd0da49927c9e09b5135e6, type: 2}
+        damageOverride: 7
+        amountOverride: 3
+      - action: {fileID: 11400000, guid: 944077cc52fd0da49927c9e09b5135e6, type: 2}
+        damageOverride: 7
+        amountOverride: 3
+    weights: 64000000

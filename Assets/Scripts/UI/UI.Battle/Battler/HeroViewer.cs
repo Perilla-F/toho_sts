@@ -5,7 +5,7 @@ using Live2D.Cubism.Framework;
 
 public class HeroViewer : MonoBehaviour
 {
-    [SerializeField] private HeroArea _heroArea; // モデルを配置するUIのTransform
+    [SerializeField] private HeroArea _heroArea;
 
     public HeroUnit HeroUnit { get; private set; }
     private GameObject _currentModelInstance;
@@ -33,7 +33,6 @@ public class HeroViewer : MonoBehaviour
             _motionController.PlayAnimation(heroData.IdleMotionClip, isLoop: true);
         }
     }
-
 
     public void PlayMotion(AnimationClip motionClip, int layerIndex)
     {

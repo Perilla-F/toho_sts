@@ -1,21 +1,19 @@
 using UnityEngine;
 
-public static class CardFactory
+public class CardFactory : MonoBehaviour
 {
-    private static GameObject _cardPrefab;
+    public static CardFactory Instance { get; private set; }
+    [SerializeField] private GameObject _cardPrefab;
 
-    /// <summary>
-    /// カード生成前にプレハブを登録（初期化用）
-    /// </summary>
-    public static void Initialize(GameObject prefab)
+    void Awake()
     {
-        _cardPrefab = prefab;
+        Instance = this;
     }
 
     /// <summary>
     /// SourceCard から CardObj と UI を生成
     /// </summary>
-    public static CardObj CreateCard(SourceCard sourceCard, Transform parent, DeckView deckView, HandView handView, DiscardAreaView discardAreaView, Mana mana)
+    public CardObj CreateCard(SourceCard sourceCard, Transform parent, DeckView deckView, HandView handView, DiscardAreaView discardAreaView, Mana mana)
     {
         if (_cardPrefab == null)
         {
@@ -30,7 +28,7 @@ public static class CardFactory
 
         // 見た目生成
         GameObject cardGO = Object.Instantiate(_cardPrefab, parent);
-        CardBehaviour behaviour = cardGO.GetComponent<CardBehaviour>();
+        CardBehavior behaviour = cardGO.GetComponent<CardBehavior>();
 
         // 双方向の初期化
         behaviour.Init(cardObj, deckView, handView, discardAreaView);

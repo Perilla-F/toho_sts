@@ -14,4 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   effectName: Poison
   amount: 1
-  effectData: {fileID: 0}
+  effectData: {fileID: 11400000, guid: ebf74eded434eda4eac3454fa73828d1, type: 2}

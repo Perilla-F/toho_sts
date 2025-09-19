@@ -10,7 +10,7 @@ using Unity.VisualScripting;
 using Cysharp.Threading.Tasks.Triggers;
 
 
-public class CardBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IBeginDragHandler, IDragHandler
+public class CardBehavior : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IBeginDragHandler, IDragHandler
 {
     private CardObj _cardObj;
     public DeckView DeckView { get; private set; }
@@ -18,7 +18,7 @@ public class CardBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     public DiscardAreaView DiscardAreaView { get; private set; }
     private RectTransform _rectTransform;
     private CanvasGroup _canvasGroup;
-    public UnityAction<CardBehaviour> OnUse;
+    public UnityAction<CardBehavior> OnUse;
 
 
     // State
@@ -64,7 +64,6 @@ public class CardBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     {
         EventBus<CardStateChangeEvent>.Unsubscribe(OnCardStateChange);
     }
-
 
     public void ChangeState(CardStateBase newState)
     {
