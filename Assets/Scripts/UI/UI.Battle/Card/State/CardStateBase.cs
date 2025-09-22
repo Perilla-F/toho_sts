@@ -5,11 +5,11 @@ using UnityEngine.EventSystems;
 
 public class CardStateBase
 {
-    protected CardBehaviour behaviour;
+    protected CardBehaviour _behaviour;
 
     public CardStateBase(CardBehaviour behaviour)
     {
-        this.behaviour = behaviour;
+        this._behaviour = behaviour;
     }
 
     public virtual void OnEnter() { }

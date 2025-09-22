@@ -5,11 +5,11 @@ using Live2D.Cubism.Framework;
 
 public class HeroViewer : MonoBehaviour
 {
-    [SerializeField] private HeroArea heroArea; // モデルを配置するUIのTransform
+    [SerializeField] private HeroArea _heroArea; // モデルを配置するUIのTransform
 
     public HeroUnit HeroUnit { get; private set; }
-    private GameObject currentModelInstance;
-    private CubismMotionController motionController;
+    private GameObject _currentModelInstance;
+    private CubismMotionController _motionController;
 
     public void ShowHero(IBattleHeroData heroData, HeroUnit heroUnit)
     {
@@ -23,38 +23,38 @@ public class HeroViewer : MonoBehaviour
             return;
         }
 
-        currentModelInstance = Instantiate(heroData.Live2DModelPrefab, heroArea.transform);
-        currentModelInstance.transform.localPosition = Vector3.zero;
-        currentModelInstance.transform.localScale = Vector3.one;
+        _currentModelInstance = Instantiate(heroData.Live2DModelPrefab, _heroArea.transform);
+        _currentModelInstance.transform.localPosition = Vector3.zero;
+        _currentModelInstance.transform.localScale = Vector3.one;
 
-        motionController = currentModelInstance.GetComponent<CubismMotionController>();
-        if (motionController != null && heroData.IdleMotionClip != null)
+        _motionController = _currentModelInstance.GetComponent<CubismMotionController>();
+        if (_motionController != null && heroData.IdleMotionClip != null)
         {
-            motionController.PlayAnimation(heroData.IdleMotionClip, isLoop: true);
+            _motionController.PlayAnimation(heroData.IdleMotionClip, isLoop: true);
         }
     }
 
 
     public void PlayMotion(AnimationClip motionClip, int layerIndex)
     {
-        if (motionController != null)
+        if (_motionController != null)
         {
-            motionController.PlayAnimation(motionClip, layerIndex);
+            _motionController.PlayAnimation(motionClip, layerIndex);
         }
     }
 
     public void ClearCurrentModel()
     {
-        if (currentModelInstance != null)
+        if (_currentModelInstance != null)
         {
-            Destroy(currentModelInstance);
-            currentModelInstance = null;
+            Destroy(_currentModelInstance);
+            _currentModelInstance = null;
         }
     }
 
     public void UpdateHP(int current, int max)
     {
-        heroArea.hpSlider.value = (float)current / max;
+        _heroArea.HpSlider.value = (float)current / max;
     }
 
 }

@@ -5,13 +5,13 @@ using System.Collections.Generic;
 public class Mana : IResource
 {
     public ResourceType Type => ResourceType.Mana;
-    public int maxMana { get; private set; }
+    public int MaxMana { get; private set; }
     public int CurrentMana { get; private set; }
     public event Action OnChanged;
 
     public Mana(int maxMana)
     {
-        this.maxMana = maxMana;
+        this.MaxMana = maxMana;
         CurrentMana = maxMana;
     }
 
@@ -37,7 +37,7 @@ public class Mana : IResource
 
     public void RefleshMana()
     {
-        CurrentMana = maxMana;
+        CurrentMana = MaxMana;
         OnChanged?.Invoke();
     }
 }

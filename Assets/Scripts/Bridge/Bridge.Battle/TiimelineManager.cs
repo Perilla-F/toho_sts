@@ -6,45 +6,58 @@ using UnityEngine;
 
 public class TimelineManager
 {
-    public float CurrentTime { get; private set; }
+    private List<BattleEvent> _events = new List<BattleEvent>();
 
-    private SortedSet<BattleAction> actionQueue = new();
-
-    public void Enqueue(BattleAction action)
+    public void AddEvent(BattleEvent e)
     {
-        actionQueue.Add(action);
+        _events.Add(e);
+        SortEvents();
     }
 
-    public void AdvanceTime(float amount)
+    public BattleEvent PopNextEvent()
     {
-        CurrentTime += amount;
-        CheckActions();
-    }
-
-    public BattleAction DequeueNext()
-    {
-        if (actionQueue.Count == 0) return null;
-        var next = actionQueue.Min;
-        actionQueue.Remove(next);
+        if (_events.Count == 0) return null;
+        _events = _events.OrderBy(e => e.Time).ThenBy(e => e.Priority).ToList();
+        var next = _events[0];
+        _events.RemoveAt(0);
         return next;
     }
 
-    private void CheckActions()
+    private void SortEvents()
     {
-        foreach (var ac in actionQueue.ToList())
+        _events.Sort((a, b) =>
         {
-            if (CurrentTime >= ac.scheduledTime)
-            {
-                ac.Execute();
-                actionQueue.Remove(ac);
-            }
+            int cmp = a.Time.CompareTo(b.Time);
+            if (cmp != 0) return cmp;
+
+            // Type優先度: Player(0) < Boss(1) < Enemy(2)
+            cmp = a.Type.CompareTo(b.Type);
+            if (cmp != 0) return cmp;
+
+            // 雑魚の左から順
+            return a.Order.CompareTo(b.Order);
+        });
+    }
+
+    /// <summary>
+    /// 残りイベントを一斉消化
+    /// </summary>
+    public IEnumerator FlushAll(IBattleContext context)
+    {
+        while (_events.Count > 0)
+        {
+            var e = PopNextEvent();
+            e.Execute(context);
+
+            // ここでアニメーション終了を待つ
+            yield return new WaitUntil(() => e.IsFinished);
+
+            // ちょっと間を置く演出
+            yield return new WaitForSeconds(0.3f);
+
+            _events.Remove(e);
+            e.Execute(context);
         }
     }
 
-    // Reset や巻き戻し用
-    public void ResetTime()
-    {
-        CurrentTime = 0f;
-        actionQueue.Clear();
-    }
 }

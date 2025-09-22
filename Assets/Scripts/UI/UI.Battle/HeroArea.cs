@@ -5,5 +5,5 @@ using UnityEngine.UI;
 
 public class HeroArea : MonoBehaviour
 {
-    [SerializeField] public Slider hpSlider;
+    [SerializeField] public Slider HpSlider;
 }

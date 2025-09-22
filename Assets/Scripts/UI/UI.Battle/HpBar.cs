@@ -4,17 +4,17 @@ using UnityEngine.UI;
 
 public class HpBar : MonoBehaviour
 {
-    [SerializeField] private Slider slider;
-    [SerializeField] private TextMeshProUGUI hpText; // TextMeshProの場合は TMP_Text に変更
+    [SerializeField] private Slider _slider;
+    [SerializeField] private TextMeshProUGUI _hpText; // TextMeshProの場合は TMP_Text に変更
 
     public void SetHp(int currentHp, int maxHp)
     {
-        slider.maxValue = maxHp;
-        slider.value = currentHp;
+        _slider.maxValue = maxHp;
+        _slider.value = currentHp;
 
-        if (hpText != null)
+        if (_hpText != null)
         {
-            hpText.text = $"{currentHp} / {maxHp}";
+            _hpText.text = $"{currentHp} / {maxHp}";
         }
     }
 }

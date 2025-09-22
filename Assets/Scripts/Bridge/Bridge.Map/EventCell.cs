@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class EventCell : CellBehaviour
 {
-    public string eventId;
+    public EventBase AssignedEvent;
     public override void OnPlayerEnter()
     {
-        MapGenerator.Instance.StartEvent(eventId);
+        MapGenerator.Instance.StartEvent(AssignedEvent);
     }
 }

@@ -1,53 +1,48 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public static class EnemyDatabase
+[CreateAssetMenu(menuName = "Data/EnemyDatabase")]
+public class EnemyDatabase : ScriptableObject
 {
-    private static Dictionary<string, EnemyData> enemyDataMap;
+    private Dictionary<string, EnemyData> _enemyDict;
 
-    // 初期化（最初の呼び出し時に自動的にロード）
-    private static void EnsureInitialized()
+    [SerializeField] private string resourcesPath = "Data/Battlers/Enemies";
+
+    private void BuildDictionary()
     {
-        if (enemyDataMap != null) return;
+        if (_enemyDict != null) return;
 
-        enemyDataMap = new Dictionary<string, EnemyData>();
+        _enemyDict = new Dictionary<string, EnemyData>();
+        EnemyData[] all = Resources.LoadAll<EnemyData>(resourcesPath);
 
-        // Resources/EnemyAssets フォルダ内の EnemyData をすべて読み込む
-        var allEnemyData = Resources.LoadAll<EnemyData>("EnemyAssets");
-
-        foreach (var data in allEnemyData)
+        foreach (var enemy in all)
         {
-            if (!enemyDataMap.ContainsKey(data.enemyId))
+            if (enemy == null || string.IsNullOrEmpty(enemy.EnemyId))
             {
-                enemyDataMap.Add(data.enemyId, data);
+                Debug.LogWarning($"EnemyDataのEnemyIdが未設定: {enemy?.name}");
+                continue;
             }
-            else
+
+            if (_enemyDict.ContainsKey(enemy.EnemyId))
             {
-                Debug.LogWarning($"Duplicate enemyId detected: {data.enemyId}");
+                Debug.LogWarning($"EnemyId重複: {enemy.EnemyId}");
+                continue;
             }
+
+            _enemyDict.Add(enemy.EnemyId, enemy);
         }
+
+        Debug.Log($"EnemyDatabase 初期化完了: {_enemyDict.Count} 体登録");
     }
 
-    // IDから EnemyData を取得
-    public static EnemyData GetEnemyDataById(string id)
+    /// <summary>
+    /// IDからEnemyDataを取得
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
+    public EnemyData GetEnemyById(string id)
     {
-        EnsureInitialized();
-
-        if (enemyDataMap.TryGetValue(id, out var data))
-        {
-            return data;
-        }
-        else
-        {
-            Debug.LogError($"EnemyData with ID '{id}' not found.");
-            return null;
-        }
-    }
-
-    // 全データ取得（必要なら）
-    public static IEnumerable<EnemyData> GetAll()
-    {
-        EnsureInitialized();
-        return enemyDataMap.Values;
+        BuildDictionary();
+        return _enemyDict.TryGetValue(id, out var data) ? data : null;
     }
 }

@@ -4,32 +4,25 @@ using UnityEngine;
 
 public class BattleStarter : MonoBehaviour
 {
-    [SerializeField] private BattleSystem battleSystem;
-    [SerializeField] private HandView handView;
-    [SerializeField] private DeckView deckView;
-    [SerializeField] private DiscardAreaView discardAreaView;
-    [SerializeField] private ManaView manaView;
-    [SerializeField] private HeroViewer heroViewer;
-    [SerializeField] private TurnMessagePanel turnMessagePanel;
-    [SerializeField] private EnemyGenerator enemyGenerator;
+    [SerializeField] private BattleSystem _battleSystem;
+    [SerializeField] private HandView _handView;
+    [SerializeField] private DeckView _deckView;
+    [SerializeField] private DiscardAreaView _discardAreaView;
+    [SerializeField] private TimelineView _timelineView;
+    [SerializeField] private ManaView _manaView;
+    [SerializeField] private HeroViewer _heroViewer;
+    [SerializeField] private TurnMessagePanel _turnMessagePanel;
+    [SerializeField] private EnemyGenerator _enemyGenerator;
 
     private void Start()
     {
-        var context = new BattleContext
-        (
-            battleSystem,
-            handView,
-            deckView,
-            turnMessagePanel
-        );
-
-        if (GameManager.Instance == null || GameManager.Instance.selectedHeroData == null)
+        if (GameManager.Instance == null || GameManager.Instance.SelectedHeroData == null)
         {
             Debug.LogError("GameManager または selectedHeroData が null です。キャラ選択画面を経由してください。");
             return;
         }
 
-        HeroData playerHeroData = GameManager.Instance.selectedHeroData;
+        HeroData playerHeroData = GameManager.Instance.SelectedHeroData;
         if (playerHeroData == null)
         {
             Debug.LogError("playerHeroData is null!");
@@ -37,33 +30,44 @@ public class BattleStarter : MonoBehaviour
         }
 
         HeroUnit heroUnit = new HeroUnit();
-        heroUnit.Setup(GameManager.Instance.heroBattler);
-        heroViewer.ShowHero(playerHeroData, heroUnit);
+        heroUnit.Setup(GameManager.Instance.HeroBattler);
+        _heroViewer.ShowHero(playerHeroData, heroUnit);
 
         List<SourceCard> playerDeck = GameManager.Instance.GetPlayerDeck();
         BattleDeck battleDeck = new BattleDeck();
 
+        var context = new BattleContext
+        (
+            _battleSystem,
+            heroUnit,
+            _handView,
+            _deckView,
+            _timelineView,
+            battleDeck,
+            _turnMessagePanel
+        );
+
         Hand hand = new Hand();
-        handView.SetHand(hand);
+        _handView.SetHand(hand);
 
         Mana mana = new Mana(heroUnit.MaxMana);
-        manaView.Init(mana);
+        _manaView.Init(mana);
 
         foreach (var sourceCard in playerDeck)
         {
-            CardObj cardObj = CardFactory.CreateCard(sourceCard, deckView.transform, deckView, handView, discardAreaView, mana);
+            CardObj cardObj = CardFactory.CreateCard(sourceCard, _deckView.transform, _deckView, _handView, _discardAreaView, mana);
             battleDeck.AddCard(cardObj);
         }
         battleDeck.Shuffle();
-        deckView.SetBattleDeck(battleDeck);
+        _deckView.SetBattleDeck(battleDeck);
 
-        enemyGenerator.SpawnEnemies("elite", heroUnit);
+        _enemyGenerator.SpawnEnemies("elite", heroUnit);
 
         TimelineManager timelineManager = new TimelineManager();
         TimelineView timelineView = new TimelineView();
         timelineView.Bind(timelineManager);
 
         // BattleSystemに渡す（DI）
-        battleSystem.Setup(context, heroUnit, battleDeck);
+        _battleSystem.Setup(context, heroUnit, battleDeck);
     }
 }

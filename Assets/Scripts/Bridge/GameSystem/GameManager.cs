@@ -1,14 +1,15 @@
 using System.Collections.Generic;
+using System;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
 
-    public HeroData selectedHeroData;
-    public HeroBattler heroBattler;
-    public List<SourceCard> playerDeck = new List<SourceCard>();
-    public int currentHP;
+    public HeroData SelectedHeroData;
+    public HeroBattler HeroBattler;
+    public List<SourceCard> PlayerDeck = new List<SourceCard>();
+    public int CurrentHP;
 
     private void Awake()
     {
@@ -25,31 +26,31 @@ public class GameManager : MonoBehaviour
 
     public void InitializePlayer()
     {
-        heroBattler = new HeroBattler(selectedHeroData, selectedHeroData.MaxHP);
-        for (int i = 0; i < selectedHeroData.startingDeck.Count; i++)
+        HeroBattler = new HeroBattler(SelectedHeroData, SelectedHeroData.MaxHP);
+        for (int i = 0; i < SelectedHeroData.StartingDeck.Count; i++)
         {
-            AddCard(new SourceCard(selectedHeroData.startingDeck[i]));
+            AddCard(new SourceCard(SelectedHeroData.StartingDeck[i]));
         }
     }
 
     public List<SourceCard> GetPlayerDeck()
     {
-        return playerDeck;
+        return PlayerDeck;
     }
 
     public void AddCard(SourceCard card)
     {
-        playerDeck.Add(card);
+        PlayerDeck.Add(card);
     }
 
     public void RemoveCard(SourceCard card)
     {
-        playerDeck.Remove(card);
+        PlayerDeck.Remove(card);
     }
 
     public void UpdateAfterBattle(HeroBattler battler, List<SourceCard> updatedDeck)
     {
-        currentHP = battler.CurrentHP;
-        playerDeck = new List<SourceCard>(updatedDeck);
+        CurrentHP = battler.CurrentHP;
+        PlayerDeck = new List<SourceCard>(updatedDeck);
     }
 }

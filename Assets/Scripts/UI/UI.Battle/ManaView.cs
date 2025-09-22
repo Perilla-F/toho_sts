@@ -5,24 +5,24 @@ using UnityEngine;
 
 public class ManaView : MonoBehaviour
 {
-    [SerializeField] TextMeshPro manaText;
-    public Mana mana { get; private set; }
+    [SerializeField] TextMeshPro _manaText;
+    public Mana Mana { get; private set; }
 
     public void Init(Mana mana)
     {
-        this.mana = mana;
+        this.Mana = mana;
         mana.OnChanged += UpdateUI;
         UpdateUI();
     }
 
     private void OnDestroy()
     {
-        if (mana != null)
-            mana.OnChanged -= UpdateUI;
+        if (Mana != null)
+            Mana.OnChanged -= UpdateUI;
     }
 
     private void UpdateUI()
     {
-        manaText.text = mana.GetMana().ToString();
+        _manaText.text = Mana.GetMana().ToString();
     }
 }

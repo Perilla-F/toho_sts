@@ -1,0 +1,1 @@
+public enum BattleEffectType { Damage, Heal, Block, SimpleBlock, Effect, Special }

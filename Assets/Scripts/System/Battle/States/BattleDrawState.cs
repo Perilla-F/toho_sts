@@ -6,18 +6,18 @@ using UnityEngine;
 
 public class BattleDrawState : IBattleState
 {
-    private BattleSystem battle;
+    private BattleSystem _battle;
     public BattleDrawState(BattleSystem battle)
     {
-        this.battle = battle;
+        _battle = battle;
     }
 
     public void OnEnter()
     {
         Debug.Log("DrawのEnter");
-        int drawCardCount = battle.heroBattler.DrawCount;
-        battle.Draw(drawCardCount).Forget();
-        battle.TransitionToState(BattleStateType.CardSelection);
+        int drawCardCount = _battle.HeroBattler.DrawCount;
+        _battle.Draw(drawCardCount).Forget();
+        _battle.TransitionToState(BattleStateType.CardSelection);
     }
 
     public void OnExit()

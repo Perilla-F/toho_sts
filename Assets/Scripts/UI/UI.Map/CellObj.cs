@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class CellObj : MonoBehaviour
 {
-    [SerializeField] Sprite Icon;
+    [SerializeField] Sprite icon;
     Cell cell;
     CellType cellType;
 }

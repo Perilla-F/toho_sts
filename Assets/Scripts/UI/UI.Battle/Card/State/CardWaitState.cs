@@ -8,9 +8,9 @@ public class CardWaitState : CardStateBase
 {
 
     // カードのデフォルトの重なり位置
-    public int defaultSiblingIndex;
+    public int DefaultSiblingIndex;
     //カードのデフォルトの位置
-    Vector2 defaultPosition;
+    private Vector2 _defaultPosition;
 
 
     public CardWaitState(CardBehaviour behaviour) : base(behaviour)
@@ -19,16 +19,16 @@ public class CardWaitState : CardStateBase
 
     public override void OnPointerEnter(PointerEventData eventData)
     {
-        behaviour.transform.DOScale(Vector3.one * 1.1f, 0.1f);
-        behaviour.defaultSiblingIndex = behaviour.transform.GetSiblingIndex();
+        _behaviour.transform.DOScale(Vector3.one * 1.1f, 0.1f);
+        _behaviour.DefaultSiblingIndex = _behaviour.transform.GetSiblingIndex();
         // 一番上に表示する
-        behaviour.transform.SetAsLastSibling();
+        _behaviour.transform.SetAsLastSibling();
     }
 
     public override void OnPointerExit(PointerEventData eventData)
     {
-        behaviour.transform.DOScale(Vector3.one, 0.1f);
-        behaviour.transform.SetSiblingIndex(behaviour.defaultSiblingIndex);
+        _behaviour.transform.DOScale(Vector3.one, 0.1f);
+        _behaviour.transform.SetSiblingIndex(_behaviour.DefaultSiblingIndex);
     }
 
 }

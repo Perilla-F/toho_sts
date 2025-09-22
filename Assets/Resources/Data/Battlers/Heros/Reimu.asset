@@ -12,18 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d1b8840d9bfb4ee41bf956c20ad63ba8, type: 3}
   m_Name: Reimu
   m_EditorClassIdentifier: 
-  battlerName: "\u535A\u9E97 \u970A\u5922"
-  maxHP: 100
-  maxMana: 3
-  portrait: {fileID: 0}
-  startingDeck:
-  - {fileID: 11400000, guid: f6595ab218264dc4db71469d35dbdb84, type: 2}
-  - {fileID: 11400000, guid: f6595ab218264dc4db71469d35dbdb84, type: 2}
-  - {fileID: 11400000, guid: f6595ab218264dc4db71469d35dbdb84, type: 2}
-  - {fileID: 11400000, guid: f6595ab218264dc4db71469d35dbdb84, type: 2}
-  - {fileID: 11400000, guid: 71ad6175df69fe14cb0c46c964df1b70, type: 2}
-  - {fileID: 11400000, guid: 71ad6175df69fe14cb0c46c964df1b70, type: 2}
-  - {fileID: 11400000, guid: 71ad6175df69fe14cb0c46c964df1b70, type: 2}
-  - {fileID: 11400000, guid: 71ad6175df69fe14cb0c46c964df1b70, type: 2}
-  - {fileID: 11400000, guid: 9f6dafda4b1f3fa469e2056a7f08e6f8, type: 2}
-  - {fileID: 11400000, guid: 9f6dafda4b1f3fa469e2056a7f08e6f8, type: 2}
+  _battlerName: 
+  _maxHP: 0
+  _maxMana: 0
+  _portrait: {fileID: 0}
+  StartingDeck: []

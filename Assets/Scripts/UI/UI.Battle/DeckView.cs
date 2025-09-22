@@ -5,15 +5,15 @@ using UnityEngine;
 
 public class DeckView : MonoBehaviour, IDeckView
 {
-    [SerializeField] private TextMeshProUGUI deckCountText;
-    BattleDeck battleDeck;
+    [SerializeField] private TextMeshProUGUI _deckCountText;
+    private BattleDeck _battleDeck;
     public void UpdateDeckCount()
     {
-        deckCountText.text = battleDeck.Count.ToString();
+        _deckCountText.text = _battleDeck.Count.ToString();
     }
 
     public void SetBattleDeck(BattleDeck battleDeck)
     {
-        this.battleDeck = battleDeck;
+        this._battleDeck = battleDeck;
     }
 }

@@ -4,47 +4,29 @@ using UnityEngine;
 
 public class NomalCardObj : CardObj
 {
-
-    public SourceCard sourceCard;
-    public CardData cardData;
-    public Mana mana;
-    Dictionary<CardEffectType, ICardEffectExecutor> _effectExecutors;
-    private int ChangedManaCost = 0;
+    public Mana Mana;
+    private int _changedManaCost = 0;
 
     public NomalCardObj(SourceCard source, ResourceRegistry resourceRegistry, Mana mana) : base(source, resourceRegistry)
     {
-        cardData = source.data;
-        this.mana = mana;
-
-        _effectExecutors = new Dictionary<CardEffectType, ICardEffectExecutor>
-    {
-        { CardEffectType.Damage, new DamageEffectExecutor() },
-        { CardEffectType.ApplyBlock, new BlockEffectExecutor() },
-        { CardEffectType.Draw, new DrawEffectExecutor() },
-    };
+        Mana = mana;
     }
 
     public bool Use(CardContext context)
     {
-        foreach (var cost in sourceCard.data.costs)
+        foreach (var cost in Source.Data.Costs)
         {
-            var res = resourceRegistry.Get(cost.Type);
-            if (res == null || res.CurrentMana < cost.amount)
+            var res = ResourceRegistry.Get(cost.Type);
+            if (res == null || res.CurrentMana < cost.Amount)
                 return false; // どれか足りなければ中断
         }
 
-        foreach (var cost in cardData.costs)
+        foreach (var cost in Source.Data.Costs)
         {
-            resourceRegistry.Get(cost.Type)?.TryConsume(cost.amount);
+            ResourceRegistry.Get(cost.Type)?.TryConsume(cost.Amount);
         }
 
-        foreach (var effect in cardData.cardEffects)
-        {
-            if (_effectExecutors.TryGetValue(effect.type, out var executor))
-            {
-                executor.Execute(effect, context);
-            }
-        }
+        Source.Data.ApplyEffects(context);
         return true;
     }
 }

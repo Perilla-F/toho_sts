@@ -2,32 +2,32 @@ using UnityEngine;
 
 public class UIManager : MonoBehaviour
 {
-    public GameObject mapUI;
-    public GameObject shopUI;
-    public GameObject eventUI;
+    public GameObject MapUI;
+    public GameObject ShopUI;
+    public GameObject EventUI;
 
     public void ShowShop()
     {
         HideAll();
-        shopUI.SetActive(true);
+        ShopUI.SetActive(true);
     }
 
     public void ShowEvent()
     {
         HideAll();
-        eventUI.SetActive(true);
+        EventUI.SetActive(true);
     }
 
     public void ShowMap()
     {
         HideAll();
-        mapUI.SetActive(true);
+        MapUI.SetActive(true);
     }
 
     private void HideAll()
     {
-        mapUI.SetActive(false);
-        shopUI.SetActive(false);
-        eventUI.SetActive(false);
+        MapUI.SetActive(false);
+        ShopUI.SetActive(false);
+        EventUI.SetActive(false);
     }
 }

@@ -3,32 +3,38 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class EnemyUnit : IBattlerUnit, IEnemyUnit
+public class EnemyUnit : IBattleUnit
 {
-
     public string BattlerName { get; private set; }
+    public EnemyType EnemyType { get; private set; }
     public float AttackModifier { get; } = 1f;
     public float DefenceModifier { get; } = 1f;
     public int MaxHP { get; private set; }
     public int CurrentHP { get; private set; }
-    public int Attack { get; } = 0;
-    public int Defence { get; } = 0;
+    public int Strength { get; set; } = 0;
+    public int Defence { get; set; } = 0;
     public int Block { get; private set; } = 0;
+    public int SimpleBlock { get; private set; } = 0;
     public int AttackBonus { get; private set; } = 0;
     public int DefenceBonus { get; private set; } = 0;
-    public List<string> status = new List<string>();
+    public List<string> Status = new List<string>();
+    public List<StatusEffect> Effects { get; }
+    public ConditionType currentCondition = ConditionType.Turn;
+    private ConditionType _lastCondition;
+    private int _turnCounter = 0;
 
     public RuntimeAnimatorController AnimatorController { get; private set; }
 
-    private EnemyAI enemyAI;
+    private EnemyAIData _enemyAI;
 
-    public void Setup(EnemyData data, EnemyAI enemyAI)
+    public void Setup(EnemyData data)
     {
-        this.BattlerName = data.BattlerName;
-        this.enemyAI = enemyAI;
-        this.MaxHP = data.MaxHP;
-        this.CurrentHP = data.MaxHP;
-        this.AnimatorController = data.AnimatorController;
+        BattlerName = data.BattlerName;
+        _enemyAI = data.EnemyAI;
+        MaxHP = data.MaxHP;
+        CurrentHP = data.MaxHP;
+        _lastCondition = currentCondition;
+        EnemyType = data.EnemyType;
     }
 
 
@@ -47,12 +53,9 @@ public class EnemyUnit : IBattlerUnit, IEnemyUnit
         Block += amount;
     }
 
-    public void ApplyStatus(String statusName, int amount)
-    { }
-
-    public void ApplyAttackBuff(int amount)
+    public void ApplySimpleBlock(int amount)
     {
-        AttackBonus += amount;
+        SimpleBlock += amount;
     }
 
     public int GetAttackBonus()
@@ -65,21 +68,48 @@ public class EnemyUnit : IBattlerUnit, IEnemyUnit
         return DefenceBonus;
     }
 
-    public void ApplyBuff(IBuff buff) { /* バフ処理 */ }
-
-    public List<BattleAction> PlanTurn(int turn, ConditionContext context)
+    /// <summary>
+    /// AIから行動をターン中の行動をリストで引く
+    /// </summary>
+    /// <param name="turn"></param>
+    /// <param name="context"></param>
+    /// <returns></returns>
+    public EnemyAction[] PlanTurn(IBattleContext context)
     {
-        return enemyAI.GetActions(this, turn, context);
+        if (currentCondition != _lastCondition)
+        {
+            _turnCounter = 0;
+            _lastCondition = currentCondition;
+        }
+        return _enemyAI.DecideActionPattern(context, this, _turnCounter);
     }
 
-    public bool HasStatus(string status)
+    public void AddEffect(StatusEffectData data, int stacks)
     {
-        return this.status.Contains(status);
+        var existing = Effects.Find(e => e.Data.effectId == data.effectId);
+        if (existing != null)
+        {
+            existing.AddStacks(stacks);
+        }
+        else
+        {
+            var effect = StatusEffectFactory.Create(data, stacks, this);
+            Effects.Add(effect);
+        }
+    }
+
+    public bool HasStatus(StatusEffectData data)
+    {
+        return Effects.Find(e => e.Data.effectId == data.effectId) != null;
     }
 
     public bool IsAlive()
     {
         return CurrentHP > 0;
+    }
+    public bool IsDisabled()
+    {
+        return false;
     }
 
     public int GetCurrentHP()
@@ -90,5 +120,21 @@ public class EnemyUnit : IBattlerUnit, IEnemyUnit
     public int GetMaxHP()
     {
         return MaxHP;
+    }
+
+    public void ProcessTurnStart()
+    {
+        foreach (var e in Effects)
+        {
+            e.OnTurnStart();
+        }
+    }
+
+    public void ProcessTurnEnd()
+    {
+        foreach (var e in Effects)
+        {
+            e.OnTurnEnd();
+        }
     }
 }

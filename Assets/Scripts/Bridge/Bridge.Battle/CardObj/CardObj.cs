@@ -8,13 +8,13 @@ public class CardObj : ICardObj
 {
     public Func<UniTask> MoveToHandAsync { get; private set; }
     public Func<UniTask> MoveToDiscardAsync { get; private set; }
-    public SourceCard source;
-    public readonly ResourceRegistry resourceRegistry;
+    public SourceCard Source;
+    public readonly ResourceRegistry ResourceRegistry;
 
     public CardObj(SourceCard source, ResourceRegistry resourceRegistry)
     {
-        this.source = source;
-        this.resourceRegistry = resourceRegistry;
+        Source = source;
+        ResourceRegistry = resourceRegistry;
     }
 
     public void BindMoveToHand(Func<UniTask> moveFunc)
@@ -52,9 +52,9 @@ public class CardObj : ICardObj
     /// CardObj→SourceCard変換
     /// </summary>
     /// <returns></returns>
-    public SourceCard Source()
+    public SourceCard GetSource()
     {
-        return source;
+        return Source;
     }
 
     public virtual async UniTask Use()

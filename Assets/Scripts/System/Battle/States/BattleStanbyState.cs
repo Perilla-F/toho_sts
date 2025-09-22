@@ -4,19 +4,18 @@ using UnityEngine;
 
 public class BattleStanbyState : IBattleState
 {
-    private BattleSystem battle;
+    private BattleSystem _battle;
     public BattleStanbyState(BattleSystem battle)
     {
-        this.battle = battle;
+        this._battle = battle;
     }
 
     public async void OnEnter()
     {
         Debug.Log("StanbyのEnter");
-        battle.TimelineManager.ResetTime();
-        battle.AddActionToTimeline();
-        await battle.battleContext.TurnMessagePanel.ShowMessage($"{KanjiNumberConverteUtil.ConvertToKanjiWithUnits(battle.TurnCount)}巡目");
-        battle.TransitionToState(BattleStateType.Draw);
+        _battle.AddActionToTimeline();
+        await _battle.BattleContext.GetTurnMessagePanel().ShowMessage($"{KanjiNumberConverteUtil.ConvertToKanjiWithUnits(_battle.TurnCount)}巡目");
+        _battle.TransitionToState(BattleStateType.Draw);
     }
 
     public void OnExit()

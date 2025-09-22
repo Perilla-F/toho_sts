@@ -12,12 +12,12 @@ using Cysharp.Threading.Tasks.Triggers;
 
 public class CardBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IBeginDragHandler, IDragHandler
 {
-    private CardObj cardObj;
+    private CardObj _cardObj;
     public DeckView DeckView { get; private set; }
     public HandView HandView { get; private set; }
     public DiscardAreaView DiscardAreaView { get; private set; }
-    private RectTransform rectTransform;
-    private CanvasGroup canvasGroup;
+    private RectTransform _rectTransform;
+    private CanvasGroup _canvasGroup;
     public UnityAction<CardBehaviour> OnUse;
 
 
@@ -29,17 +29,17 @@ public class CardBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     public CardSelectedState SelectedState { get; private set; }
     public CardStateBase CurrentState { get; private set; }
 
-    private CardStateBase currentState;
+    private CardStateBase _currentState;
 
 
     // ハンド上のカードのデフォルトの重なり位置
-    public int defaultSiblingIndex;
+    public int DefaultSiblingIndex;
     // ハンド上のカードのデフォルトの位置
-    Vector2 defaultPosition;
+    private Vector2 _defaultPosition;
 
     public void Init(CardObj obj, DeckView deckView, HandView handView, DiscardAreaView discardAreaView)
     {
-        cardObj = obj;
+        _cardObj = obj;
         DeckView = deckView;
         HandView = handView;
         DiscardAreaView = discardAreaView;
@@ -68,14 +68,14 @@ public class CardBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
 
     public void ChangeState(CardStateBase newState)
     {
-        currentState?.OnExit();
-        currentState = newState;
-        currentState.OnEnter();
+        _currentState?.OnExit();
+        _currentState = newState;
+        _currentState.OnEnter();
     }
 
     void OnCardStateChange(ICardStateChangeEvent evt)
     {
-        if (evt.Source is CardObj card && card == this.cardObj)
+        if (evt.Source is CardObj card && card == this._cardObj)
         {
             switch (evt.Source)
             {
@@ -100,30 +100,30 @@ public class CardBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
 
     public void Update()
     {
-        currentState?.OnUpdate();
+        _currentState?.OnUpdate();
     }
 
     public void OnClick()
     {
-        currentState?.OnClick();
+        _currentState?.OnClick();
     }
     private void Awake()
     {
-        rectTransform = GetComponent<RectTransform>();
-        canvasGroup = GetComponent<CanvasGroup>();
+        _rectTransform = GetComponent<RectTransform>();
+        _canvasGroup = GetComponent<CanvasGroup>();
     }
 
     public void ResetPos()
     {
-        transform.position = defaultPosition;
-        transform.SetSiblingIndex(defaultSiblingIndex);
+        transform.position = _defaultPosition;
+        transform.SetSiblingIndex(DefaultSiblingIndex);
         transform.DOScale(Vector3.one, 0.1f);
         BezierArrows.Instance.Hide();
     }
 
     public void OnBeginDrag(PointerEventData eventData)
     {
-        defaultPosition = transform.position;
+        _defaultPosition = transform.position;
         ChangeState(DraggingState);
     }
     public void OnDrag(PointerEventData eventData)

@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class HeroBattler
 {
-    private HeroData baseData;
-    public HeroData BaseData { get => baseData; }
+    private HeroData _baseData;
+    public HeroData BaseData { get => _baseData; }
     public float AttackModifier { get; } = 1f;
     public float DefenceModifier { get; } = 1f;
     public int MaxHP { get; private set; }
@@ -17,11 +17,11 @@ public class HeroBattler
     public int AttackBonus { get; private set; } = 0;
     public int DefenceBonus { get; private set; } = 0;
     public int DrawCount { get; private set; } = 5;
-    public List<string> status = new List<string>();
+    public List<string> Status = new List<string>();
 
     public HeroBattler(HeroData data, int currentHP)
     {
-        baseData = data;
+        _baseData = data;
         MaxHP = data.MaxHP;
         CurrentHP = currentHP;
     }
