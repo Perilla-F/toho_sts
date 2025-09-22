@@ -1,5 +1,5 @@
-public interface IHeroUnit : IBattleUnit
+public abstract class IHeroUnit : BattleUnit
 {
-    void GainMana(int amount);
-    void Draw(int amount, IBattleContext context);
+    public abstract void GainMana(int amount);
+    public abstract void Draw(int amount, IBattleContext context);
 }

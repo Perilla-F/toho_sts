@@ -4,9 +4,9 @@ public abstract class StatusEffect
 {
     public StatusEffectData Data { get; private set; }
     public int Stacks { get; private set; }
-    protected IBattleUnit Owner { get; private set; }
+    protected BattleUnit Owner { get; private set; }
 
-    protected StatusEffect(StatusEffectData data, int initialStacks, IBattleUnit owner)
+    protected StatusEffect(StatusEffectData data, int initialStacks, BattleUnit owner)
     {
         Data = data;
         Stacks = initialStacks;

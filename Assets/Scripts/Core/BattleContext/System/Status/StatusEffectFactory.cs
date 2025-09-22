@@ -2,7 +2,7 @@ using System;
 
 public static class StatusEffectFactory
 {
-    public static StatusEffect Create(StatusEffectData data, int stacks, IBattleUnit owner)
+    public static StatusEffect Create(StatusEffectData data, int stacks, BattleUnit owner)
     {
         Type type = Type.GetType(data.className);
         if (type == null)

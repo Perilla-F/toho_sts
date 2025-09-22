@@ -10,9 +10,11 @@ public class BattleStarter : MonoBehaviour
     [SerializeField] private DiscardAreaView _discardAreaView;
     [SerializeField] private TimelineView _timelineView;
     [SerializeField] private ManaView _manaView;
-    [SerializeField] private HeroViewer _heroViewer;
     [SerializeField] private TurnMessagePanel _turnMessagePanel;
     [SerializeField] private EnemyGenerator _enemyGenerator;
+    [SerializeField] private Transform _heroArea;       // Canvas内 (UI)
+    [SerializeField] private Transform _heroModelArea;  // モデル用
+    [SerializeField] private float _heroBaseY = -200f;
 
 
     private void Start()
@@ -32,7 +34,15 @@ public class BattleStarter : MonoBehaviour
 
         HeroUnit heroUnit = new HeroUnit();
         heroUnit.Setup(GameManager.Instance.HeroBattler);
-        _heroViewer.ShowHero(playerHeroData, heroUnit);
+        HeroUI heroUI = Instantiate(playerHeroData.UIPrefab, _heroArea).GetComponent<HeroUI>();
+        heroUI.Init(heroUnit);
+        HeroModel model = Instantiate(playerHeroData.ModelPrefab, _heroModelArea).GetComponent<HeroModel>();
+        model.Init(heroUnit);
+
+        heroUnit.Model = model; // バインド
+
+        model.transform.position = new Vector3(-400, _heroBaseY, 0); // 固定配置
+
 
         List<SourceCard> playerDeck = GameManager.Instance.GetPlayerDeck();
         BattleDeck battleDeck = new BattleDeck();

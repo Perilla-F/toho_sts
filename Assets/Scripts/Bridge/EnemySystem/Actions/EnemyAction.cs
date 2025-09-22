@@ -5,7 +5,7 @@ public abstract class EnemyAction : ScriptableObject
 {
     public string actionName;
     public Sprite icon;
-    public IBattleUnit Self;
+    public BattleUnit Self;
     public EnemyActionTarget target;
     public int ScheduledTime;
     public bool IsCanceled;

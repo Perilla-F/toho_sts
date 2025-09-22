@@ -38,6 +38,8 @@ public class EnemyGenerator : MonoBehaviour
             EnemyModel enemyModel = Instantiate(enemyUnit.ModelPrefab, _enemyModelsArea).GetComponent<EnemyModel>();
             enemyModel.Init(enemyUnit);
 
+            enemyUnit.Model = enemyModel; // バインド
+
             // モデルの初期位置をUIに合わせる
             Vector3 uiPos = enemyUI.transform.position;
             enemyModel.transform.position = new Vector3(uiPos.x, _modelBaseY + enemyUnit.ModelYOffset, 0);

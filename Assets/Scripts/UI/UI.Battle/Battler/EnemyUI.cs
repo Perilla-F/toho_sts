@@ -9,6 +9,8 @@ public class EnemyUI : MonoBehaviour
     {
         hpSlider.maxValue = enemy.MaxHP;
         hpSlider.value = enemy.CurrentHP;
+
+        enemy.OnHpChanged += UpdateHp;
     }
 
     void UpdateHp(int newHp)

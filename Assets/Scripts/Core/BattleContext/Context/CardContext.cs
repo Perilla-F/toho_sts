@@ -3,12 +3,12 @@ using System.Collections.Generic;
 public class CardContext
 {
     private IBattleSystem _battleSystem;
-    public IBattleUnit User;
-    public List<IBattleUnit> Enemies;
+    public BattleUnit User;
+    public List<BattleUnit> Enemies;
     public ISourceCard SourceCard;
-    public List<IBattleUnit> Targets;
+    public List<BattleUnit> Targets;
 
-    public CardContext(IBattleSystem battleSystem, IBattleUnit user, List<IBattleUnit> enemies, SourceCard source, List<IBattleUnit> targets)
+    public CardContext(IBattleSystem battleSystem, BattleUnit user, List<BattleUnit> enemies, SourceCard source, List<BattleUnit> targets)
     {
         _battleSystem = battleSystem;
         User = user;
