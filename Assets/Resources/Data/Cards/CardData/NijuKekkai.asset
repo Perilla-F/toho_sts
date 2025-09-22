@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 59fb85d134a17e6479cfe3bd4d2758ed, type: 3}
   m_Name: NijuKekkai
   m_EditorClassIdentifier: 
-  CardName: 
+  CardName: "\u4E8C\u91CD\u7D50\u754C"
   Artwork: {fileID: 0}
   Costs:
   - Type: 0

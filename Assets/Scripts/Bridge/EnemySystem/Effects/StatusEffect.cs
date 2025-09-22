@@ -4,7 +4,7 @@ using UnityEngine;
 public class EnemyStatusEffect : EnemyEffect
 {
     public StatusEffectData effectData;
-    public override void Apply(IBattleContext context, EnemyUnit enemy, IBattleUnit target)
+    public override void Apply(IBattleContext context, EnemyUnit enemy, BattleUnit target)
     {
         target.AddEffect(effectData, amount);
     }

@@ -6,7 +6,7 @@ public interface IBattleContext
     IHand GetHand();
     IHandView GetHandView();
     IBattleDeck GetBattleDeck();
-    IBattleUnit SelectTarget(IBattleUnit enemy);
+    BattleUnit SelectTarget(BattleUnit enemy);
     void ProgressTurn();
 
 }

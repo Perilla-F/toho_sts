@@ -56,7 +56,9 @@ public class BattleSystem : MonoBehaviour, IBattleSystem
         _stateManager.ChangeState(nextState);
     }
 
-
+    /// <summary>
+    /// 1ターンの敵の行動をタイムラインに登録
+    /// </summary>
     public void AddActionToTimeline()
     {
         foreach (var enemy in _enemyManager.Enemies)
@@ -110,6 +112,10 @@ public class BattleSystem : MonoBehaviour, IBattleSystem
         _hand.Clear();
     }
 
+    /// <summary>
+    /// ターン終了ボタンを押したら
+    /// </summary>
+    /// <returns></returns>
     public async UniTask OnTurnEndButton()
     {
         await MoveAllToDiscard();
@@ -118,6 +124,9 @@ public class BattleSystem : MonoBehaviour, IBattleSystem
         _stateManager.ChangeState(BattleStateType.Draw);
     }
 
+    /// <summary>
+    /// バトル終了処理
+    /// </summary>
     public void EndBattle()
     {
         List<SourceCard> updatedDeck = _battleDeck.GetDeckAsSourceCards();

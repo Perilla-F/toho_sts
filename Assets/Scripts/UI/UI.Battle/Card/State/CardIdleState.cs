@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class CardIdleState : CardStateBase
 {
-    public CardIdleState(CardBehaviour behaviour) : base(behaviour)
+    public CardIdleState(CardBehavior behaviour) : base(behaviour)
     {
     }
 

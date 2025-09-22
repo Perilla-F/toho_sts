@@ -2,9 +2,23 @@ using System.Collections.Generic;
 
 public class CardContext
 {
-    public IBattleSystem BattleSystem;
-    public IBattleUnit User;
-    public List<IBattleUnit> Enemies;
+    private IBattleSystem _battleSystem;
+    public BattleUnit User;
+    public List<BattleUnit> Enemies;
     public ISourceCard SourceCard;
-    public List<IBattleUnit> Targets;
+    public List<BattleUnit> Targets;
+
+    public CardContext(IBattleSystem battleSystem, BattleUnit user, List<BattleUnit> enemies, SourceCard source, List<BattleUnit> targets)
+    {
+        _battleSystem = battleSystem;
+        User = user;
+        Enemies = enemies;
+        SourceCard = source;
+        Targets = targets;
+    }
+
+    public IBattleSystem GetBattleSystem()
+    {
+        return _battleSystem;
+    }
 }

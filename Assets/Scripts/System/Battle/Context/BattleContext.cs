@@ -38,7 +38,7 @@ public class BattleContext : IBattleContext
     public IBattleDeck GetBattleDeck() => BattleDeck;
     public ITimelineView GetTimelineView() => TimelineView;
     public ITurnMessagePanel GetTurnMessagePanel() => TurnMessagePanel;
-    public IBattleUnit SelectTarget(IBattleUnit enemy) => Hero;
+    public BattleUnit SelectTarget(BattleUnit enemy) => Hero;
 
     // 他の処理やユーティリティ
 

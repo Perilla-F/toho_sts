@@ -4,10 +4,10 @@ using UnityEngine;
 
 public class GroupAttackEvent : BattleEvent
 {
-    public List<IBattleUnit> Participants;
-    public IBattleUnit Leader;
+    public List<BattleUnit> Participants;
+    public BattleUnit Leader;
     public float GroupMultiplier = 1.0f;
-    public GroupAttackEvent(List<IBattleUnit> participants, IBattleUnit leader, int scheduledTime, int priority) : base(scheduledTime, priority)
+    public GroupAttackEvent(List<BattleUnit> participants, BattleUnit leader, int scheduledTime, int priority) : base(scheduledTime, priority)
     {
         Participants = participants;
         Leader = leader;

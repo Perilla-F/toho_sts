@@ -3,29 +3,17 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class EnemyUnit : IBattleUnit
+public class EnemyUnit : BattleUnit
 {
-    public string BattlerName { get; private set; }
     public EnemyType EnemyType { get; private set; }
-    public float AttackModifier { get; } = 1f;
-    public float DefenceModifier { get; } = 1f;
-    public int MaxHP { get; private set; }
-    public int CurrentHP { get; private set; }
-    public int Strength { get; set; } = 0;
-    public int Defence { get; set; } = 0;
-    public int Block { get; private set; } = 0;
-    public int SimpleBlock { get; private set; } = 0;
-    public int AttackBonus { get; private set; } = 0;
-    public int DefenceBonus { get; private set; } = 0;
-    public List<string> Status = new List<string>();
-    public List<StatusEffect> Effects { get; }
     public ConditionType currentCondition = ConditionType.Turn;
     private ConditionType _lastCondition;
     private int _turnCounter = 0;
 
-    public RuntimeAnimatorController AnimatorController { get; private set; }
 
     private EnemyAIData _enemyAI;
+
+    // HPイベント
 
     public void Setup(EnemyData data)
     {
@@ -35,35 +23,41 @@ public class EnemyUnit : IBattleUnit
         CurrentHP = data.MaxHP;
         _lastCondition = currentCondition;
         EnemyType = data.EnemyType;
+        UIPrefab = data.UIPrefab;
+        ModelPrefab = data.ModelPrefab;
+        ModelYOffset = data.ModelYOffset;
+        IdleClip = data.IdleClip;
+        AttackClip = data.AttackClip;
+        HitClip = data.HitClip;
     }
 
 
-    public void TakeDamage(int amount)
+    public override void TakeDamage(int amount)
     {
         CurrentHP = Mathf.Max(0, CurrentHP - amount);
     }
 
-    public void Heal(int amount)
+    public override void Heal(int amount)
     {
         CurrentHP = Mathf.Min(MaxHP, CurrentHP + amount);
     }
 
-    public void ApplyBlock(int amount)
+    public override void ApplyBlock(int amount)
     {
         Block += amount;
     }
 
-    public void ApplySimpleBlock(int amount)
+    public override void ApplySimpleBlock(int amount)
     {
         SimpleBlock += amount;
     }
 
-    public int GetAttackBonus()
+    public override int GetAttackBonus()
     {
         return AttackBonus;
     }
 
-    public int GetDefenceBonus()
+    public override int GetDefenceBonus()
     {
         return DefenceBonus;
     }
@@ -84,7 +78,7 @@ public class EnemyUnit : IBattleUnit
         return _enemyAI.DecideActionPattern(context, this, _turnCounter);
     }
 
-    public void AddEffect(StatusEffectData data, int stacks)
+    public override void AddEffect(StatusEffectData data, int stacks)
     {
         var existing = Effects.Find(e => e.Data.effectId == data.effectId);
         if (existing != null)
@@ -98,31 +92,31 @@ public class EnemyUnit : IBattleUnit
         }
     }
 
-    public bool HasStatus(StatusEffectData data)
+    public override bool HasStatus(StatusEffectData data)
     {
         return Effects.Find(e => e.Data.effectId == data.effectId) != null;
     }
 
-    public bool IsAlive()
+    public override bool IsAlive()
     {
         return CurrentHP > 0;
     }
-    public bool IsDisabled()
+    public override bool IsDisabled()
     {
         return false;
     }
 
-    public int GetCurrentHP()
+    public override int GetCurrentHP()
     {
         return CurrentHP;
     }
 
-    public int GetMaxHP()
+    public override int GetMaxHP()
     {
         return MaxHP;
     }
 
-    public void ProcessTurnStart()
+    public override void ProcessTurnStart()
     {
         foreach (var e in Effects)
         {
@@ -130,7 +124,7 @@ public class EnemyUnit : IBattleUnit
         }
     }
 
-    public void ProcessTurnEnd()
+    public override void ProcessTurnEnd()
     {
         foreach (var e in Effects)
         {
