@@ -27,6 +27,16 @@ public class NomalCardObj : CardObj
         }
 
         Source.Data.ApplyEffects(context);
+        if (Source.Data.CardEffectTarget == CardEffectTarget.Enemy ||
+            Source.Data.CardEffectTarget == CardEffectTarget.AllEnemies ||
+            Source.Data.CardEffectTarget == CardEffectTarget.Random)
+        {
+            context.User.Model?.PlayAttack();  // プレイヤーアニメーション
+            foreach (var target in context.Targets)
+            {
+                target.Model?.PlayHit();   // 敵アニメーション
+            }
+        }
         return true;
     }
 }

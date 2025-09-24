@@ -1,11 +1,12 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
 public class BattleCell : CellBehaviour
 {
+    public EncounterData AssignedEncounter;
+
     public override void OnPlayerEnter()
     {
-        MapGenerator.Instance.StartBattle();
+        if (AssignedEncounter != null)
+        {
+            OnBattleRequest?.Invoke(AssignedEncounter);
+        }
     }
 }

@@ -17,32 +17,30 @@ public class EnemyGenerator : MonoBehaviour
     /// <summary>
     /// 敵の生成
     /// </summary>
-    /// <param name="category">参照パス"Data/Battlers/Encounters/{category}"</param>
-    public void SpawnEnemies(string category)
+    /// <param name="encounter"></param>
+    public void SpawnEnemies(EncounterData encounter)
     {
-
-        List<EncounterData> bosses = EncounterLoader.LoadEncounters(category);
-        var selectedEncounter = bosses[Random.Range(0, bosses.Count)];
-
-        foreach (var id in selectedEncounter.EnemyIds)
+        for (int i = 0; i < encounter.enemies.Count; i++)
         {
+            EnemyData enemyData = encounter.enemies[i];
+            Vector2 uiPos = encounter.uiPositions[i];
+
             EnemyUnit enemyUnit = new EnemyUnit();
-            EnemyData enemyData = EnemyDB.GetEnemyById(id);
             enemyUnit.Setup(enemyData);
 
             // UI生成
             EnemyUI enemyUI = Instantiate(enemyUnit.UIPrefab, _enemyArea).GetComponent<EnemyUI>();
+            enemyUI.transform.localPosition = uiPos;
             enemyUI.Init(enemyUnit);
 
-            // モデル生成
+            // モデル生成（UIを基準に Y座標だけオフセット）
             EnemyModel enemyModel = Instantiate(enemyUnit.ModelPrefab, _enemyModelsArea).GetComponent<EnemyModel>();
+            enemyModel.transform.localPosition = new Vector3(uiPos.x, _modelBaseY + enemyUnit.ModelYOffset, 0);
             enemyModel.Init(enemyUnit);
 
-            enemyUnit.Model = enemyModel; // バインド
-
-            // モデルの初期位置をUIに合わせる
-            Vector3 uiPos = enemyUI.transform.position;
-            enemyModel.transform.position = new Vector3(uiPos.x, _modelBaseY + enemyUnit.ModelYOffset, 0);
+            // バインド
+            enemyUnit.Model = enemyModel;
+            enemyUnit.UI = enemyUI;
 
             EnemyManager.RegisterEnemy(enemyUnit);
         }

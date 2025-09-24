@@ -11,6 +11,7 @@ public class Cell : MonoBehaviour
     public GameObject SelectableEffect; // 選択可能エフェクト
     public bool IsWide;
     public EventBase AssignedEvent;
+    public EncounterData AssignedEncounter;
 
     public void Initialize(CellType cellType, Vector2Int pos, Sprite icon, bool wide = false)
     {
@@ -40,7 +41,7 @@ public class Cell : MonoBehaviour
     }
     void OnMouseDown()
     {
-        OnClick(); // あなたが作った関数を手動で呼ぶ
+        OnClick();
     }
 
     public void OnClick()

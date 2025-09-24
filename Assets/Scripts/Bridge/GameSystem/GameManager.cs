@@ -10,6 +10,7 @@ public class GameManager : MonoBehaviour
     public HeroBattler HeroBattler;
     public List<SourceCard> PlayerDeck = new List<SourceCard>();
     public int CurrentHP;
+    public EncounterData CurrentEncounter;
 
     private void Awake()
     {

@@ -6,12 +6,10 @@ public class CardDamageEffect : CardEffectDefinition
 {
     public override void Apply(int amount, CardContext context)
     {
-        List<BattleUnit> Targets = context.Enemies;
-        context.User.Model?.PlayAttack();  // プレイヤーアニメーション
+        List<BattleUnit> Targets = context.Targets;
         foreach (var target in Targets)
         {
             target.TakeDamage(amount);
-            target.Model?.PlayHit();   // 敵アニメーション
         }
     }
 }
