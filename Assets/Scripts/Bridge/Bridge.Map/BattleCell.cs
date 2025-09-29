@@ -1,4 +1,4 @@
-public class BattleCell : CellBehaviour
+public class BattleCell : CellBehavior
 {
     public EncounterData AssignedEncounter;
 

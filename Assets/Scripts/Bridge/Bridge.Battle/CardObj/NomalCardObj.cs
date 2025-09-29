@@ -5,7 +5,7 @@ using UnityEngine;
 public class NomalCardObj : CardObj
 {
     public Mana Mana;
-    private int _changedManaCost = 0;
+    //private int _changedManaCost = 0;
 
     public NomalCardObj(SourceCard source, ResourceRegistry resourceRegistry, Mana mana) : base(source, resourceRegistry)
     {
