@@ -16,8 +16,18 @@ public class BattleStarter : MonoBehaviour
     [SerializeField] private Transform _heroModelArea;  // モデル用
     [SerializeField] private float _heroBaseY = -200f;
 
-
     private void Start()
+    {
+        var encounterData = GameManager.Instance.CurrentEncounter;
+        if (encounterData == null)
+        {
+            Debug.LogError("EncounterData が設定されていません！");
+            return;
+        }
+        StartBattle(encounterData);
+    }
+
+    private void StartBattle(EncounterData encounterData)
     {
         if (GameManager.Instance == null || GameManager.Instance.SelectedHeroData == null)
         {
@@ -72,7 +82,7 @@ public class BattleStarter : MonoBehaviour
         battleDeck.Shuffle();
         _deckView.SetBattleDeck(battleDeck);
 
-        _enemyGenerator.SpawnEnemies("elite");
+        _enemyGenerator.SpawnEnemies(encounterData);
 
         TimelineManager timelineManager = new TimelineManager();
         TimelineView timelineView = new TimelineView();

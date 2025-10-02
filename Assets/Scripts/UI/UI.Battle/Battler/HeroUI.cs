@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class HeroUI : MonoBehaviour
+public class HeroUI : MonoBehaviour, IBattleUI
 {
     [SerializeField] private Slider hpSlider;
 

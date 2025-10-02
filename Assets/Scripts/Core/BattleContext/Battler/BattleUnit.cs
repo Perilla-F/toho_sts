@@ -29,6 +29,7 @@ public abstract class BattleUnit
     public AnimationClip HitClip;
 
     public IBattleModel Model;
+    public IBattleUI UI;
 
 
     public RuntimeAnimatorController AnimatorController { get; set; }

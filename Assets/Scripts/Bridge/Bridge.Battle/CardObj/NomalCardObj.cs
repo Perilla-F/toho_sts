@@ -5,7 +5,7 @@ using UnityEngine;
 public class NomalCardObj : CardObj
 {
     public Mana Mana;
-    private int _changedManaCost = 0;
+    //private int _changedManaCost = 0;
 
     public NomalCardObj(SourceCard source, ResourceRegistry resourceRegistry, Mana mana) : base(source, resourceRegistry)
     {
@@ -27,6 +27,16 @@ public class NomalCardObj : CardObj
         }
 
         Source.Data.ApplyEffects(context);
+        if (Source.Data.CardEffectTarget == CardEffectTarget.Enemy ||
+            Source.Data.CardEffectTarget == CardEffectTarget.AllEnemies ||
+            Source.Data.CardEffectTarget == CardEffectTarget.Random)
+        {
+            context.User.Model?.PlayAttack();  // プレイヤーアニメーション
+            foreach (var target in context.Targets)
+            {
+                target.Model?.PlayHit();   // 敵アニメーション
+            }
+        }
         return true;
     }
 }

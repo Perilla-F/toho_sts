@@ -1,54 +1,83 @@
 using UnityEngine;
 using UnityEngine.UI;
 
+/// <summary>
+/// マップ上の1セルを表すクラス
+/// </summary>
 public class Cell : MonoBehaviour
 {
+    [Header("セル情報")]
     public CellType Type;
-    public CellBehaviour Behaviour;
     public Vector2Int GridPos;
-    public SpriteRenderer IconImage; // アイコンUI
-    public GameObject CurrentIcon; // 現在地用アイコン
-    public GameObject SelectableEffect; // 選択可能エフェクト
     public bool IsWide;
+
+    [Header("UI")]
+    public Image IconImage;
+    public GameObject CurrentIcon;
+    public GameObject SelectableEffect;
+
+    [Header("状態管理")]
+    public bool Cleared;
     public EventBase AssignedEvent;
+    public CellBehavior Behavior;
 
-    public void Initialize(CellType cellType, Vector2Int pos, Sprite icon, bool wide = false)
-    {
-        Type = cellType;
-        GridPos = pos;
-        IconImage.sprite = icon;
-        IsWide = wide;
-        SetSelectable(false);
-        SetCurrent(false);
-    }
+    private Button _button;
+    private bool IsSelectable;
 
-    private void Awake()
+    /// <summary>
+    /// 初期化
+    /// </summary>
+    public void Initialize(CellType type, Vector2Int gridPos, Sprite icon, bool isWide)
     {
-        Behaviour = GetComponent<CellBehaviour>();
-    }
+        Type = type;
+        GridPos = gridPos;
+        IsWide = isWide;
 
-    public void SetSelectable(bool isOn)
-    {
+        if (IconImage != null)
+            IconImage.sprite = icon;
+
+        if (CurrentIcon != null)
+            CurrentIcon.SetActive(false);
+
         if (SelectableEffect != null)
-            SelectableEffect.SetActive(isOn);
+            SelectableEffect.SetActive(false);
+        IsSelectable = false;
+        _button = GetComponent<Button>();
+
+        if (_button == null)
+        {
+            Debug.LogError("Cell に Button コンポーネントが必要です！");
+            return;
+        }
+
+        // クリック時にMapGeneratorへ通知
+        _button.onClick.AddListener(OnClick);
     }
 
-    public void SetCurrent(bool isOn)
+    /// <summary>
+    /// 現在選択セルかどうか
+    /// </summary>
+    public void SetCurrent(bool isCurrent)
     {
         if (CurrentIcon != null)
-            CurrentIcon.SetActive(isOn);
-    }
-    void OnMouseDown()
-    {
-        OnClick(); // あなたが作った関数を手動で呼ぶ
+            CurrentIcon.SetActive(isCurrent);
     }
 
-    public void OnClick()
+    /// <summary>
+    /// 次に移動可能かどうか
+    /// </summary>
+    public void SetSelectable(bool selectable)
     {
-        Debug.Log($"Clicked: {GridPos}");
-        if (MapGenerator.Instance.CanSelect(this))
+        if (SelectableEffect != null)
         {
-            MapGenerator.Instance.SelectCell(this);
+            SelectableEffect.SetActive(selectable);
+            IsSelectable = selectable;
         }
+    }
+
+    private void OnClick()
+    {
+        if (!IsSelectable) return;
+        MapGenerator.Instance.SelectCell(this);
     }
 }

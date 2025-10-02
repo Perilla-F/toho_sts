@@ -1,22 +1,33 @@
 using System.Collections.Generic;
-using System.IO;
 using UnityEngine;
 
 public class MapGenerator : MonoBehaviour
 {
     public static MapGenerator Instance;
 
-    [SerializeField] public GameObject NormalCellPrefab;
-    [SerializeField] public GameObject WideCellPrefab;
-    [SerializeField] public int Width = 5;
-    [SerializeField] public int Height = 10;
-    public float Spacing = 1.1f;
-    public List<EventBase> EventList;
-    public TextAsset JsonFile;
-    public EventDatabase EventDatabase;
-    public JsonEventList JsonData;
+    [Header("Cell Prefabs")]
+    [SerializeField] private GameObject NormalCellPrefab;
+    [SerializeField] private GameObject WideCellPrefab;
 
-    [SerializeField] public Sprite StartIcon, GoalIcon, BattleIcon, EliteBattleIcon, BossBattleIcon, ShopIcon, TreasureIcon, RestIcon, EventIcon;
+    [Header("Map Settings")]
+    [SerializeField] private int Width = 5;
+    [SerializeField] private int Height = 10;
+    [SerializeField] private float Spacing = 150f;
+    [SerializeField] private float VMargin = 50f;
+    [SerializeField] private float verticalMarginPercent = 0.1f; // 画面縦の余白割合
+    [SerializeField] private float horizontalMarginPercent = 0.05f; // 横余白割合
+
+    [Header("Content")]
+    [SerializeField] private RectTransform _content;
+    [SerializeField] private RectTransform _scrollRect;
+    [SerializeField] private RectTransform _playerMarker;
+
+    [Header("Icons")]
+    [SerializeField] private Sprite StartIcon, GoalIcon, BattleIcon, EliteBattleIcon, BossBattleIcon, ShopIcon, TreasureIcon, RestIcon, EventIcon;
+
+    [Header("Event Data")]
+    [SerializeField] private EventDatabase EventDatabase;
+    [SerializeField] private TextAsset JsonFile;
 
     private Dictionary<Vector2Int, Cell> _mapCells = new();
     private Cell _currentCell;
@@ -34,95 +45,148 @@ public class MapGenerator : MonoBehaviour
         public List<JsonEvent> Events;
     }
 
-    void Awake() => Instance = this;
+    private JsonEventList JsonData;
 
-    void Start()
+    private void Awake() => Instance = this;
+
+    private void Start()
     {
         GenerateMap();
-        //Camera.main.GetComponent<CameraFollow>().SetTarget(currentCell.transform);
     }
 
-    void GenerateMap()
+    public void GenerateMap()
     {
-        JsonData = JsonUtility.FromJson<JsonEventList>(JsonFile.text);
+        _mapCells.Clear();
 
-        // STARTマス
-        CreateCell(WideCellPrefab, CellType.Start, new Vector2Int(2, 0), StartIcon, true);
+        // Canvasサイズ取得
+        float canvasHeight = _scrollRect.rect.height;
+        float canvasWidth = _scrollRect.rect.width;
 
-        // 通常マス y = 1〜7
-        List<Vector2Int> prevRow = new() { new Vector2Int(2, 0) };
+        // セルサイズ計算
+        float cellSize = canvasWidth * (1 - horizontalMarginPercent * 2) / Width;
 
-        for (int y = 1; y <= Height - 3; y++)
+        // StartCellのYオフセット（下部余白）
+        float bottomMargin = canvasHeight * verticalMarginPercent;
+        float totalMapHeight = cellSize * Height;
+        float startYOffset = -totalMapHeight / 2f + bottomMargin;
+
+        // 1. Startセル固定
+        Vector2Int startPos = new(Width / 2, 0);
+        var icon = GetIcon(CellType.Start);
+        CreateCell(WideCellPrefab, CellType.Start, startPos, icon, startYOffset, cellSize, true);
+
+        // 2. 通常/ランダムセル生成
+        for (int y = 1; y < Height - 2; y++)
         {
-            List<Vector2Int> newRow = new();
-
-            foreach (var pos in prevRow)
+            for (int x = 0; x < Width; x++)
             {
-                for (int x = 0; x < Width; x++)
-                {
-                    Vector2Int newPos = new(x, y);
-                    if (!_mapCells.ContainsKey(newPos))
-                    {
-                        var type = RandomCellType();
-                        var icon = GetIcon(type);
-                        CreateCell(NormalCellPrefab, type, newPos, icon);
-                        newRow.Add(newPos);
-                    }
-                }
+                Vector2Int pos = new(x, y);
+
+                // ランダムタイプを取得
+                var type = RandomCellType();
+                icon = GetIcon(type);
+                CreateCell(NormalCellPrefab, type, pos, icon, startYOffset, cellSize, false);
             }
-
-            prevRow = newRow;
         }
+        // 3. Restセル固定
+        Vector2Int restPos = new(Width / 2, Height - 2);
+        icon = GetIcon(CellType.Rest);
+        CreateCell(WideCellPrefab, CellType.Rest, restPos, icon, startYOffset, cellSize, true);
 
-        // RESTマス
-        CreateCell(WideCellPrefab, CellType.Rest, new Vector2Int(2, Height - 2), RestIcon, true);
-        // BOSSマス
-        CreateCell(WideCellPrefab, CellType.BossBattle, new Vector2Int(2, Height - 1), BossBattleIcon, true);
+        // 4. Goalセル固定
+        Vector2Int goalPos = new(Width / 2, Height - 1);
+        icon = GetIcon(CellType.Goal);
+        CreateCell(WideCellPrefab, CellType.Goal, goalPos, icon, startYOffset, cellSize, true);
 
         _currentCell = _mapCells[new Vector2Int(2, 0)];
-        _currentCell.SetCurrent(true);
+        SelectCell(_currentCell);
+
         UpdateSelectableCells();
+
+        // Content の高さ調整
+        AdjustContentSize(totalMapHeight, bottomMargin);
+
     }
 
-    void CreateCell(GameObject prefab, CellType type, Vector2Int pos, Sprite icon, bool isWide = false)
+    private void CreateCell(GameObject prefab, CellType type, Vector2Int pos, Sprite icon, float yOffset, float size, bool isWide = false)
     {
-        // 横方向の中央寄せオフセットはそのまま
-        float xOffset = (Width - 1) / 2f * Spacing * 2.1f;
+        GameObject obj = Instantiate(prefab, _content);
+        RectTransform rt = obj.GetComponent<RectTransform>();
 
-        // 縦方向のオフセットを0行目基準に（MapGenerator の位置が y=0行目に一致）
-        float yOffset = 0;
+        // サイズを調整
+        if (isWide)
+        {
+            rt.sizeDelta = new Vector2(size * 5f, size);
+        }
+        else
+        {
+            rt.sizeDelta = new Vector2(size, size);
+        }
 
-        Vector3 offset = new Vector3(xOffset, yOffset, 0);
+        // 座標を計算（中央揃え）
+        float xOffset = size * (Width - 1) / 2f;
+        rt.anchoredPosition = new Vector2(pos.x * size - xOffset,
+                                          pos.y * size + yOffset);
 
-        // MapGeneratorのtransform.positionを基準にマップを生成
-        Vector3 worldPos = transform.position + new Vector3(pos.x * Spacing * 2.1f, pos.y * Spacing * 2.1f, 0) - offset;
-
-        GameObject obj = Instantiate(prefab, worldPos, Quaternion.identity, transform);
         Cell cell = obj.GetComponent<Cell>();
-        AssignBehavior(cell, type);
-        cell.Initialize(type, pos, icon, isWide);
-        cell.AssignedEvent = type == CellType.Event ? GetRandomEvent() : null;
-        _mapCells[pos] = cell;
+        if (cell != null)
+        {
+            cell.Initialize(type, pos, icon, isWide);
+
+            // タイプに応じて振る舞いをアタッチ
+            switch (type)
+            {
+                case CellType.Battle:
+                case CellType.EliteBattle:
+                    cell.Behavior = obj.AddComponent<BattleCell>();
+                    break;
+                case CellType.Rest:
+                    cell.Behavior = obj.AddComponent<RestCell>();
+                    break;
+                case CellType.Shop:
+                    cell.Behavior = obj.AddComponent<ShopCell>();
+                    break;
+                case CellType.Treasure:
+                    cell.Behavior = obj.AddComponent<TreasureCell>();
+                    break;
+                case CellType.Event:
+                    cell.Behavior = obj.AddComponent<EventCell>();
+                    break;
+                case CellType.BossBattle:
+                    cell.Behavior = obj.AddComponent<BossCell>();
+                    break;
+                case CellType.Start:
+                case CellType.Goal:
+                    break;
+            }
+
+            // // セルに振る舞いを割り当て
+            // AssignBehavior(cell, type);
+
+            // 初期化
+            // cell.AssignedEvent = type == CellType.Event ? GetRandomEvent() : null;
+
+            _mapCells[pos] = cell;
+        }
     }
 
-    CellType RandomCellType()
+    private CellType RandomCellType()
     {
         Dictionary<CellType, int> weights = new()
-    {
-        { CellType.Battle, 50 },
-        { CellType.EliteBattle, 20 },
-        { CellType.Shop, 10 },
-        { CellType.Treasure,10 },
-        { CellType.Rest, 5 },
-        { CellType.Event, 20 },
-    };
+        {
+            { CellType.Battle, 50 },
+            { CellType.EliteBattle, 20 },
+            { CellType.Shop, 10 },
+            { CellType.Treasure, 10 },
+            { CellType.Rest, 5 },
+            { CellType.Event, 20 },
+        };
 
-        int totalWeight = 0;
-        foreach (var w in weights.Values) totalWeight += w;
+        int total = 0;
+        foreach (var w in weights.Values) total += w;
 
-        int rand = Random.Range(0, totalWeight);
+        int rand = Random.Range(0, total);
         int cumulative = 0;
-
         foreach (var pair in weights)
         {
             cumulative += pair.Value;
@@ -130,22 +194,43 @@ public class MapGenerator : MonoBehaviour
                 return pair.Key;
         }
 
-        return CellType.Battle; // フォールバック
+        return CellType.Battle;
     }
 
-    EventBase GetRandomEvent()
+    public RectTransform GetStartCellRect()
+    {
+        foreach (var cell in _mapCells.Values)
+        {
+            if (cell.Type == CellType.Start)
+            {
+                return cell.GetComponent<RectTransform>();
+            }
+        }
+        return null;
+    }
+
+    /// <summary>
+    /// Content の高さをセル数に応じて調整
+    /// </summary>
+    void AdjustContentSize(float totalHeight, float margin)
+    {
+        RectTransform rt = GetComponent<RectTransform>();
+        rt.sizeDelta = new Vector2(rt.sizeDelta.x, totalHeight + 2f * margin);
+    }
+
+    private EventBase GetRandomEvent()
     {
         int index = Random.Range(0, JsonData.Events.Count);
         return EventDatabase.GetEventById(JsonData.Events[index].Id);
     }
 
-    public void AssignBehavior(Cell cell, CellType type, EventBase assignedEvent = null)
+    private void AssignBehavior(Cell cell, CellType type)
     {
         switch (type)
         {
             case CellType.Event:
                 var evt = cell.gameObject.AddComponent<EventCell>();
-                evt.AssignedEvent = assignedEvent;
+                evt.AssignedEvent = cell.AssignedEvent;
                 break;
             case CellType.Rest:
                 cell.gameObject.AddComponent<RestCell>();
@@ -159,7 +244,7 @@ public class MapGenerator : MonoBehaviour
         }
     }
 
-    Sprite GetIcon(CellType type) => type switch
+    private Sprite GetIcon(CellType type) => type switch
     {
         CellType.Start => StartIcon,
         CellType.Goal => GoalIcon,
@@ -173,7 +258,7 @@ public class MapGenerator : MonoBehaviour
         _ => null
     };
 
-    void UpdateSelectableCells()
+    private void UpdateSelectableCells()
     {
         foreach (var cell in _mapCells.Values)
             cell.SetSelectable(false);
@@ -181,7 +266,7 @@ public class MapGenerator : MonoBehaviour
         Vector2Int cp = _currentCell.GridPos;
         if (_currentCell.IsWide)
         {
-            for (int x = 0; x < 5; x++)
+            for (int x = 0; x < Width; x++)
             {
                 Vector2Int next = new(x, cp.y + 1);
                 if (_mapCells.ContainsKey(next))
@@ -203,39 +288,22 @@ public class MapGenerator : MonoBehaviour
         }
     }
 
-    public bool CanSelect(Cell cell)
-    {
-        return cell.SelectableEffect.activeSelf;
-    }
-
     public void SelectCell(Cell cell)
     {
-        cell.Behaviour?.OnPlayerEnter();
+        cell.Behavior?.OnPlayerEnter();
         _currentCell.SetCurrent(false);
         _currentCell = cell;
         _currentCell.SetCurrent(true);
         UpdateSelectableCells();
-        // TODO: イベント処理や戦闘遷移
-        // Camera.main.GetComponent<CameraFollow>().SetTarget(currentCell.transform);
+
+        UpdateMarkerPosition();
     }
 
-    public void StartEvent(EventBase assingedEvent)
+    private void UpdateMarkerPosition()
     {
-        assingedEvent.Execute();
+        if (_playerMarker != null && _currentCell != null)
+        {
+            _playerMarker.anchoredPosition = _currentCell.GetComponent<RectTransform>().anchoredPosition;
+        }
     }
-
-    public void StartRest()
-    { }
-
-    public void StartShop()
-    { }
-
-    public void StartTreasure()
-    { }
-
-    public void StartBattle()
-    { }
-
-    public void StartBoss()
-    { }
 }
