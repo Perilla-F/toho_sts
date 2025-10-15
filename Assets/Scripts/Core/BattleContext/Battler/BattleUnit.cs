@@ -5,12 +5,11 @@ using UnityEngine;
 public abstract class BattleUnit
 {
     public string BattlerName;
-    public int MaxHP;
+    public HPResource HPResource;
     public int Strength;
     public int Defence;
     public float AttackModifier { get; } = 1f;
     public float DefenceModifier { get; } = 1f;
-    public int CurrentHP;
     public int Block = 0;
     public int SimpleBlock = 0;
     public int AttackBonus = 0;

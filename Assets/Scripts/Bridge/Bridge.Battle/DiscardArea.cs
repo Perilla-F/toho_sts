@@ -4,6 +4,7 @@ using System.Collections.Generic;
 public class DiscardArea : IDiscardArea
 {
     private List<CardObj> _discardedCards = new List<CardObj>();
+
     public void AddCard(CardObj cardObj)
     {
         _discardedCards.Add(cardObj);

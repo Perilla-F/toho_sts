@@ -12,14 +12,14 @@ using Cysharp.Threading.Tasks.Triggers;
 
 public class CardBehavior : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IBeginDragHandler, IDragHandler
 {
-    private CardObj _cardObj;
+    public CardObj CardObj;
     public DeckView DeckView { get; private set; }
     public HandView HandView { get; private set; }
     public DiscardAreaView DiscardAreaView { get; private set; }
+    public TimelineView TimelineView;
     private RectTransform _rectTransform;
     private CanvasGroup _canvasGroup;
     public UnityAction<CardBehavior> OnUse;
-
 
     // State
     public CardSetUpState SetUpState { get; private set; }
@@ -32,17 +32,23 @@ public class CardBehavior : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
     private CardStateBase _currentState;
 
 
-    // ハンド上のカードのデフォルトの重なり位置
+    /// <summary>
+    /// ハンド上のカードのデフォルトの重なり位置
+    /// </summary>
     public int DefaultSiblingIndex;
-    // ハンド上のカードのデフォルトの位置
+
+    /// <summary>
+    /// ハンド上のカードのデフォルトの位置
+    /// </summary>
     private Vector2 _defaultPosition;
 
-    public void Init(CardObj obj, DeckView deckView, HandView handView, DiscardAreaView discardAreaView)
+    public void Init(CardObj obj, DeckView deckView, HandView handView, DiscardAreaView discardAreaView, TimelineView timelineView)
     {
-        _cardObj = obj;
+        CardObj = obj;
         DeckView = deckView;
         HandView = handView;
         DiscardAreaView = discardAreaView;
+        TimelineView = timelineView;
         obj.BindMoveToHand(MoveToHandView);
         obj.BindMoveToDiscard(MoveToDiscard);
 
@@ -74,7 +80,7 @@ public class CardBehavior : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
 
     void OnCardStateChange(ICardStateChangeEvent evt)
     {
-        if (evt.Source is CardObj card && card == this._cardObj)
+        if (evt.Source is CardObj card && card == CardObj)
         {
             switch (evt.Source)
             {
@@ -120,28 +126,45 @@ public class CardBehavior : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
         BezierArrows.Instance.Hide();
     }
 
+    /// <summary>
+    /// ドラッグ開始
+    /// </summary>
+    /// <param name="eventData"></param>
     public void OnBeginDrag(PointerEventData eventData)
     {
-        _defaultPosition = transform.position;
-        ChangeState(DraggingState);
+        if (_currentState == WaitState)
+        {
+            _defaultPosition = transform.position;
+            ChangeState(DraggingState);
+        }
     }
+
     public void OnDrag(PointerEventData eventData)
     {
     }
 
-    // マウスオーバー
+    /// <summary>
+    /// マウスオーバー
+    /// </summary>
+    /// <param name="eventData"></param>
     public void OnPointerEnter(PointerEventData eventData)
     {
         CurrentState.OnPointerEnter(eventData);
     }
 
+    /// <summary>
+    /// マウスオーバー解除
+    /// </summary>
+    /// <param name="eventData"></param>
     public void OnPointerExit(PointerEventData eventData)
     {
         CurrentState.OnPointerExit(eventData);
     }
 
-    // カードをHandに移動させる
-
+    /// <summary>
+    /// カードを手札に移動させる
+    /// </summary>
+    /// <returns></returns>
     private async UniTask MoveToHandView()
     {
         transform.gameObject.SetActive(true);
@@ -153,7 +176,10 @@ public class CardBehavior : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
         await transform.DOMove(HandView.transform.position, 0.3f).AsyncWaitForCompletion();
     }
 
-    //
+    /// <summary>
+    /// カードを墓場へ移動させる
+    /// </summary>
+    /// <returns></returns>
     public async UniTask MoveToDiscard()
     {
         // 縮小する

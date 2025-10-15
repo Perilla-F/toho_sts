@@ -5,21 +5,16 @@ using UnityEngine;
 
 public class HeroUnit : IHeroUnit
 {
-
-    public int MaxMana { get; private set; }
-    public int CurrentMana { get; private set; }
-    public Mana Mana;
-
-    public int DrawCount { get; private set; } = 5;
-
     public void Setup(HeroBattler heroBattler)
     {
-        MaxHP = heroBattler.MaxHP;
-        CurrentHP = heroBattler.CurrentHP;
-        MaxMana = heroBattler.MaxMana;
+        HPResource = heroBattler.HPResource;
         BattlerName = heroBattler.BaseData.BattlerName;
         AnimatorController = heroBattler.BaseData.AnimatorController;
-        Mana = new Mana(MaxMana);
+        Mana = heroBattler.Mana;
+        DrawCount = heroBattler.DrawCount;
+
+        playerPredictionIcon = heroBattler.BaseData.playerPredictionIcon;
+        playerPreviewIcon = heroBattler.BaseData.playerPreviewIcon;
 
         UIPrefab = heroBattler.BaseData.UIPrefab;
         ModelPrefab = heroBattler.BaseData.ModelPrefab;
@@ -32,12 +27,12 @@ public class HeroUnit : IHeroUnit
 
     public override void TakeDamage(int amount)
     {
-        CurrentHP = Mathf.Max(0, CurrentHP - amount);
+        HPResource.SetHP(Mathf.Max(0, HPResource.GetHP() - amount));
     }
 
     public override void Heal(int amount)
     {
-        CurrentHP = Mathf.Min(MaxHP, CurrentHP + amount);
+        HPResource.SetHP(Mathf.Min(HPResource.MaxHP, HPResource.GetHP() + amount));
     }
 
     public override void ApplyBlock(int amount)
@@ -96,7 +91,7 @@ public class HeroUnit : IHeroUnit
 
     public override bool IsAlive()
     {
-        return CurrentHP > 0;
+        return HPResource.GetHP() > 0;
     }
     public override bool IsDisabled()
     {
@@ -104,12 +99,12 @@ public class HeroUnit : IHeroUnit
     }
     public override int GetCurrentHP()
     {
-        return CurrentHP;
+        return HPResource.GetHP();
     }
 
     public override int GetMaxHP()
     {
-        return MaxHP;
+        return HPResource.MaxHP;
     }
 
     public override void ProcessTurnStart()

@@ -23,12 +23,16 @@ public class CardWaitState : CardStateBase
         _behaviour.DefaultSiblingIndex = _behaviour.transform.GetSiblingIndex();
         // 一番上に表示する
         _behaviour.transform.SetAsLastSibling();
+        // タイムライン上にアイコンを載せる
+        PlayerController.Instance.SetPreviewDelay(_behaviour.CardObj.Source.Data.Delay);
     }
 
     public override void OnPointerExit(PointerEventData eventData)
     {
         _behaviour.transform.DOScale(Vector3.one, 0.1f);
         _behaviour.transform.SetSiblingIndex(_behaviour.DefaultSiblingIndex);
+        // タイムライン上からアイコンを外す
+        PlayerController.Instance.ClearPreview();
     }
 
 }

@@ -7,8 +7,8 @@ public class EnemyUI : MonoBehaviour, IBattleUI
 
     public void Init(EnemyUnit enemy)
     {
-        hpSlider.maxValue = enemy.MaxHP;
-        hpSlider.value = enemy.CurrentHP;
+        hpSlider.maxValue = enemy.HPResource.MaxHP;
+        hpSlider.value = enemy.HPResource.GetHP();
 
         enemy.OnHpChanged += UpdateHp;
     }

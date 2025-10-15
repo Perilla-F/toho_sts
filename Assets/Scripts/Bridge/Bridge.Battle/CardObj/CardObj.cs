@@ -10,11 +10,13 @@ public class CardObj : ICardObj
     public Func<UniTask> MoveToDiscardAsync { get; private set; }
     public SourceCard Source;
     public readonly ResourceRegistry ResourceRegistry;
+    public int Delay;
 
     public CardObj(SourceCard source, ResourceRegistry resourceRegistry)
     {
         Source = source;
         ResourceRegistry = resourceRegistry;
+        Delay = source.Delay;
     }
 
     public void BindMoveToHand(Func<UniTask> moveFunc)

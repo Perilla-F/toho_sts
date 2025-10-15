@@ -7,11 +7,19 @@ using UnityEngine;
 public class TimelineManager
 {
     private List<BattleEvent> _events = new List<BattleEvent>();
+    public int CurrentTime { get; set; }
 
     public void AddEvent(BattleEvent e)
     {
         _events.Add(e);
         SortEvents();
+    }
+
+    public void AdvanceToNextEvent()
+    {
+        if (_events.Count == 0) return;
+        var next = _events.OrderBy(e => e.Time).First();
+        CurrentTime = next.Time;
     }
 
     public BattleEvent PopNextEvent()
@@ -39,6 +47,20 @@ public class TimelineManager
         });
     }
 
+    public IReadOnlyList<BattleEvent> GetUpcomingEvents()
+    {
+        return _events
+            .OrderBy(e => e.Time)
+            .ThenBy(e => e.Priority)
+            .ThenBy(e => e.Order)
+            .ToList();
+    }
+
+    public bool HasEvents()
+    {
+        return _events.Count > 0;
+    }
+
     /// <summary>
     /// 残りイベントを一斉消化
     /// </summary>
@@ -56,8 +78,17 @@ public class TimelineManager
             yield return new WaitForSeconds(0.3f);
 
             _events.Remove(e);
-            e.Execute(context);
         }
+    }
+
+    /// <summary>
+    /// 次のイベントを引っ張る
+    /// </summary>
+    /// <returns></returns>
+    public BattleEvent PeekNextEvent()
+    {
+        if (_events.Count == 0) return null;
+        return _events[0];
     }
 
 }
