@@ -71,12 +71,14 @@ public class BattleStarter : MonoBehaviour
         Hand hand = new Hand();
         _handView.SetHand(hand);
 
-        Mana mana = new Mana(heroUnit.MaxMana);
-        _manaView.Init(mana);
+        _manaView.Init(heroUnit.Mana);
+
+        DiscardArea discardArea = new DiscardArea();
+        _discardAreaView.SetDiscardArea(discardArea);
 
         foreach (var sourceCard in playerDeck)
         {
-            CardObj cardObj = CardFactory.Instance.CreateCard(sourceCard, _deckView.transform, _deckView, _handView, _discardAreaView, mana);
+            CardObj cardObj = CardFactory.Instance.CreateCard(sourceCard, _deckView.transform, _deckView, _handView, _discardAreaView, _timelineView, sourceCard.SourceCost);
             battleDeck.AddCard(cardObj);
         }
         battleDeck.Shuffle();
@@ -86,9 +88,9 @@ public class BattleStarter : MonoBehaviour
 
         TimelineManager timelineManager = new TimelineManager();
         TimelineView timelineView = new TimelineView();
-        timelineView.Bind(timelineManager);
+        timelineView.Initialize(timelineManager, heroUnit);
 
         // BattleSystemに渡す（DI）
-        _battleSystem.Setup(context, heroUnit, battleDeck);
+        _battleSystem.Setup(context, heroUnit, battleDeck, hand, discardArea, timelineManager);
     }
 }

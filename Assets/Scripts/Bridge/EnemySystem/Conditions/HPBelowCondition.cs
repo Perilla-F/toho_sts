@@ -7,6 +7,6 @@ public class HPBelowCondition : Condition
 
     public override bool Check(IBattleContext context, EnemyUnit enemy)
     {
-        return (float)enemy.CurrentHP / enemy.MaxHP <= threshold;
+        return (float)enemy.HPResource.GetHP() / enemy.HPResource.MaxHP <= threshold;
     }
 }

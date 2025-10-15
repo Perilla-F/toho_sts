@@ -10,8 +10,8 @@ public class HeroUI : MonoBehaviour, IBattleUI
     public void Init(HeroUnit hero)
     {
         Hero = hero;
-        hpSlider.maxValue = Hero.MaxHP;
-        hpSlider.value = Hero.CurrentHP;
+        hpSlider.maxValue = Hero.HPResource.MaxHP;
+        hpSlider.value = Hero.HPResource.GetHP();
         Hero.OnHpChanged += UpdateHp;
     }
 

@@ -12,7 +12,7 @@ public class HandView : MonoBehaviour, IHandView
 
     public void SetHand(Hand hand)
     {
-        this.Hand = hand;
+        Hand = hand;
     }
 
     // 手札を整列させる

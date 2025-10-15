@@ -10,7 +10,7 @@ public class ManaView : MonoBehaviour
 
     public void Init(Mana mana)
     {
-        this.Mana = mana;
+        Mana = mana;
         mana.OnChanged += UpdateUI;
         UpdateUI();
     }

@@ -8,7 +8,7 @@ public class CardData : ScriptableObject
     public Sprite Artwork;
     public List<ResourceCost> Costs;
     public CardType CardType;
-    public float TriggerTime;
+    public int Delay;
     public string Description;
     public List<CardEffectInstance> CardEffects;
     public CardEffectTarget CardEffectTarget;

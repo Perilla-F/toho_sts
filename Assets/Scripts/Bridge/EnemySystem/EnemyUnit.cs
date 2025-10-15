@@ -10,7 +10,6 @@ public class EnemyUnit : BattleUnit
     private ConditionType _lastCondition;
     private int _turnCounter = 0;
 
-
     private EnemyAIData _enemyAI;
 
     // HPイベント
@@ -19,8 +18,7 @@ public class EnemyUnit : BattleUnit
     {
         BattlerName = data.BattlerName;
         _enemyAI = data.EnemyAI;
-        MaxHP = data.MaxHP;
-        CurrentHP = data.MaxHP;
+        HPResource = new HPResource(data.MaxHP);
         _lastCondition = currentCondition;
         EnemyType = data.EnemyType;
         UIPrefab = data.UIPrefab;
@@ -34,12 +32,12 @@ public class EnemyUnit : BattleUnit
 
     public override void TakeDamage(int amount)
     {
-        CurrentHP = Mathf.Max(0, CurrentHP - amount);
+        HPResource.SetHP(Mathf.Max(0, HPResource.CurrentResource - amount));
     }
 
     public override void Heal(int amount)
     {
-        CurrentHP = Mathf.Min(MaxHP, CurrentHP + amount);
+        HPResource.SetHP(Mathf.Min(HPResource.MaxHP, HPResource.CurrentResource + amount));
     }
 
     public override void ApplyBlock(int amount)
@@ -99,7 +97,7 @@ public class EnemyUnit : BattleUnit
 
     public override bool IsAlive()
     {
-        return CurrentHP > 0;
+        return HPResource.GetHP() > 0;
     }
     public override bool IsDisabled()
     {
@@ -108,12 +106,12 @@ public class EnemyUnit : BattleUnit
 
     public override int GetCurrentHP()
     {
-        return CurrentHP;
+        return HPResource.GetHP();
     }
 
     public override int GetMaxHP()
     {
-        return MaxHP;
+        return HPResource.MaxHP;
     }
 
     public override void ProcessTurnStart()

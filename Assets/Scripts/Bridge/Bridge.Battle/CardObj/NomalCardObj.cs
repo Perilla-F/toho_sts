@@ -4,12 +4,11 @@ using UnityEngine;
 
 public class NomalCardObj : CardObj
 {
-    public Mana Mana;
-    //private int _changedManaCost = 0;
+    public int ChangedManaCost = 0;
+    public int ChangedDelay = 0;
 
-    public NomalCardObj(SourceCard source, ResourceRegistry resourceRegistry, Mana mana) : base(source, resourceRegistry)
+    public NomalCardObj(SourceCard source, ResourceRegistry resourceRegistry) : base(source, resourceRegistry)
     {
-        Mana = mana;
     }
 
     public bool Use(CardContext context)
@@ -17,7 +16,7 @@ public class NomalCardObj : CardObj
         foreach (var cost in Source.Data.Costs)
         {
             var res = ResourceRegistry.Get(cost.Type);
-            if (res == null || res.CurrentMana < cost.Amount)
+            if (res == null || res.CurrentResource < cost.Amount)
                 return false; // どれか足りなければ中断
         }
 

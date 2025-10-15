@@ -9,7 +9,6 @@ public class GameManager : MonoBehaviour
     public HeroData SelectedHeroData;
     public HeroBattler HeroBattler;
     public List<SourceCard> PlayerDeck = new List<SourceCard>();
-    public int CurrentHP;
     public EncounterData CurrentEncounter;
 
     private void Awake()
@@ -27,10 +26,12 @@ public class GameManager : MonoBehaviour
 
     public void InitializePlayer()
     {
-        HeroBattler = new HeroBattler(SelectedHeroData, SelectedHeroData.MaxHP);
+        HPResource hPResource = new HPResource(SelectedHeroData.MaxHP);
+        Mana mana = new Mana(SelectedHeroData.MaxMana);
+        HeroBattler = new HeroBattler(SelectedHeroData, hPResource, mana);
         for (int i = 0; i < SelectedHeroData.StartingDeck.Count; i++)
         {
-            AddCard(new SourceCard(SelectedHeroData.StartingDeck[i]));
+            AddCard(new SourceCard(SelectedHeroData.StartingDeck[i], hPResource, mana));
         }
     }
 
@@ -49,9 +50,8 @@ public class GameManager : MonoBehaviour
         PlayerDeck.Remove(card);
     }
 
-    public void UpdateAfterBattle(HeroBattler battler, List<SourceCard> updatedDeck)
+    public void UpdateAfterBattle(List<SourceCard> updatedDeck)
     {
-        CurrentHP = battler.CurrentHP;
         PlayerDeck = new List<SourceCard>(updatedDeck);
     }
 }

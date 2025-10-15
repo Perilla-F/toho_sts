@@ -6,24 +6,16 @@ public class HeroBattler
 {
     private HeroData _baseData;
     public HeroData BaseData { get => _baseData; }
-    public float AttackModifier { get; } = 1f;
-    public float DefenceModifier { get; } = 1f;
-    public int MaxHP { get; private set; }
-    public int CurrentHP { get; private set; }
-    public int MaxMana { get; private set; }
-    public int Attack { get; } = 0;
-    public int Defence { get; } = 0;
-    public int Block { get; private set; } = 0;
-    public int AttackBonus { get; private set; } = 0;
-    public int DefenceBonus { get; private set; } = 0;
+    public HPResource HPResource;
+    public Mana Mana;
     public int DrawCount { get; private set; } = 5;
-    public List<string> Status = new List<string>();
 
-    public HeroBattler(HeroData data, int currentHP)
+    public HeroBattler(HeroData data, HPResource hPResource, Mana mana)
     {
         _baseData = data;
-        MaxHP = data.MaxHP;
-        CurrentHP = currentHP;
+        HPResource = hPResource;
+        Mana = mana;
+        DrawCount = data.DrawCount;
     }
 
 }

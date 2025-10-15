@@ -17,8 +17,10 @@ MonoBehaviour:
   Costs:
   - Type: 0
     Amount: 1
+  CardType: 1
   TriggerTime: 1
-  Description: 
+  Description: "\u7D50\u754C7\u3092\u5F97\u308B"
   CardEffects:
   - Definition: {fileID: 11400000, guid: 01b0a2d41ec3e8349bfb617fb16cf5e6, type: 2}
     Amount: 7
+  CardEffectTarget: 1
