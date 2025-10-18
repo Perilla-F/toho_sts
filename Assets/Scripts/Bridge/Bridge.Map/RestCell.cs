@@ -6,5 +6,6 @@ public class RestCell : CellBehavior
 {
     public override void OnPlayerEnter()
     {
+
     }
 }

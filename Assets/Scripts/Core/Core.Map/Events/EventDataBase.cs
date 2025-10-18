@@ -1,36 +1,31 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(menuName = "Map/Event Database")]
+[CreateAssetMenu(menuName = "Game/Event/EventDatabase")]
 public class EventDatabase : ScriptableObject
 {
-    public List<EventBase> EventList;
+    [SerializeField] private List<MultiStepEvent> events = new();
+    private Dictionary<string, MultiStepEvent> dict;
 
-    private Dictionary<string, EventBase> _eventMap;
+    public static EventDatabase Instance;
 
     private void OnEnable()
     {
-        Init();
-    }
-
-    public void Init()
-    {
-        _eventMap = new Dictionary<string, EventBase>();
-        foreach (var ev in EventList)
+        Instance = this;
+        dict = new Dictionary<string, MultiStepEvent>();
+        foreach (var evt in events)
         {
-            _eventMap[ev.EventId] = ev;
+            dict[evt.EventId] = evt;
         }
     }
 
-    public EventBase GetEventById(string id)
+    public MultiStepEvent GetEvent(string id)
     {
-        if (_eventMap == null || _eventMap.Count == 0) Init();
-        if (_eventMap.TryGetValue(id, out var ev))
-        {
-            return ev;
-        }
+        dict ??= new Dictionary<string, MultiStepEvent>();
+        if (dict.TryGetValue(id, out var evt))
+            return evt;
 
-        Debug.LogWarning($"イベントID '{id}' が見つかりません");
+        Debug.LogWarning($"Event not found: {id}");
         return null;
     }
 }

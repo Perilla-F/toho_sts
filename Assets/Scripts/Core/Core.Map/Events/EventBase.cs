@@ -1,10 +1,17 @@
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 
-public abstract class EventBase
+public abstract class EventBase : ScriptableObject
 {
-    public abstract string EventId { get; }  // "forward"など
-    public abstract string DisplayName { get; }
-    public abstract string Description { get; }
+    public string EventId;
+    public string EventName;
+    public string Description;
 
-    public abstract void Execute();
+    [Header("見た目 (Addressable)")]
+    public AssetReferenceSprite EventImageRef;
+
+    public List<EventOption> Options;
+
+    public abstract void Execute(string optionId);
 }

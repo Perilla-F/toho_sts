@@ -18,7 +18,7 @@ public class Cell : MonoBehaviour
 
     [Header("状態管理")]
     public bool Cleared;
-    public EventBase AssignedEvent;
+    public MultiStepEvent AssignedEvent;
     public CellBehavior Behavior;
 
     private Button _button;
@@ -79,5 +79,7 @@ public class Cell : MonoBehaviour
     {
         if (!IsSelectable) return;
         MapGenerator.Instance.SelectCell(this);
+
+        Behavior.OnPlayerEnter();
     }
 }

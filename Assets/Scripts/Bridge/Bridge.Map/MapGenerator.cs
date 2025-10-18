@@ -218,10 +218,10 @@ public class MapGenerator : MonoBehaviour
         rt.sizeDelta = new Vector2(rt.sizeDelta.x, totalHeight + 2f * margin);
     }
 
-    private EventBase GetRandomEvent()
+    private MultiStepEvent GetRandomEvent()
     {
         int index = Random.Range(0, JsonData.Events.Count);
-        return EventDatabase.GetEventById(JsonData.Events[index].Id);
+        return EventDatabase.GetEvent(JsonData.Events[index].Id);
     }
 
     private void AssignBehavior(Cell cell, CellType type)
@@ -305,5 +305,15 @@ public class MapGenerator : MonoBehaviour
         {
             _playerMarker.anchoredPosition = _currentCell.GetComponent<RectTransform>().anchoredPosition;
         }
+    }
+
+    /// <summary>
+    /// 座標復元
+    /// </summary>
+    /// <param name="pos"></param>
+    /// <returns></returns>
+    public Cell GetCellAt(Vector2Int pos)
+    {
+        return _mapCells.ContainsKey(pos) ? _mapCells[pos] : null;
     }
 }
