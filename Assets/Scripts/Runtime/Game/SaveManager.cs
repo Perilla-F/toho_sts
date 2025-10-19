@@ -28,7 +28,13 @@ public class SaveManager : MonoBehaviour
             HPResource = GameManager.Instance.HeroBattler.HPResource,
             //gold = PlayerData.Instance.Gold,
             Flags = new List<string>(FlagManager.Instance.GetAllFlags()),
-            Map = MapManager.Instance.GetSaveData()
+            Map = new MapSaveData
+            {
+                mapData = MapManager.Instance.mapData,
+                cellX = MapManager.Instance.CurrentCell.GridPos.x,
+                cellY = MapManager.Instance.CurrentCell.GridPos.y,
+                lastEventData = MapManager.Instance.LastEventData
+            }
         };
 
         var json = JsonUtility.ToJson(data, true);
@@ -38,28 +44,34 @@ public class SaveManager : MonoBehaviour
         Debug.Log("Game saved to: " + savePath);
     }
 
-    public void LoadGame()
+    public SaveData LoadGame()
     {
         if (!File.Exists(savePath))
         {
             Debug.LogWarning("No save file found!");
-            return;
+            return null;
         }
 
         string json = File.ReadAllText(savePath);
         SaveData data = JsonUtility.FromJson<SaveData>(json);
 
+        return data;
         // --- 各マネージャーにデータを反映 ---
         GameManager.Instance.HeroBattler.HPResource = data.HPResource;
         /// PlayerData.Instance.Gold = data.gold;
         FlagManager.Instance.LoadFromSaveData(data.Flags);
-        MapManager.Instance.LoadFromSaveData(data.Map);
-        MapManager.Instance.LoadFromSaveData(data.Map);
+        GameCoordinator.Instance.RestoreMap(data.Map);
+        MapManager.Instance.mapData = data.Map.mapData;
         MapManager.Instance.LastEventData = data.LastEvent;
 
         MapManager.Instance.TryResumeLastEvent();
 
         Debug.Log("Game loaded!");
+    }
+
+    public bool HasSaveData()
+    {
+        return File.Exists(savePath);
     }
 
     public void DeleteSave()

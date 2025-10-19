@@ -15,6 +15,6 @@ public class EventCell : CellBehavior
         }
 
         MapManager.Instance.SetLastEvent(AssignedEvent.EventId);
-        EventManager.Instance.StartEvent(AssignedEvent);
+        EventRunner.Instance.StartEvent(AssignedEvent);
     }
 }

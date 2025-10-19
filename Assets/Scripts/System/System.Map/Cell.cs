@@ -27,14 +27,11 @@ public class Cell : MonoBehaviour
     /// <summary>
     /// 初期化
     /// </summary>
-    public void Initialize(CellType type, Vector2Int gridPos, Sprite icon, bool isWide)
+    public void Initialize(CellType type, Vector2Int gridPos, bool isWide)
     {
         Type = type;
         GridPos = gridPos;
         IsWide = isWide;
-
-        if (IconImage != null)
-            IconImage.sprite = icon;
 
         if (CurrentIcon != null)
             CurrentIcon.SetActive(false);
@@ -49,6 +46,8 @@ public class Cell : MonoBehaviour
             Debug.LogError("Cell に Button コンポーネントが必要です！");
             return;
         }
+
+        Cleared = false;
 
         // クリック時にMapGeneratorへ通知
         _button.onClick.AddListener(OnClick);
@@ -75,10 +74,18 @@ public class Cell : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// 攻略済みにする
+    /// </summary>
+    public void MarkCleared()
+    {
+        Cleared = true;
+    }
+
     private void OnClick()
     {
         if (!IsSelectable) return;
-        MapGenerator.Instance.SelectCell(this);
+        MapManager.Instance.SelectCell(this);
 
         Behavior.OnPlayerEnter();
     }

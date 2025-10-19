@@ -20,10 +20,10 @@ public class EnemyGenerator : MonoBehaviour
     /// <param name="encounter"></param>
     public void SpawnEnemies(EncounterData encounter)
     {
-        for (int i = 0; i < encounter.enemies.Count; i++)
+        for (int i = 0; i < encounter.Enemies.Count; i++)
         {
-            EnemyData enemyData = encounter.enemies[i];
-            Vector2 uiPos = encounter.uiPositions[i];
+            EnemyData enemyData = encounter.Enemies[i];
+            Vector2 uiPos = encounter.UIPositions[i];
 
             EnemyUnit enemyUnit = new EnemyUnit();
             enemyUnit.Setup(enemyData);
