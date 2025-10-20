@@ -12,8 +12,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d1b8840d9bfb4ee41bf956c20ad63ba8, type: 3}
   m_Name: Reimu
   m_EditorClassIdentifier: 
-  _battlerName: 
-  _maxHP: 0
-  _maxMana: 0
+  _battlerName: "\u535A\u9E97 \u970A\u5922"
+  _maxHP: 100
+  _maxMana: 3
+  DrawCount: 5
   _portrait: {fileID: 0}
   StartingDeck: []
+  UIPrefab: {fileID: 0}
+  ModelPrefab: {fileID: 0}
+  ModelYOffset: 0
+  IdleClip: {fileID: 7400000, guid: e0d5e10136f505348843cad4a67fad66, type: 2}
+  AttackClip: {fileID: 7400000, guid: 854ed8b9790d00b4d8250aa31d3deafb, type: 2}
+  HitClip: {fileID: 7400000, guid: 409106ce558198c4fb4967c2fefa7950, type: 2}
+  playerPredictionIcon: {fileID: 0}
+  playerPreviewIcon: {fileID: 0}

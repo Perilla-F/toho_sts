@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.UI;
 
 public class EnemyUnit : BattleUnit
 {
@@ -9,14 +10,17 @@ public class EnemyUnit : BattleUnit
     public ConditionType currentCondition = ConditionType.Turn;
     private ConditionType _lastCondition;
     private int _turnCounter = 0;
+    public Sprite EventIcon;
+    public int EnemyID;
 
     private EnemyAIData _enemyAI;
 
-    // HPイベント
+    private EnemyUIEventChannel _uiChannel;
 
     public void Setup(EnemyData data)
     {
         BattlerName = data.BattlerName;
+        EventIcon = data.EventIcon;
         _enemyAI = data.EnemyAI;
         HPResource = new HPResource(data.MaxHP);
         _lastCondition = currentCondition;
@@ -32,22 +36,22 @@ public class EnemyUnit : BattleUnit
 
     public override void TakeDamage(int amount)
     {
-        HPResource.SetHP(Mathf.Max(0, HPResource.CurrentResource - amount));
+        HPResource.TakeDamage(amount);
     }
 
     public override void Heal(int amount)
     {
-        HPResource.SetHP(Mathf.Min(HPResource.MaxHP, HPResource.CurrentResource + amount));
+        HPResource.Gain(amount);
     }
 
     public override void ApplyBlock(int amount)
     {
-        Block += amount;
+        HPResource.ApplyBlock(amount);
     }
 
     public override void ApplySimpleBlock(int amount)
     {
-        SimpleBlock += amount;
+        HPResource.ApplySimpleBlock(amount);
     }
 
     public override int GetAttackBonus()
@@ -73,6 +77,12 @@ public class EnemyUnit : BattleUnit
             _turnCounter = 0;
             _lastCondition = currentCondition;
         }
+        _uiChannel?.Raise(new EnemyUIEventData
+        {
+            EnemyId = EnemyID,
+            Type = EnemyUIEventType.ShowIntent,
+            Icon = EventIcon
+        });
         return _enemyAI.DecideActionPattern(context, this, _turnCounter);
     }
 
@@ -129,4 +139,5 @@ public class EnemyUnit : BattleUnit
             e.OnTurnEnd();
         }
     }
+
 }

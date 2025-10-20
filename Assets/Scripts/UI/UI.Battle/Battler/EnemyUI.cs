@@ -1,20 +1,65 @@
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class EnemyUI : MonoBehaviour, IBattleUI
 {
-    [SerializeField] Slider hpSlider;
+    [Header("UI References")]
+    [SerializeField] private HpBar hpBar;
+    [SerializeField] private Transform buffContainer;
+    [SerializeField] private Image actionIcon;
+    [SerializeField] private TMP_Text actionNameText;
 
-    public void Init(EnemyUnit enemy)
+    [SerializeField] private Image intentIcon;
+    [SerializeField] private Transform highlightEffect;
+
+    private Vector3 _baseScale;
+
+    private void Start()
     {
-        hpSlider.maxValue = enemy.HPResource.MaxHP;
-        hpSlider.value = enemy.HPResource.GetHP();
-
-        enemy.OnHpChanged += UpdateHp;
+        _baseScale = actionIcon.transform.localScale;
+        SetActionIconVisible(false);
     }
 
-    void UpdateHp(int newHp)
+    public void Bind(HPResource resource)
     {
-        hpSlider.value = newHp;
+        hpBar.Bind(resource);
+    }
+
+    public void SetActionIcon(Sprite sprite, string actionName = "")
+    {
+        if (actionIcon == null) return;
+        actionIcon.sprite = sprite;
+        actionNameText.text = actionName;
+        SetActionIconVisible(true);
+    }
+
+    public void SetActionIconVisible(bool visible)
+    {
+        if (actionIcon != null) actionIcon.enabled = visible;
+        if (actionNameText != null) actionNameText.enabled = visible;
+    }
+
+    public void HighlightAction(bool highlight)
+    {
+        if (actionIcon == null) return;
+        actionIcon.transform.localScale = highlight ? _baseScale * 1.3f : _baseScale;
+    }
+
+    public void ShowIntentIcon(Sprite icon)
+    {
+        intentIcon.sprite = icon;
+        intentIcon.gameObject.SetActive(true);
+    }
+
+    public void Highlight(bool active)
+    {
+        if (highlightEffect)
+            highlightEffect.gameObject.SetActive(active);
+    }
+
+    public void ShowDamageEffect(float duration)
+    {
+        // 被ダメージエフェクト処理など
     }
 }

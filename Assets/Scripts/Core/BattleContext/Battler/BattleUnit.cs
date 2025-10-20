@@ -10,8 +10,6 @@ public abstract class BattleUnit
     public int Defence;
     public float AttackModifier { get; } = 1f;
     public float DefenceModifier { get; } = 1f;
-    public int Block = 0;
-    public int SimpleBlock = 0;
     public int AttackBonus = 0;
     public int DefenceBonus = 0;
     public List<string> Status = new List<string>();

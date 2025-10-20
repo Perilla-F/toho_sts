@@ -1,10 +1,12 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 [CreateAssetMenu(menuName = "Data/EnemyData")]
 public class EnemyData : ScriptableObject
 {
     public string EnemyId;
     public string BattlerName { get; }
+    public Sprite EventIcon;
     public int MaxHP { get; }
     public int RewardGold;
     public EnemyAIData EnemyAI;

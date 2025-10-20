@@ -13,12 +13,12 @@ MonoBehaviour:
   m_Name: NijuKekkai
   m_EditorClassIdentifier: 
   CardName: "\u4E8C\u91CD\u7D50\u754C"
-  Artwork: {fileID: 0}
+  Artwork: {fileID: 21300000, guid: f9299ec0cbef0ec4c91d654edffd2e62, type: 3}
   Costs:
   - Type: 0
     Amount: 2
   CardType: 1
-  TriggerTime: 2
+  Delay: 5
   Description: "\u5373\u5E2D\u7D50\u754C10\u3001\u7D50\u754C10\u3092\u5F97\u308B"
   CardEffects:
   - Definition: {fileID: 11400000, guid: 01b0a2d41ec3e8349bfb617fb16cf5e6, type: 2}
