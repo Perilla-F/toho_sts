@@ -10,7 +10,7 @@ public class PlayerController : MonoBehaviour
 
     [SerializeField] private TimelineManager timeline;
     public bool HasChosenAction { get; private set; } = false;
-    public bool EndTurnRequested { get; private set; } = false;
+    public bool TurnEndRequested { get; private set; } = false;
     public CardObj ChosenCard { get; private set; }
 
     /// <summary>
@@ -19,7 +19,7 @@ public class PlayerController : MonoBehaviour
     public void BeginSelection()
     {
         HasChosenAction = false;
-        EndTurnRequested = false;
+        TurnEndRequested = false;
     }
 
     /// <summary>
@@ -44,9 +44,9 @@ public class PlayerController : MonoBehaviour
     /// <summary>
     /// ターン終了ボタン押下状態
     /// </summary>
-    public void EndTurnButton()
+    public void TurnEndButton()
     {
-        EndTurnRequested = true;
+        TurnEndRequested = true;
     }
 
     /// <summary>

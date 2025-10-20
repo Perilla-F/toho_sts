@@ -5,10 +5,11 @@ using UnityEngine;
 public class CardData : ScriptableObject
 {
     public string CardName;
+    public CardRarity Rarity;
     public Sprite Artwork;
     public List<ResourceCost> Costs;
-    public CardType CardType;
     public int Delay;
+    public CardType CardType;
     public string Description;
     public List<CardEffectInstance> CardEffects;
     public CardEffectTarget CardEffectTarget;

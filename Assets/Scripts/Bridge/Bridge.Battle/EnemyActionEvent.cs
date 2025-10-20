@@ -1,17 +1,19 @@
+using UnityEngine.UI;
+
 public class EnemyActionEvent : BattleEvent
 {
-    private EnemyUnit enemy;
+    public EnemyUnit Enemy;
     private EnemyAction action;
 
     public EnemyActionEvent(EnemyUnit enemy, EnemyAction action, int scheduledTime, int priority)
         : base(scheduledTime, priority)
     {
-        this.enemy = enemy;
+        this.Enemy = enemy;
         this.action = action;
     }
 
     public override void Execute(IBattleContext context)
     {
-        action.Execute(context, enemy);
+        action.Execute(context, Enemy);
     }
 }

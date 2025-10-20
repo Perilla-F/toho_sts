@@ -27,22 +27,22 @@ public class HeroUnit : IHeroUnit
 
     public override void TakeDamage(int amount)
     {
-        HPResource.SetHP(Mathf.Max(0, HPResource.GetHP() - amount));
+        HPResource.TakeDamage(amount);
     }
 
     public override void Heal(int amount)
     {
-        HPResource.SetHP(Mathf.Min(HPResource.MaxHP, HPResource.GetHP() + amount));
+        HPResource.Gain(amount);
     }
 
     public override void ApplyBlock(int amount)
     {
-        Block += amount;
+        HPResource.ApplyBlock(amount);
     }
 
     public override void ApplySimpleBlock(int amount)
     {
-        SimpleBlock += amount;
+        HPResource.ApplySimpleBlock(amount);
     }
 
     public override int GetAttackBonus()

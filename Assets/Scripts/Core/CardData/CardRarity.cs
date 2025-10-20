@@ -1,0 +1,1 @@
+public enum CardRarity { Rare, Uncommon, Common }

@@ -1,11 +1,8 @@
-using System;
-using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using Unity.IO.LowLevel.Unsafe;
 
 public class BattleSystem : MonoBehaviour, IBattleSystem
 {
@@ -131,7 +128,7 @@ public class BattleSystem : MonoBehaviour, IBattleSystem
             }
 
             // ターンエンドが押された場合
-            if (player.EndTurnRequested)
+            if (player.TurnEndRequested)
             {
                 endTurn = true;
             }
