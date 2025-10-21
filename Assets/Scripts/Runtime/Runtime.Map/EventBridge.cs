@@ -3,11 +3,12 @@ using UnityEngine;
 public class EventBridge : MonoBehaviour
 {
     [SerializeField] private EventUIManager uiManager;
+    private EventRunner runner;
 
     private void Awake()
     {
-        EventRunner.Instance.OnStepChanged += HandleStepChanged;
-        EventRunner.Instance.OnEventEnded += HandleEventEnded;
+        runner.OnStepChanged += HandleStepChanged;
+        runner.OnEventEnded += HandleEventEnded;
 
         uiManager.OnOptionSelected += HandleOptionSelected;
     }
@@ -19,7 +20,7 @@ public class EventBridge : MonoBehaviour
 
     private void HandleOptionSelected(EventOption option)
     {
-        EventRunner.Instance.SelectOption(option);
+        runner.SelectOption(option);
     }
 
     private void HandleEventEnded()
@@ -29,10 +30,10 @@ public class EventBridge : MonoBehaviour
 
     private void OnDestroy()
     {
-        if (EventRunner.Instance == null) return;
+        if (runner == null) return;
 
-        EventRunner.Instance.OnStepChanged -= HandleStepChanged;
-        EventRunner.Instance.OnEventEnded -= HandleEventEnded;
+        runner.OnStepChanged -= HandleStepChanged;
+        runner.OnEventEnded -= HandleEventEnded;
         uiManager.OnOptionSelected -= HandleOptionSelected;
     }
 }

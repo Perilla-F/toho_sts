@@ -7,7 +7,7 @@ using TMPro;
 
 public class EventUIManager : MonoBehaviour
 {
-    [SerializeField] private Text descriptionText;
+    [SerializeField] private TextMeshProUGUI descriptionText;
     [SerializeField] private Transform optionRoot;
     [SerializeField] private Button optionButtonPrefab;
     [SerializeField] private Image eventImage;

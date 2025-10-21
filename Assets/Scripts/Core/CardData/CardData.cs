@@ -9,6 +9,8 @@ public class CardData : ScriptableObject
     public Sprite Artwork;
     public List<ResourceCost> Costs;
     public int Delay;
+    public int UpgradedLevel;
+    public bool IsUpgraded;
     public CardType CardType;
     public string Description;
     public List<CardEffectInstance> CardEffects;

@@ -1,11 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class EnemyManager : MonoBehaviour
 {
     List<EnemyUnit> _enemies = new List<EnemyUnit>();
     public List<EnemyUnit> Enemies { get => _enemies; }
+    [SerializeField] private Image actionIconImage;
+
+    private Vector3 _baseScale;
 
     /// <summary>
     /// 生存エネミーのリストに登録
@@ -56,5 +60,15 @@ public class EnemyManager : MonoBehaviour
     public void ClearEnemies()
     {
         _enemies.Clear();
+    }
+
+    /// <summary>
+    /// 行動予告のサイズ変更
+    /// </summary>
+    /// <param name="highlight"></param>
+    public void ShowActionHighlight(bool highlight)
+    {
+        if (actionIconImage == null) return;
+        actionIconImage.transform.localScale = highlight ? _baseScale * 1.3f : _baseScale;
     }
 }

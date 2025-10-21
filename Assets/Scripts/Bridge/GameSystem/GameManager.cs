@@ -4,7 +4,26 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    public static GameManager Instance;
+    public static GameManager instance;
+    public static GameManager Instance
+    {
+        get
+        {
+            if (instance == null)
+            {
+                var prefab = Resources.Load<GameManager>("Prefabs/Managers/GameManager");
+                if (prefab != null)
+                {
+                    Instantiate(prefab);
+                }
+                else
+                {
+                    Debug.LogError("GameManager prefab not found in Resources!");
+                }
+            }
+            return instance;
+        }
+    }
 
     public HeroData SelectedHeroData;
     public HeroBattler HeroBattler;
@@ -13,15 +32,19 @@ public class GameManager : MonoBehaviour
 
     private void Awake()
     {
-        if (Instance == null)
-        {
-            Instance = this;
-            DontDestroyOnLoad(gameObject);
-        }
-        else
+        if (instance != null && instance != this)
         {
             Destroy(gameObject);
+            return;
         }
+
+        instance = this;
+        DontDestroyOnLoad(gameObject);
+    }
+
+    public void InitializeGame()
+    {
+        Debug.Log("GameManager initialized!");
     }
 
     public void InitializePlayer()

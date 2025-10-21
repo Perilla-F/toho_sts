@@ -4,17 +4,38 @@ using System.Collections.Generic;
 
 public class SaveManager : MonoBehaviour
 {
-    public static SaveManager Instance { get; private set; }
+    private static SaveManager instance;
+    public static SaveManager Instance
+    {
+        get
+        {
+            if (instance == null)
+            {
+                var prefab = Resources.Load<SaveManager>("Prefabs/Managers/SaveManager");
+                if (prefab != null)
+                {
+                    Instantiate(prefab);
+                }
+                else
+                {
+                    Debug.LogError("SaveManager prefab not found in Resources!");
+                }
+            }
+            return instance;
+        }
+    }
+
     private string savePath;
 
     private void Awake()
     {
-        if (Instance != null)
+        if (instance != null && instance != this)
         {
             Destroy(gameObject);
             return;
         }
-        Instance = this;
+
+        instance = this;
         DontDestroyOnLoad(gameObject);
 
         savePath = Path.Combine(Application.persistentDataPath, "save.json");
@@ -24,16 +45,16 @@ public class SaveManager : MonoBehaviour
     {
         var data = new SaveData
         {
-            LastEvent = MapManager.Instance.LastEventData,
+            LastEvent = MapBootstrap.Instance.Manager.LastEventData,
             HPResource = GameManager.Instance.HeroBattler.HPResource,
             //gold = PlayerData.Instance.Gold,
             Flags = new List<string>(FlagManager.Instance.GetAllFlags()),
             Map = new MapSaveData
             {
-                mapData = MapManager.Instance.mapData,
-                cellX = MapManager.Instance.CurrentCell.GridPos.x,
-                cellY = MapManager.Instance.CurrentCell.GridPos.y,
-                lastEventData = MapManager.Instance.LastEventData
+                mapData = MapBootstrap.Instance.Manager.mapData,
+                cellX = MapBootstrap.Instance.Manager.CurrentCell.x,
+                cellY = MapBootstrap.Instance.Manager.CurrentCell.y,
+                lastEventData = MapBootstrap.Instance.Manager.LastEventData
             }
         };
 
@@ -60,11 +81,8 @@ public class SaveManager : MonoBehaviour
         GameManager.Instance.HeroBattler.HPResource = data.HPResource;
         /// PlayerData.Instance.Gold = data.gold;
         FlagManager.Instance.LoadFromSaveData(data.Flags);
-        GameCoordinator.Instance.RestoreMap(data.Map);
-        MapManager.Instance.mapData = data.Map.mapData;
-        MapManager.Instance.LastEventData = data.LastEvent;
 
-        MapManager.Instance.TryResumeLastEvent();
+        MapBootstrap.Instance.TryResumeLastEvent(data);
 
         Debug.Log("Game loaded!");
     }

@@ -1,9 +1,0 @@
-{
-    "events": [
-        {
-            "id": "KogasaEvent",
-            "displayName": "イベント1",
-            "description": "イベントテキスト"
-        }
-    ]
-}

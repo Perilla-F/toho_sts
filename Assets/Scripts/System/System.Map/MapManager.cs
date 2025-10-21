@@ -3,85 +3,77 @@ using System.Collections.Generic;
 using Codice.Client.BaseCommands;
 using UnityEngine;
 
-public class MapManager : MonoBehaviour
+public class MapManager
 {
-    public static MapManager Instance { get; set; }
 
     [Header("Map Settings")]
-    [SerializeField] private int Width = 5;
-    [SerializeField] private int Height = 10;
+    private int width;
+    private int height;
 
     [Header("Event Data")]
-    [SerializeField] private EventDatabase EventDatabase;
+    private EventDatabase eventDatabase;
 
-    public Cell CurrentCell { get; private set; }
-    public LastEventData LastEventData { get; set; }
+    public Vector2Int CurrentCell { get; private set; }
     public Dictionary<Vector2Int, MapCellState> mapData;
+    public LastEventData LastEventData { get; set; }
 
-    // イベントとしてBridgeに通知する
-    public event Action<Dictionary<Vector2Int, MapCellState>> OnMapLoadRequested;
-    public event Action OnAutoSaveRequested;
-    public event Action<Dictionary<Vector2Int, MapCellState>> OnMapGenerated;
+    private readonly IMapView mapView;
 
-    private void Awake()
+    public MapManager(IMapView mapView, int width, int height)
     {
-        if (Instance != null) { Destroy(gameObject); return; }
-        Instance = this;
-        DontDestroyOnLoad(gameObject);
+        this.mapView = mapView;
+        this.width = width;
+        this.height = height;
     }
 
     /// <summary>
     /// ランダムマップ生成リクエスト
     /// </summary>
-    public void GenerateMapData()
+    public void GenerateMapData(Vector2Int current)
     {
         mapData = new Dictionary<Vector2Int, MapCellState>();
 
-        Vector2Int startPos = new(Width / 2, 0);
-        mapData[startPos] = new MapCellState(
+        Vector2Int startPos = new(width / 2, 0);
+        MapCellState startCellState = new MapCellState(
             startPos,
             false,
-            CreateCell(CellType.Start, startPos, true)
+            CellType.Start,
+            true
         );
+        mapData.Add(startPos, startCellState);
 
-        for (int y = 1; y < Height - 1; y++)
+        for (int y = 1; y < height - 2; y++)
         {
-            for (int x = 0; x < Width; x++)
+            for (int x = 0; x < width; x++)
             {
                 Vector2Int pos = new Vector2Int(x, y);
-                mapData[pos] = new MapCellState(pos, false, CreateCell(RandomCellType(), pos, false));
+                MapCellState cellState = new MapCellState(pos, false, RandomCellType(), false);
+                mapData.Add(pos, cellState);
             }
         }
 
-        Vector2Int goalPos = new(Width / 2, Height - 1);
-        mapData[goalPos] = new MapCellState(
+        Vector2Int restPos = new(width / 2, height - 2);
+        MapCellState restCellState = new MapCellState(
+            restPos,
+            false,
+            CellType.Rest,
+            true
+        );
+        mapData.Add(restPos, restCellState);
+
+        Vector2Int goalPos = new(width / 2, height - 1);
+        MapCellState goalCellState = new MapCellState(
             goalPos,
             false,
-            CreateCell(CellType.Start, startPos, true)
-        ); ;
+            CellType.Goal,
+            true
+        );
+        mapData.Add(goalPos, goalCellState);
 
-        CurrentCell.GridPos = startPos;
-
-        // Bridge層に「データができたよ」と通知
-        OnMapGenerated?.Invoke(mapData);
-    }
-
-    private Cell CreateCell(CellType type, Vector2Int pos, bool isWide = false)
-    {
-        Cell cell = new Cell();
-        if (cell != null)
-        {
-            cell.Initialize(type, pos, isWide);
-            // 初期化
-            cell.AssignedEvent = type == CellType.Event ? GetRandomEvent() : null;
-
-            // セルに振る舞いを割り当て
-            AssignBehavior(cell, type);
-
-            mapData[pos].Cell = cell;
-        }
-
-        return cell;
+        // MapGeneratorへ
+        mapView.BuildUpUI(mapData);
+        mapView.SetAllUnclickable();
+        mapView.SetCurrent(current, GetClickable(current));
     }
 
     private CellType RandomCellType()
@@ -111,99 +103,56 @@ public class MapManager : MonoBehaviour
         return CellType.Battle;
     }
 
-    private void AssignBehavior(Cell cell, CellType type)
+    /// <summary>
+    /// セルをクリックされると呼び出される
+    /// </summary>
+    /// <param name="pos"></param>
+    public void OnCellClicked(Vector2Int pos)
     {
-        switch (type)
-        {
-            case CellType.Event:
-                var evt = cell.gameObject.AddComponent<EventCell>();
-                evt.AssignedEvent = cell.AssignedEvent;
-                break;
-            case CellType.Rest:
-                cell.gameObject.AddComponent<RestCell>();
-                break;
-            case CellType.Battle:
-                cell.gameObject.AddComponent<BattleCell>();
-                break;
-            case CellType.Shop:
-                cell.gameObject.AddComponent<ShopCell>();
-                break;
-            case CellType.Treasure:
-                cell.gameObject.AddComponent<TreasureCell>();
-                break;
-            case CellType.EliteBattle:
-                cell.gameObject.AddComponent<EliteCell>();
-                break;
-            case CellType.BossBattle:
-                cell.gameObject.AddComponent<BossCell>();
-                break;
-            case CellType.Start:
-            case CellType.Goal:
-                break;
-        }
+        // 現在地を更新
+        CurrentCell = pos;
+
+        // クリック処理ルール
+        mapView.SetAllUnclickable();
+        mapView.SelectCell(pos);
+        mapView.SetClickable(GetClickable(pos));
     }
 
-    private void UpdateSelectableCells()
+    private List<Vector2Int> GetClickable(Vector2Int current)
     {
-        foreach (var state in mapData.Values)
-            state.Cell.SetSelectable(false);
+        var list = new List<Vector2Int>();
 
-        Vector2Int cp = CurrentCell.GridPos;
-        if (CurrentCell.IsWide)
+        if (mapData[current].IsWide)
         {
-            for (int x = 0; x < Width; x++)
-            {
-                Vector2Int next = new(x, cp.y + 1);
-                if (mapData.ContainsKey(next))
-                    mapData[next].Cell.SetSelectable(true);
-            }
+            list.Add(current + Vector2Int.up);
+            list.Add(current + Vector2Int.up + Vector2Int.left);
+            list.Add(current + Vector2Int.up + Vector2Int.left + Vector2Int.left);
+            list.Add(current + Vector2Int.up + Vector2Int.right);
+            list.Add(current + Vector2Int.up + Vector2Int.right + Vector2Int.right);
         }
-        else if (mapData[new Vector2Int(2, cp.y + 1)].Cell.IsWide)
+        else if (mapData[new Vector2Int(2, current.y + 1)].IsWide)
         {
-            mapData[new Vector2Int(2, cp.y + 1)].Cell.SetSelectable(true);
+            list.Add(new Vector2Int(2, current.y + 1));
         }
         else
         {
             for (int dx = -1; dx <= 1; dx++)
             {
-                Vector2Int next = new(cp.x + dx, cp.y + 1);
+                Vector2Int next = new(current.x + dx, current.y + 1);
                 if (mapData.ContainsKey(next))
-                    mapData[next].Cell.SetSelectable(true);
+                {
+                    list.Add(next);
+                }
             }
         }
-    }
-
-    public void SelectCell(Cell cell)
-    {
-        if (cell == null) return;
-
-        cell.Behavior?.OnPlayerEnter();
-        CurrentCell.SetCurrent(false);
-        CurrentCell = cell;
-        CurrentCell.SetCurrent(true);
-        UpdateSelectableCells();
-    }
-
-    /// <summary>
-    /// 座標復元
-    /// </summary>
-    /// <param name="pos"></param>
-    /// <returns></returns>
-    public Cell GetCellAt(Vector2Int pos)
-    {
-        return mapData.ContainsKey(pos) ? mapData[pos].Cell : null;
-    }
-
-    private MultiStepEvent GetRandomEvent()
-    {
-        return EventDatabase.GetRandomEvent();
+        return list;
     }
 
     // Coordinator から状態を設定
     public void SetMapState(Dictionary<Vector2Int, MapCellState> mapCellStates, Vector2Int cellPos, LastEventData lastEventData)
     {
         mapData = mapCellStates;
-        CurrentCell = mapCellStates[cellPos].Cell;
+        CurrentCell = cellPos;
         LastEventData = lastEventData == null ? null : lastEventData;
     }
 
@@ -215,32 +164,33 @@ public class MapManager : MonoBehaviour
         LastEventData = new LastEventData
         {
             eventId = eventId,
+            stepId = null,
             isCompleted = false,
-            selectedOptionId = null
+        };
+    }
+
+    /// <summary>
+    /// ステップ移動した際に呼ばれる
+    /// </summary>
+    /// <param name="eventId"></param>
+    /// <param name="stepId"></param>
+    public void StepLastEvent(string eventId, string stepId)
+    {
+        LastEventData = new LastEventData
+        {
+            eventId = eventId,
+            stepId = stepId,
+            isCompleted = false,
         };
     }
 
     /// <summary>
     /// イベント終了時に呼ばれる
     /// </summary>
-    public void CompleteLastEvent(string optionId)
+    public void CompleteLastEvent()
     {
         if (LastEventData == null) return;
-
         LastEventData.isCompleted = true;
-        LastEventData.selectedOptionId = optionId;
-    }
-
-    /// <summary>
-    /// イベント再開
-    /// </summary>
-    public void TryResumeLastEvent()
-    {
-        if (LastEventData != null && !LastEventData.isCompleted)
-        {
-            var evt = EventDatabase.GetEvent(LastEventData.eventId) as MultiStepEvent;
-            EventRunner.Instance.StartEvent(evt);
-        }
     }
 
     public MapSaveData GetSaveData()
@@ -248,18 +198,16 @@ public class MapManager : MonoBehaviour
         return new MapSaveData
         {
             mapData = mapData,
-            cellX = CurrentCell.GridPos.x,
-            cellY = CurrentCell.GridPos.y,
+            cellX = CurrentCell.x,
+            cellY = CurrentCell.y,
         };
     }
 
-    // Bridge層から受け取る
     public void LoadMap(SaveData saveData)
     {
         mapData = saveData.Map.mapData;
-        CurrentCell = saveData.Map.mapData[CurrentCell.GridPos].Cell;
-        OnMapGenerated?.Invoke(mapData);
-        SelectCell(CurrentCell);
+        CurrentCell = saveData.Map.mapData[CurrentCell].GridPos;
+        mapView.BuildUpUI(saveData.Map.mapData);
     }
 
     public Dictionary<Vector2Int, MapCellState> GetMapCellStates()

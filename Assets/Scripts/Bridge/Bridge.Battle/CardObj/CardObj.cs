@@ -16,7 +16,7 @@ public class CardObj : ICardObj
     {
         Source = source;
         ResourceRegistry = resourceRegistry;
-        Delay = source.Delay;
+        Delay = source.Data.Delay;
     }
 
     public void BindMoveToHand(Func<UniTask> moveFunc)

@@ -10,13 +10,13 @@ public class CharacterSelectUI : MonoBehaviour
     {
         GameManager.Instance.SelectedHeroData = _reimu;
         GameManager.Instance.InitializePlayer();
-        SceneManager.LoadScene("BattleScene");
+        SceneManager.LoadScene("MapScene");
     }
 
     public void OnSelectMarisa()
     {
         GameManager.Instance.SelectedHeroData = _marisa;
         GameManager.Instance.InitializePlayer();
-        SceneManager.LoadScene("BattleScene");
+        SceneManager.LoadScene("MapScene");
     }
 }
