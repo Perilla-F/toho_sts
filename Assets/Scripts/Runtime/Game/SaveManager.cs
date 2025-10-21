@@ -45,7 +45,7 @@ public class SaveManager : MonoBehaviour
     {
         var data = new SaveData
         {
-            LastEvent = MapBootstrap.Instance.Manager.LastEventData,
+            LastEvent = EventBridge.Instance.runner.LastEventData,
             HPResource = GameManager.Instance.HeroBattler.HPResource,
             //gold = PlayerData.Instance.Gold,
             Flags = new List<string>(FlagManager.Instance.GetAllFlags()),
@@ -54,7 +54,7 @@ public class SaveManager : MonoBehaviour
                 mapData = MapBootstrap.Instance.Manager.mapData,
                 cellX = MapBootstrap.Instance.Manager.CurrentCell.x,
                 cellY = MapBootstrap.Instance.Manager.CurrentCell.y,
-                lastEventData = MapBootstrap.Instance.Manager.LastEventData
+                lastEventData = EventBridge.Instance.runner.LastEventData
             }
         };
 
@@ -82,7 +82,8 @@ public class SaveManager : MonoBehaviour
         /// PlayerData.Instance.Gold = data.gold;
         FlagManager.Instance.LoadFromSaveData(data.Flags);
 
-        MapBootstrap.Instance.TryResumeLastEvent(data);
+        if (data.Map.lastEventData != null && !data.Map.lastEventData.isCompleted)
+            EventBridge.Instance.runner.StartStep(data.LastEvent.stepId);
 
         Debug.Log("Game loaded!");
     }

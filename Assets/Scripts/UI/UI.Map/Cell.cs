@@ -19,7 +19,6 @@ public class Cell : MonoBehaviour
 
     [Header("状態管理")]
     public bool Cleared;
-    public CellBehavior Behavior;
 
     private Button _button;
     public bool IsSelectable;
@@ -94,7 +93,5 @@ public class Cell : MonoBehaviour
     {
         if (!IsSelectable) return;
         OnClicked?.Invoke(GridPos);
-
-        Behavior.OnPlayerEnter();
     }
 }

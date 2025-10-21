@@ -5,7 +5,7 @@ using UnityEngine.UI;
 using UnityEngine.AddressableAssets;
 using TMPro;
 
-public class EventUIManager : MonoBehaviour
+public class EventUIManager : MonoBehaviour, IEventView
 {
     [SerializeField] private TextMeshProUGUI descriptionText;
     [SerializeField] private Transform optionRoot;

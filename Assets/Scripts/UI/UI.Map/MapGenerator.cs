@@ -30,6 +30,14 @@ public class MapGenerator : MonoBehaviour, IMapView
     private Dictionary<Vector2Int, Cell> _map;
 
     public event Action<Vector2Int> OnCellClicked;
+    public event Action OnEnterBattle;
+    public event Action OnEnterElite;
+    public event Action OnEnterBossBattle;
+    public event Action OnEnterEvent;
+    public event Action OnEnterRest;
+    public event Action OnEnterShop;
+    public event Action OnEnteTreasure;
+    public event Action OnEnterGoal;
 
     private void Awake() => Instance = this;
 
@@ -58,23 +66,25 @@ public class MapGenerator : MonoBehaviour, IMapView
         float totalMapHeight = cellSize * Height;
         float startYOffset = -totalMapHeight / 2f + bottomMargin;
 
-        foreach (var pos in mapData.Keys)
+        foreach (var kvp in mapData)
         {
+            var pos = kvp.Key;
+            var state = kvp.Value;
 
-            if (mapData[pos].IsWide)
+            // Prefab選択
+            var prefab = state.IsWide ? WideCellPrefab : NormalCellPrefab;
+
+            // Cell生成
+            var cell = BuildCell(prefab, state, startYOffset, cellSize, Width, state.IsWide);
+            _map.Add(pos, cell);
+
+            // クリック時の処理を共通化
+            cell.OnClicked += clickedPos =>
             {
-                var cell = BuildCell(WideCellPrefab, mapData[pos], startYOffset, cellSize, Width, true);
-                _map.Add(pos, cell);
-                cell.OnClicked += pos => OnCellClicked?.Invoke(pos);
-            }
-            else
-            {
-                var cell = BuildCell(NormalCellPrefab, mapData[pos], startYOffset, cellSize, Width, false);
-                _map.Add(pos, cell);
-                cell.OnClicked += pos => OnCellClicked?.Invoke(pos);
-            }
+                OnCellClicked?.Invoke(clickedPos);
+                InvokeEnterEvent(cell.Type);
+            };
         }
-
         // Content の高さ調整
         AdjustContentSize(totalMapHeight, bottomMargin);
     }
@@ -105,11 +115,25 @@ public class MapGenerator : MonoBehaviour, IMapView
         cell.Initialize(state.Type, state.GridPos, isWide);
         cell.SetIcon(GetIcon(state.Type));
 
-        if (cell != null)
-        {
-            AssignBehavior(cell, state);
-        }
         return cell;
+    }
+
+    /// <summary>
+    /// CellType に応じて対応イベントを呼び出す
+    /// </summary>
+    private void InvokeEnterEvent(CellType type)
+    {
+        switch (type)
+        {
+            case CellType.Battle: OnEnterBattle?.Invoke(); break;
+            case CellType.EliteBattle: OnEnterElite?.Invoke(); break;
+            case CellType.BossBattle: OnEnterBossBattle?.Invoke(); break;
+            case CellType.Event: OnEnterEvent?.Invoke(); break;
+            case CellType.Rest: OnEnterRest?.Invoke(); break;
+            case CellType.Shop: OnEnterShop?.Invoke(); break;
+            case CellType.Treasure: OnEnteTreasure?.Invoke(); break;
+            case CellType.Goal: OnEnterGoal?.Invoke(); break;
+        }
     }
 
     /// <summary>
@@ -135,48 +159,10 @@ public class MapGenerator : MonoBehaviour, IMapView
         _ => null
     };
 
-    /// <summary>
-    /// セルに振る舞いを割り当て
-    /// </summary>
-    /// <param name="cell"></param>
-    /// <param name="type"></param>
-    private void AssignBehavior(Cell cell, MapCellState state)
-    {
-        switch (state.Type)
-        {
-            case CellType.Event:
-                cell.Behavior = new EventCell();
-                cell.Behavior.AssignedEvent = state.AssignedEvent;
-                break;
-            case CellType.Rest:
-                cell.Behavior = new RestCell();
-                break;
-            case CellType.Battle:
-                cell.Behavior = new BattleCell();
-                break;
-            case CellType.EliteBattle:
-                cell.Behavior = new EliteCell();
-                break;
-            case CellType.BossBattle:
-                cell.Behavior = new BossCell();
-                break;
-            case CellType.Shop:
-                cell.Behavior = new ShopCell();
-                break;
-            case CellType.Treasure:
-                cell.Behavior = new TreasureCell();
-                break;
-            case CellType.Start:
-            case CellType.Goal:
-                break;
-        }
-    }
-
     public void SelectCell(Vector2Int pos)
     {
         if (pos == null) return;
         _map[pos].SetCurrent(true);
-        _map[pos].Behavior?.OnPlayerEnter();
     }
 
     public void SetClickable(IEnumerable<Vector2Int> positions)

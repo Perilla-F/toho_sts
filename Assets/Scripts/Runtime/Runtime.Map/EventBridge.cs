@@ -2,20 +2,25 @@ using UnityEngine;
 
 public class EventBridge : MonoBehaviour
 {
+    public static EventBridge Instance { get; private set; }
+
     [SerializeField] private EventUIManager uiManager;
-    private EventRunner runner;
+    public EventRunner runner { get; private set; }
+
+    [Header("Event Data")]
+    [SerializeField] private EventDatabase EventDatabase;
+
 
     private void Awake()
     {
-        runner.OnStepChanged += HandleStepChanged;
-        runner.OnEventEnded += HandleEventEnded;
-
+        Instance = this;
+        runner.OnStartStep += HandleStartStep;
         uiManager.OnOptionSelected += HandleOptionSelected;
     }
 
-    private void HandleStepChanged(EventStep step)
+    private void HandleStartStep(EventStep step)
     {
-        uiManager.ShowStep(step);
+        SaveManager.Instance.SaveGame();
     }
 
     private void HandleOptionSelected(EventOption option)
@@ -23,17 +28,22 @@ public class EventBridge : MonoBehaviour
         runner.SelectOption(option);
     }
 
-    private void HandleEventEnded()
+    /// <summary>
+    /// イベント再開
+    /// </summary>
+    public void TryResumeLastEvent(SaveData saveData)
     {
-        uiManager.Hide();
+        if (saveData.Map.lastEventData != null && !saveData.Map.lastEventData.isCompleted)
+        {
+            var evt = EventDatabase.GetEvent(saveData.Map.lastEventData.eventId) as MultiStepEvent;
+            runner.StartStep(saveData.Map.lastEventData.stepId);
+        }
     }
 
     private void OnDestroy()
     {
         if (runner == null) return;
 
-        runner.OnStepChanged -= HandleStepChanged;
-        runner.OnEventEnded -= HandleEventEnded;
-        uiManager.OnOptionSelected -= HandleOptionSelected;
+        runner.OnStartStep -= HandleStartStep;
     }
 }
