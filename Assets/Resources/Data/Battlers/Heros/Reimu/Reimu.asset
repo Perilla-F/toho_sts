@@ -17,7 +17,18 @@ MonoBehaviour:
   _maxMana: 3
   DrawCount: 5
   _portrait: {fileID: 0}
-  StartingDeck: []
+  StartingDeck:
+  - {fileID: 11400000, guid: a029926735429e640a9be4c449d5cc14, type: 2}
+  - {fileID: 11400000, guid: a029926735429e640a9be4c449d5cc14, type: 2}
+  - {fileID: 11400000, guid: a029926735429e640a9be4c449d5cc14, type: 2}
+  - {fileID: 11400000, guid: a029926735429e640a9be4c449d5cc14, type: 2}
+  - {fileID: 11400000, guid: a029926735429e640a9be4c449d5cc14, type: 2}
+  - {fileID: 11400000, guid: 46dcad6cfe080e249b9e20349555493f, type: 2}
+  - {fileID: 11400000, guid: 46dcad6cfe080e249b9e20349555493f, type: 2}
+  - {fileID: 11400000, guid: 46dcad6cfe080e249b9e20349555493f, type: 2}
+  - {fileID: 11400000, guid: 46dcad6cfe080e249b9e20349555493f, type: 2}
+  - {fileID: 11400000, guid: 46dcad6cfe080e249b9e20349555493f, type: 2}
+  - {fileID: 11400000, guid: 9f6dafda4b1f3fa469e2056a7f08e6f8, type: 2}
   UIPrefab: {fileID: 0}
   ModelPrefab: {fileID: 0}
   ModelYOffset: 0

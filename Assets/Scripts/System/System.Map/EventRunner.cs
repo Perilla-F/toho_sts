@@ -1,10 +1,8 @@
 using System;
 using UnityEngine;
 
-public class EventRunner : MonoBehaviour
+public class EventRunner
 {
-    public static EventRunner Instance { get; private set; }
-
     public event Action<EventStep> OnStepChanged;
     public event Action OnEventEnded;
 
@@ -12,17 +10,6 @@ public class EventRunner : MonoBehaviour
     private EventStep currentStep;
 
     public event Action<EventOption> OnOptionSelected;
-
-    private void Awake()
-    {
-        if (Instance != null)
-        {
-            Destroy(gameObject);
-            return;
-        }
-        Instance = this;
-        DontDestroyOnLoad(gameObject);
-    }
 
     public void StartEvent(MultiStepEvent evt)
     {
@@ -59,7 +46,7 @@ public class EventRunner : MonoBehaviour
             nextId = option.ConditionalNextStepId;
     }
 
-    private void StartStep(string stepId)
+    public void StartStep(string stepId)
     {
         currentStep = currentEvent.GetStep(stepId);
         OnStepChanged?.Invoke(currentStep);

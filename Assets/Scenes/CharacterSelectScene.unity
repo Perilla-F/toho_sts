@@ -181,7 +181,7 @@ MonoBehaviour:
       m_Calls: []
   m_text: "\u9727\u96E8 \u9B54\u7406\u6C99"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: c73aedb6994bb48488a8c1b306bdb29a, type: 2}
+  m_fontAsset: {fileID: 0}
   m_sharedMaterial: {fileID: -2211123048327277704, guid: c73aedb6994bb48488a8c1b306bdb29a, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
@@ -340,7 +340,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1150945539}
-        m_TargetAssemblyTypeName: CharacterSelectUI, Assembly-CSharp
+        m_TargetAssemblyTypeName: CharacterSelectUI, Game.UI
         m_MethodName: OnSelectReimu
         m_Mode: 1
         m_Arguments:
@@ -448,7 +448,7 @@ MonoBehaviour:
       m_Calls: []
   m_text: "\u535A\u9E97\u970A\u5922"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: c73aedb6994bb48488a8c1b306bdb29a, type: 2}
+  m_fontAsset: {fileID: 0}
   m_sharedMaterial: {fileID: -2211123048327277704, guid: c73aedb6994bb48488a8c1b306bdb29a, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
@@ -552,8 +552,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c20afa8b363d99848a2b7e081a1592cb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  reimu: {fileID: 11400000, guid: 39fab71f997a28d438c98da385749b2d, type: 2}
-  marisa: {fileID: 11400000, guid: e2420fb00f011544280adac8d59589e7, type: 2}
+  _reimu: {fileID: 11400000, guid: 39fab71f997a28d438c98da385749b2d, type: 2}
+  _marisa: {fileID: 0}
 --- !u!4 &1150945540
 Transform:
   m_ObjectHideFlags: 0

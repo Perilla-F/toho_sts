@@ -16,7 +16,12 @@ MonoBehaviour:
   m_Data:
     m_SerializedData: []
   m_GUID: 77878ff9bc48fd645a549257db1b96e0
-  m_SerializeEntries: []
+  m_SerializeEntries:
+  - m_GUID: b3b4795f699ddef459190f8849ec1afd
+    m_Address: Assets/AddressableAssets/EventsImages/KogasaEvent.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 67bea8b8c0415734aa33929ca1e95256, type: 2}
   m_SchemaSet:

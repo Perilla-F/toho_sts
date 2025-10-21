@@ -4,6 +4,7 @@ public class EnemyActionEvent : BattleEvent
 {
     public EnemyUnit Enemy;
     private EnemyAction action;
+    public EnemyManager ReferenceEnemy;
 
     public EnemyActionEvent(EnemyUnit enemy, EnemyAction action, int scheduledTime, int priority)
         : base(scheduledTime, priority)
