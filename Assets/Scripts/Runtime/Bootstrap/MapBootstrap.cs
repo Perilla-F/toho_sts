@@ -30,11 +30,7 @@ public class MapBootstrap : MonoBehaviour
         gameContext = gameManager.GetGameContext();
 
         Manager = new MapManager(generator, Width, Height);
-<<<<<<< HEAD:Assets/Scripts/Runtime/Runtime.Map/MapBootstrap.cs
-        Runner = new EventRunner(eventUIManager);
-=======
         Runner = new EventRunner(gameContext, flagManager);
->>>>>>> origin/battle-system-laptop:Assets/Scripts/Runtime/Bootstrap/MapBootstrap.cs
 
         if (Manager != null)
         {
@@ -68,14 +64,11 @@ public class MapBootstrap : MonoBehaviour
         }
     }
 
-<<<<<<< HEAD:Assets/Scripts/Runtime/Runtime.Map/MapBootstrap.cs
-=======
     private void Start()
     {
         ServiceLocator.Get<GameEntryPoint>().OnMapManagerReady(Manager);
     }
 
->>>>>>> origin/battle-system-laptop:Assets/Scripts/Runtime/Bootstrap/MapBootstrap.cs
     private void HandleAutoSaveRequested()
     {
         SaveMap();
@@ -99,17 +92,12 @@ public class MapBootstrap : MonoBehaviour
     /// </summary>
     public void RestoreMap(MapSaveData saveData)
     {
-<<<<<<< HEAD:Assets/Scripts/Runtime/Runtime.Map/MapBootstrap.cs
-=======
         generator.BuildUpUI(saveData.mapData);
 
->>>>>>> origin/battle-system-laptop:Assets/Scripts/Runtime/Bootstrap/MapBootstrap.cs
         Manager.SetMapState(
             saveData.mapData,
             new Vector2Int(saveData.cellX, saveData.cellY)
         );
-<<<<<<< HEAD:Assets/Scripts/Runtime/Runtime.Map/MapBootstrap.cs
-=======
 
         Manager.OnCellClicked(new Vector2Int(saveData.cellX, saveData.cellY));
 
@@ -129,7 +117,6 @@ public class MapBootstrap : MonoBehaviour
     {
         Manager.CompleteLastEvent();
         SaveMap();
->>>>>>> origin/battle-system-laptop:Assets/Scripts/Runtime/Bootstrap/MapBootstrap.cs
     }
 
     private void HandleEventOptionSelected(EventOption option)
@@ -137,8 +124,6 @@ public class MapBootstrap : MonoBehaviour
         // セーブやマップ更新、フラグ管理など
     }
 
-<<<<<<< HEAD:Assets/Scripts/Runtime/Runtime.Map/MapBootstrap.cs
-=======
     public void StartEvent(MultiStepEvent evt)
     {
         Runner.StartEvent(evt);
@@ -168,5 +153,4 @@ public class MapBootstrap : MonoBehaviour
         saveManager.SaveMap(saveData);
     }
 
->>>>>>> origin/battle-system-laptop:Assets/Scripts/Runtime/Bootstrap/MapBootstrap.cs
 }

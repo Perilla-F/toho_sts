@@ -3,43 +3,28 @@ using UnityEngine;
 
 public class EventRunner
 {
-<<<<<<< HEAD
-    private IEventView eventView;
-
-    public event Action<EventStep> OnStartStep;
-=======
     private GameContext context;
     private IFlagManager flagManager;
 
+    private IEventView eventView;
+
     public event Action<EventStep> OnStepChanged;
     public event Action OnEventEnded;
->>>>>>> origin/battle-system-laptop
 
     private MultiStepEvent currentEvent;
     private EventStep currentStep;
+    public LastEventData LastEventData;
+    private MapSaveData mapSaveData;
 
+    public event Action<MapSaveData> OnStartStep;
     public event Action<EventOption> OnOptionSelected;
 
-<<<<<<< HEAD
-    public LastEventData LastEventData { get; set; }
-
-    public EventRunner(IEventView eventView)
-    {
-        this.eventView = eventView;
-    }
-
-    /// <summary>
-    /// イベント開始
-    /// </summary>
-    /// <param name="evt"></param>
-=======
     public EventRunner(GameContext context, IFlagManager flagManager)
     {
         this.context = context;
         this.flagManager = flagManager;
     }
 
->>>>>>> origin/battle-system-laptop
     public void StartEvent(MultiStepEvent evt)
     {
         currentEvent = evt;
@@ -83,18 +68,20 @@ public class EventRunner
     {
         // --- フラグ処理 ---
         if (!string.IsNullOrEmpty(option.FlagToSet))
-            FlagManager.Instance.SetFlag(option.FlagToSet);
             flagManager.SetFlag(option.FlagToSet);
         if (!string.IsNullOrEmpty(option.FlagToRemove))
-            FlagManager.Instance.RemoveFlag(option.FlagToRemove);
             flagManager.RemoveFlag(option.FlagToRemove);
 
         // --- 条件判定 ---
         string nextId = option.DefaultNextStepId;
-        if (option.Condition != null && option.Condition.IsMet())
         if (option.Condition != null && option.Condition.IsMet(context, flagManager))
             nextId = option.ConditionalNextStepId;
         return nextId;
+    }
+
+    public void SetMapData(MapSaveData mapSaveData)
+    {
+        this.mapSaveData = mapSaveData;
     }
 
     /// <summary>
@@ -110,7 +97,7 @@ public class EventRunner
             stepId = stepId,
             isCompleted = false,
         };
-        OnStartStep?.Invoke(currentStep);
+        OnStartStep?.Invoke(mapSaveData);
         eventView.ShowStep(currentStep);
     }
 

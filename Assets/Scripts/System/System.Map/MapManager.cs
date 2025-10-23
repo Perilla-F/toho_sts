@@ -10,6 +10,8 @@ public class MapManager
     private int width;
     private int height;
 
+    public LastEventData LastEventData;
+
     public Vector2Int CurrentCell { get; private set; }
     public Dictionary<Vector2Int, MapCellState> mapData;
 
@@ -175,6 +177,11 @@ public class MapManager
     public Dictionary<Vector2Int, MapCellState> GetMapCellStates()
     {
         return mapData;
+    }
+
+    public void CompleteLastEvent()
+    {
+        LastEventData.isCompleted = true;
     }
 
 }

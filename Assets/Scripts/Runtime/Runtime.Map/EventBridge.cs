@@ -2,25 +2,26 @@ using UnityEngine;
 
 public class EventBridge : MonoBehaviour
 {
-    public static EventBridge Instance { get; private set; }
+    private SaveManager saveManager;
 
-    [SerializeField] private EventUIManager uiManager;
+    private EventUIManager uiManager;
     public EventRunner runner { get; private set; }
 
     [Header("Event Data")]
-    [SerializeField] private EventDatabase EventDatabase;
+    private EventDatabase EventDatabase;
 
 
     private void Awake()
     {
-        Instance = this;
+        saveManager = ServiceLocator.Get<SaveManager>();
+
         runner.OnStartStep += HandleStartStep;
         uiManager.OnOptionSelected += HandleOptionSelected;
     }
 
-    private void HandleStartStep(EventStep step)
+    private void HandleStartStep(MapSaveData mapSaveData)
     {
-        SaveManager.Instance.SaveGame();
+        saveManager.SaveMap(mapSaveData);
     }
 
     private void HandleOptionSelected(EventOption option)
