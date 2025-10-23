@@ -9,6 +9,7 @@ public class BattleSystem : MonoBehaviour, IBattleSystem
 
     [SerializeField] private EnemyManager _enemyManager;
     [SerializeField] private PlayerController player;
+    private IGameManager _gameManager;
     private BattleDeck _battleDeck;
     private Hand _hand;
     private DiscardArea _discardArea;
@@ -17,6 +18,7 @@ public class BattleSystem : MonoBehaviour, IBattleSystem
     private bool _isProcessingEvents;
     private BattlePhase phase = BattlePhase.TurnStart;
     public BattleContext BattleContext { get; private set; }
+    private IAudioManager AudioService;
 
     public Hand Hand { get => _hand; }
     public BattleDeck BattleDeck { get => _battleDeck; }
@@ -27,7 +29,7 @@ public class BattleSystem : MonoBehaviour, IBattleSystem
 
     public int TurnCount { get; private set; } = 1;
 
-    public void Setup(BattleContext context, HeroUnit heroUnit, BattleDeck battleDeck, Hand hand, DiscardArea discardArea, TimelineManager timelineManager)
+    public void Setup(BattleContext context, HeroUnit heroUnit, BattleDeck battleDeck, Hand hand, DiscardArea discardArea, IGameManager gameManager, TimelineManager timelineManager, IAudioManager audioService)
     {
         BattleContext = context;
         _heroUnit = heroUnit;
@@ -37,7 +39,12 @@ public class BattleSystem : MonoBehaviour, IBattleSystem
         _timelineManager = timelineManager;
         context.GetDeckView().UpdateDeckCount();
 
+        _gameManager = gameManager;
+        AudioService = audioService;
+
         StartCoroutine(BattleLoop());
+
+        audioService?.PlayBGM("battle_theme", true);
     }
 
     /// <summary>
@@ -233,7 +240,7 @@ public class BattleSystem : MonoBehaviour, IBattleSystem
     {
         List<SourceCard> updatedDeck = _battleDeck.GetDeckAsSourceCards();
 
-        GameManager.Instance.UpdateAfterBattle(updatedDeck);
+        _gameManager.UpdateAfterBattle(updatedDeck);
 
         SceneManager.LoadScene("MapScene");
     }

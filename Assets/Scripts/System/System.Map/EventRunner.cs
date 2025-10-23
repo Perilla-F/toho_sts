@@ -3,6 +3,9 @@ using UnityEngine;
 
 public class EventRunner
 {
+    private GameContext context;
+    private IFlagManager flagManager;
+
     public event Action<EventStep> OnStepChanged;
     public event Action OnEventEnded;
 
@@ -10,6 +13,12 @@ public class EventRunner
     private EventStep currentStep;
 
     public event Action<EventOption> OnOptionSelected;
+
+    public EventRunner(GameContext context, IFlagManager flagManager)
+    {
+        this.context = context;
+        this.flagManager = flagManager;
+    }
 
     public void StartEvent(MultiStepEvent evt)
     {
@@ -36,13 +45,13 @@ public class EventRunner
     {
         // --- フラグ処理 ---
         if (!string.IsNullOrEmpty(option.FlagToSet))
-            FlagManager.Instance.SetFlag(option.FlagToSet);
+            flagManager.SetFlag(option.FlagToSet);
         if (!string.IsNullOrEmpty(option.FlagToRemove))
-            FlagManager.Instance.RemoveFlag(option.FlagToRemove);
+            flagManager.RemoveFlag(option.FlagToRemove);
 
         // --- 条件判定 ---
         string nextId = option.DefaultNextStepId;
-        if (option.Condition != null && option.Condition.IsMet())
+        if (option.Condition != null && option.Condition.IsMet(context, flagManager))
             nextId = option.ConditionalNextStepId;
     }
 

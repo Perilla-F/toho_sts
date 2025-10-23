@@ -2,18 +2,25 @@ using UnityEngine;
 
 public class SystemMenu : MonoBehaviour
 {
-    public void OnSaveButton()
+    private SaveManager saveManager;
+
+    private void Awake()
     {
-        SaveManager.Instance.SaveGame();
+        saveManager = ServiceLocator.Get<SaveManager>();
+    }
+
+    public void OnSaveButton(SaveData data)
+    {
+        saveManager.SaveGame(data);
     }
 
     public void OnLoadButton()
     {
-        SaveManager.Instance.LoadGame();
+        saveManager.LoadGame();
     }
 
     public void OnDeleteButton()
     {
-        SaveManager.Instance.DeleteSave();
+        saveManager.DeleteSave();
     }
 }

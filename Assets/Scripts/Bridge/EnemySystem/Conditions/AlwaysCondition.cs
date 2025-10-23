@@ -3,7 +3,7 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "EnemyAI/Condition/Always")]
 public class AlwaysCondition : Condition
 {
-    public override bool Check(IBattleContext context, EnemyUnit enemy)
+    public override bool Check(BattleContext context, EnemyUnit enemy)
     {
         return true;
     }

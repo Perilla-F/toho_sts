@@ -28,6 +28,12 @@ public class HPResource : IResource
         OnChanged?.Invoke();
     }
 
+    public void LoseHP(int amount)
+    {
+        CurrentResource = Mathf.Max(0, CurrentResource - amount);
+        OnChanged?.Invoke();
+    }
+
     public bool IsAlive()
     {
         return CurrentResource > 0;

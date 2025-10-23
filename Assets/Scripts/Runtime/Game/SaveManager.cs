@@ -2,90 +2,62 @@ using UnityEngine;
 using System.IO;
 using System.Collections.Generic;
 
-public class SaveManager : MonoBehaviour
+public class SaveManager : MonoBehaviour, ISaveManager
 {
-    private static SaveManager instance;
-    public static SaveManager Instance
-    {
-        get
-        {
-            if (instance == null)
-            {
-                var prefab = Resources.Load<SaveManager>("Prefabs/Managers/SaveManager");
-                if (prefab != null)
-                {
-                    Instantiate(prefab);
-                }
-                else
-                {
-                    Debug.LogError("SaveManager prefab not found in Resources!");
-                }
-            }
-            return instance;
-        }
-    }
+    private GameManager gameManager;
+    private FlagManager flagManager;
+
+    private const string MapKey = "MapSaveData";
+    private const string GameKey = "GameSaveData";
 
     private string savePath;
 
     private void Awake()
     {
-        if (instance != null && instance != this)
-        {
-            Destroy(gameObject);
-            return;
-        }
-
-        instance = this;
         DontDestroyOnLoad(gameObject);
 
+        gameManager = ServiceLocator.Get<GameManager>();
+        flagManager = ServiceLocator.Get<FlagManager>();
         savePath = Path.Combine(Application.persistentDataPath, "save.json");
     }
 
-    public void SaveGame()
+    #region Map単体の保存/ロード
+    public void SaveMap(MapSaveData data)
     {
-        var data = new SaveData
-        {
-            LastEvent = MapBootstrap.Instance.Manager.LastEventData,
-            HPResource = GameManager.Instance.HeroBattler.HPResource,
-            //gold = PlayerData.Instance.Gold,
-            Flags = new List<string>(FlagManager.Instance.GetAllFlags()),
-            Map = new MapSaveData
-            {
-                mapData = MapBootstrap.Instance.Manager.mapData,
-                cellX = MapBootstrap.Instance.Manager.CurrentCell.x,
-                cellY = MapBootstrap.Instance.Manager.CurrentCell.y,
-                lastEventData = MapBootstrap.Instance.Manager.LastEventData
-            }
-        };
+        string json = JsonUtility.ToJson(data);
+        PlayerPrefs.SetString(MapKey, json);
+        PlayerPrefs.Save();
+        Debug.Log("Map saved!");
+    }
 
-        var json = JsonUtility.ToJson(data, true);
-        File.WriteAllText(savePath, json);
-        Debug.Log("セーブ完了: " + savePath);
+    public MapSaveData LoadMap()
+    {
+        if (!PlayerPrefs.HasKey(MapKey))
+            return null;
 
-        Debug.Log("Game saved to: " + savePath);
+        string json = PlayerPrefs.GetString(MapKey);
+        return JsonUtility.FromJson<MapSaveData>(json);
+    }
+    #endregion
+
+    #region 統合セーブ
+    public void SaveGame(SaveData data)
+    {
+        string json = JsonUtility.ToJson(data);
+        PlayerPrefs.SetString(GameKey, json);
+        PlayerPrefs.Save();
+        Debug.Log("Game saved!");
     }
 
     public SaveData LoadGame()
     {
-        if (!File.Exists(savePath))
-        {
-            Debug.LogWarning("No save file found!");
+        if (!PlayerPrefs.HasKey(GameKey))
             return null;
-        }
 
-        string json = File.ReadAllText(savePath);
-        SaveData data = JsonUtility.FromJson<SaveData>(json);
-
-        return data;
-        // --- 各マネージャーにデータを反映 ---
-        GameManager.Instance.HeroBattler.HPResource = data.HPResource;
-        /// PlayerData.Instance.Gold = data.gold;
-        FlagManager.Instance.LoadFromSaveData(data.Flags);
-
-        MapBootstrap.Instance.TryResumeLastEvent(data);
-
-        Debug.Log("Game loaded!");
+        string json = PlayerPrefs.GetString(GameKey);
+        return JsonUtility.FromJson<SaveData>(json);
     }
+    #endregion
 
     public bool HasSaveData()
     {
