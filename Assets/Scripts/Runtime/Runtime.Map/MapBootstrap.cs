@@ -56,16 +56,6 @@ public class MapBootstrap : MonoBehaviour
         }
     }
 
-    private void HandleMapGenerated(Dictionary<Vector2Int, MapCellState> mapData)
-    {
-        generator.BuildUpUI(mapData);
-    }
-
-    private void HandleMapLoadRequested(Dictionary<Vector2Int, MapCellState> mapData)
-    {
-        generator.BuildUpUI(mapData);
-    }
-
     private void HandleAutoSaveRequested()
     {
         SaveManager.Instance.SaveGame();
