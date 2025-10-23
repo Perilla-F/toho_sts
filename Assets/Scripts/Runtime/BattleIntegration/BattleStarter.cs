@@ -16,26 +16,32 @@ public class BattleStarter : MonoBehaviour
     [SerializeField] private Transform _heroModelArea;  // モデル用
     [SerializeField] private float _heroBaseY = -200f;
 
+    private GameManager gameManager;
+    private AudioManager audioManager;
+
     private void Start()
     {
-        var encounterData = GameManager.Instance.CurrentEncounter;
+        gameManager = ServiceLocator.Get<GameManager>();
+        var encounterData = gameManager.GetEncounterData();
         if (encounterData == null)
         {
             Debug.LogError("EncounterData が設定されていません！");
             return;
         }
         StartBattle(encounterData);
+
+        audioManager = ServiceLocator.Get<AudioManager>();
     }
 
     private void StartBattle(EncounterData encounterData)
     {
-        if (GameManager.Instance == null || GameManager.Instance.SelectedHeroData == null)
+        if (gameManager == null || gameManager.GetSelectedHeroData() == null)
         {
             Debug.LogError("GameManager または selectedHeroData が null です。キャラ選択画面を経由してください。");
             return;
         }
 
-        HeroData playerHeroData = GameManager.Instance.SelectedHeroData;
+        HeroData playerHeroData = gameManager.GetSelectedHeroData();
         if (playerHeroData == null)
         {
             Debug.LogError("playerHeroData is null!");
@@ -43,7 +49,7 @@ public class BattleStarter : MonoBehaviour
         }
 
         HeroUnit heroUnit = new HeroUnit();
-        heroUnit.Setup(GameManager.Instance.HeroBattler);
+        heroUnit.Setup(gameManager.GetHeroBattler());
         HeroUI heroUI = Instantiate(playerHeroData.UIPrefab, _heroArea).GetComponent<HeroUI>();
         heroUI.Init(heroUnit);
         HeroModel model = Instantiate(playerHeroData.ModelPrefab, _heroModelArea).GetComponent<HeroModel>();
@@ -53,23 +59,23 @@ public class BattleStarter : MonoBehaviour
 
         model.transform.position = new Vector3(-400, _heroBaseY, 0); // 固定配置
 
+        Hand hand = new Hand();
+        _handView.SetHand(hand);
 
-        List<SourceCard> playerDeck = GameManager.Instance.GetPlayerDeck();
+        List<SourceCard> playerDeck = gameManager.GetPlayerDeck();
         BattleDeck battleDeck = new BattleDeck();
 
         var context = new BattleContext
         (
             _battleSystem,
             heroUnit,
+            hand,
             _handView,
             _deckView,
             _timelineView,
             battleDeck,
             _turnMessagePanel
         );
-
-        Hand hand = new Hand();
-        _handView.SetHand(hand);
 
         _manaView.Init(heroUnit.Mana);
 
@@ -91,6 +97,6 @@ public class BattleStarter : MonoBehaviour
         timelineView.Initialize(timelineManager, heroUnit);
 
         // BattleSystemに渡す（DI）
-        _battleSystem.Setup(context, heroUnit, battleDeck, hand, discardArea, timelineManager);
+        _battleSystem.Setup(context, heroUnit, battleDeck, hand, discardArea, gameManager, timelineManager, audioManager);
     }
 }

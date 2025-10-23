@@ -155,21 +155,21 @@ public class MapManager
         CurrentCell = cellPos;
     }
 
-    public MapSaveData GetSaveData()
+    public MapSaveData CreateSaveData()
     {
-        return new MapSaveData
-        {
-            mapData = mapData,
-            cellX = CurrentCell.x,
-            cellY = CurrentCell.y,
-        };
+        return new MapSaveData(
+                mapData,
+                CurrentCell.x,
+                CurrentCell.y,
+                LastEventData
+                );
     }
 
-    public void LoadMap(SaveData saveData)
+    public void LoadFromData(MapSaveData saveData)
     {
-        mapData = saveData.Map.mapData;
-        CurrentCell = saveData.Map.mapData[CurrentCell].GridPos;
-        mapView.BuildUpUI(saveData.Map.mapData);
+        mapData = saveData.mapData;
+        CurrentCell = saveData.mapData[CurrentCell].GridPos;
+        mapView.BuildUpUI(saveData.mapData);
     }
 
     public Dictionary<Vector2Int, MapCellState> GetMapCellStates()

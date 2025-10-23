@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<< HEAD
 guid: 59cbef709079f324797ea6ef5d05cb25
+=======
+guid: 0e03d363d0e92364c9eccf1144b57a3a
+>>>>>>> origin/battle-system-laptop
 folderAsset: yes
 DefaultImporter:
   externalObjects: {}

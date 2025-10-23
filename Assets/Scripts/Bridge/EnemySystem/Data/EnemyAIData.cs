@@ -6,7 +6,7 @@ public class EnemyAIData : ScriptableObject
 {
     public AIRule[] rules;
 
-    public EnemyAction[] DecideActionPattern(IBattleContext context, EnemyUnit enemy, int turnCounter)
+    public EnemyAction[] DecideActionPattern(BattleContext context, EnemyUnit enemy, int turnCounter)
     {
         var ordered = rules.OrderBy(r => r.priority);
         foreach (var rule in ordered)

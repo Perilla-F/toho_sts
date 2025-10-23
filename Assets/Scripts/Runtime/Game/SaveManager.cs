@@ -2,47 +2,29 @@ using UnityEngine;
 using System.IO;
 using System.Collections.Generic;
 
-public class SaveManager : MonoBehaviour
+public class SaveManager : MonoBehaviour, ISaveManager
 {
-    private static SaveManager instance;
-    public static SaveManager Instance
-    {
-        get
-        {
-            if (instance == null)
-            {
-                var prefab = Resources.Load<SaveManager>("Prefabs/Managers/SaveManager");
-                if (prefab != null)
-                {
-                    Instantiate(prefab);
-                }
-                else
-                {
-                    Debug.LogError("SaveManager prefab not found in Resources!");
-                }
-            }
-            return instance;
-        }
-    }
+    private GameManager gameManager;
+    private FlagManager flagManager;
+
+    private const string MapKey = "MapSaveData";
+    private const string GameKey = "GameSaveData";
 
     private string savePath;
 
     private void Awake()
     {
-        if (instance != null && instance != this)
-        {
-            Destroy(gameObject);
-            return;
-        }
-
-        instance = this;
         DontDestroyOnLoad(gameObject);
 
+        gameManager = ServiceLocator.Get<GameManager>();
+        flagManager = ServiceLocator.Get<FlagManager>();
         savePath = Path.Combine(Application.persistentDataPath, "save.json");
     }
 
-    public void SaveGame()
+    #region Map単体の保存/ロード
+    public void SaveMap(MapSaveData data)
     {
+<<<<<<< HEAD
         var data = new SaveData
         {
             LastEvent = EventBridge.Instance.runner.LastEventData,
@@ -57,22 +39,39 @@ public class SaveManager : MonoBehaviour
                 lastEventData = EventBridge.Instance.runner.LastEventData
             }
         };
+=======
+        string json = JsonUtility.ToJson(data);
+        PlayerPrefs.SetString(MapKey, json);
+        PlayerPrefs.Save();
+        Debug.Log("Map saved!");
+    }
+>>>>>>> origin/battle-system-laptop
 
-        var json = JsonUtility.ToJson(data, true);
-        File.WriteAllText(savePath, json);
-        Debug.Log("セーブ完了: " + savePath);
+    public MapSaveData LoadMap()
+    {
+        if (!PlayerPrefs.HasKey(MapKey))
+            return null;
 
-        Debug.Log("Game saved to: " + savePath);
+        string json = PlayerPrefs.GetString(MapKey);
+        return JsonUtility.FromJson<MapSaveData>(json);
+    }
+    #endregion
+
+    #region 統合セーブ
+    public void SaveGame(SaveData data)
+    {
+        string json = JsonUtility.ToJson(data);
+        PlayerPrefs.SetString(GameKey, json);
+        PlayerPrefs.Save();
+        Debug.Log("Game saved!");
     }
 
     public SaveData LoadGame()
     {
-        if (!File.Exists(savePath))
-        {
-            Debug.LogWarning("No save file found!");
+        if (!PlayerPrefs.HasKey(GameKey))
             return null;
-        }
 
+<<<<<<< HEAD
         string json = File.ReadAllText(savePath);
         SaveData data = JsonUtility.FromJson<SaveData>(json);
 
@@ -86,7 +85,12 @@ public class SaveManager : MonoBehaviour
             EventBridge.Instance.runner.StartStep(data.LastEvent.stepId);
 
         Debug.Log("Game loaded!");
+=======
+        string json = PlayerPrefs.GetString(GameKey);
+        return JsonUtility.FromJson<SaveData>(json);
+>>>>>>> origin/battle-system-laptop
     }
+    #endregion
 
     public bool HasSaveData()
     {

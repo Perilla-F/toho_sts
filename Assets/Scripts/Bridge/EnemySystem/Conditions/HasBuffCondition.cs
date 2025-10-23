@@ -4,7 +4,7 @@ using UnityEngine;
 public class HasBuffCondition : Condition
 {
     public StatusEffectData EffectData;
-    public override bool Check(IBattleContext context, EnemyUnit enemy)
+    public override bool Check(BattleContext context, EnemyUnit enemy)
     {
         return enemy.HasStatus(EffectData);
     }

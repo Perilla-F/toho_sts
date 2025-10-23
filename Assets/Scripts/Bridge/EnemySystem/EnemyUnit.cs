@@ -70,7 +70,7 @@ public class EnemyUnit : BattleUnit
     /// <param name="turn"></param>
     /// <param name="context"></param>
     /// <returns></returns>
-    public EnemyAction[] PlanTurn(IBattleContext context)
+    public EnemyAction[] PlanTurn(BattleContext context)
     {
         if (currentCondition != _lastCondition)
         {
