@@ -7,8 +7,9 @@ public class SaveManager : MonoBehaviour, ISaveManager
     private GameManager gameManager;
     private FlagManager flagManager;
 
-    private const string MapKey = "MapSaveData";
     private const string GameKey = "GameSaveData";
+    private const string MapKey = "MapSaveData";
+    private const string EventKey = "EventSaveData";
 
     private string savePath;
 
@@ -37,6 +38,25 @@ public class SaveManager : MonoBehaviour, ISaveManager
 
         string json = PlayerPrefs.GetString(MapKey);
         return JsonUtility.FromJson<MapSaveData>(json);
+    }
+    #endregion
+
+    #region Event単体の保存/ロード
+    public void SaveEvent(EventSaveData data)
+    {
+        string json = JsonUtility.ToJson(data);
+        PlayerPrefs.SetString(EventKey, json);
+        PlayerPrefs.Save();
+        Debug.Log("Event saved!");
+    }
+
+    public EventSaveData LoadEvent()
+    {
+        if (!PlayerPrefs.HasKey(EventKey))
+            return null;
+
+        string json = PlayerPrefs.GetString(EventKey);
+        return JsonUtility.FromJson<EventSaveData>(json);
     }
     #endregion
 

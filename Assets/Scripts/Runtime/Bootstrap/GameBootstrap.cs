@@ -1,15 +1,16 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GameEntryPoint : MonoBehaviour
+public class GameBootstrap : MonoBehaviour
 {
     [SerializeField] private string nextScene = "TitleScene";
     [SerializeField] private GameManager gameManager;
-    [SerializeField] private SceneLoader sceneLoader;
     [SerializeField] private SaveManager saveManager;
     [SerializeField] private AudioManager audioManager;
-
-    private MapManager _mapManager;
+    [SerializeField] private SceneLoader sceneLoader;
+    [SerializeField] private MapManager mapManager;
+    [SerializeField] private EventManager eventManager;
+    [SerializeField] private FlagManager flagManager;
 
     private void Awake()
     {
@@ -21,6 +22,9 @@ public class GameEntryPoint : MonoBehaviour
         ServiceLocator.Register(saveManager);
         ServiceLocator.Register(audioManager);
         ServiceLocator.Register(sceneLoader);
+        ServiceLocator.Register(mapManager);
+        ServiceLocator.Register(eventManager);
+        ServiceLocator.Register(flagManager);
 
         RuntimeInstaller.InstallAll();
 
@@ -28,14 +32,8 @@ public class GameEntryPoint : MonoBehaviour
         sceneLoader.LoadSceneAsync(nextScene);
     }
 
-    public void OnMapManagerReady(MapManager mapManager)
+    public void SaveGame(MapSaveData mapData)
     {
-        _mapManager = mapManager;
-    }
-
-    public void SaveGame()
-    {
-        var mapData = _mapManager.CreateSaveData();
         var playerData = gameManager.CreateSaveData();
 
         var gameData = new SaveData
@@ -54,8 +52,12 @@ public class GameEntryPoint : MonoBehaviour
         var gameData = saveManager.LoadGame();
         if (gameData == null) return;
 
-        _mapManager.LoadFromData(gameData.Map);
         gameManager.LoadFromData(gameData.Player);
+    }
+
+    public void OnEventUIManagerReady(EventUIManager uIManager)
+    {
+        ServiceLocator.Register(uIManager);
     }
 
 }

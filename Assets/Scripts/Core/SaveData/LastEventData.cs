@@ -1,7 +1,14 @@
 [System.Serializable]
-public class LastEventData
+public class EventSaveData
 {
     public string eventId;
     public string stepId;
-    public bool isCompleted;        // イベント完了済みかどうか
+    public bool isCompleted;
+
+    public EventSaveData(string eventId, string stepId, bool isCompleted)
+    {
+        this.eventId = eventId;
+        this.stepId = stepId;
+        this.isCompleted = isCompleted;
+    }
 }

@@ -3,33 +3,37 @@ using System.Collections.Generic;
 using Codice.Client.BaseCommands;
 using UnityEngine;
 
-public class MapManager
+public class MapGenerator
 {
+    [SerializeField] private MapGenerationRule generationRule;
+    [SerializeField] private MapVisualSet visualSet;
+
+    [Header("Content")]
+    [SerializeField] private RectTransform _content;
+    [SerializeField] private RectTransform _scrollRect;
 
     [Header("Map Settings")]
     private int width;
     private int height;
 
-    public LastEventData LastEventData;
+    public EventSaveData LastEventData;
 
     public Vector2Int CurrentCell { get; private set; }
     public Dictionary<Vector2Int, MapCellState> mapData;
 
-    private readonly IMapView mapView;
-
-    public MapManager(IMapView mapView, int width, int height)
+    public MapGenerator()
     {
-        this.mapView = mapView;
-        this.width = width;
-        this.height = height;
     }
 
     /// <summary>
     /// ランダムマップ生成リクエスト
     /// </summary>
-    public void GenerateMapData(Vector2Int current)
+    public Dictionary<Vector2Int, MapCellState> GenerateMapData(MapGenerationRule rule)
     {
         mapData = new Dictionary<Vector2Int, MapCellState>();
+
+        width = rule.width;
+        height = rule.height;
 
         Vector2Int startPos = new(width / 2, 0);
         MapCellState startCellState = new MapCellState(
@@ -69,9 +73,7 @@ public class MapManager
         mapData.Add(goalPos, goalCellState);
 
         // MapGeneratorへ
-        mapView.BuildUpUI(mapData);
-        mapView.SetAllUnclickable();
-        mapView.SetCurrent(current, GetClickable(current));
+        return mapData;
     }
 
     private CellType RandomCellType()
@@ -101,22 +103,7 @@ public class MapManager
         return CellType.Battle;
     }
 
-    /// <summary>
-    /// セルをクリックされると呼び出される
-    /// </summary>
-    /// <param name="pos"></param>
-    public void OnCellClicked(Vector2Int pos)
-    {
-        // 現在地を更新
-        CurrentCell = pos;
-
-        // クリック処理ルール
-        mapView.SetAllUnclickable();
-        mapView.SelectCell(pos);
-        mapView.SetClickable(GetClickable(pos));
-    }
-
-    private List<Vector2Int> GetClickable(Vector2Int current)
+    public List<Vector2Int> GetClickable(Vector2Int current)
     {
         var list = new List<Vector2Int>();
 
@@ -148,40 +135,6 @@ public class MapManager
             }
         }
         return list;
-    }
-
-    // Coordinator から状態を設定
-    public void SetMapState(Dictionary<Vector2Int, MapCellState> mapCellStates, Vector2Int cellPos)
-    {
-        mapData = mapCellStates;
-        CurrentCell = cellPos;
-    }
-
-    public MapSaveData CreateSaveData()
-    {
-        return new MapSaveData(
-                mapData,
-                CurrentCell.x,
-                CurrentCell.y,
-                LastEventData
-                );
-    }
-
-    public void LoadFromData(MapSaveData saveData)
-    {
-        mapData = saveData.mapData;
-        CurrentCell = saveData.mapData[CurrentCell].GridPos;
-        mapView.BuildUpUI(saveData.mapData);
-    }
-
-    public Dictionary<Vector2Int, MapCellState> GetMapCellStates()
-    {
-        return mapData;
-    }
-
-    public void CompleteLastEvent()
-    {
-        LastEventData.isCompleted = true;
     }
 
 }
