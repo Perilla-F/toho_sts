@@ -8,10 +8,10 @@ class EventManager : MonoBehaviour
     private GameManager gameManager;
     private SaveManager saveManager;
     private FlagManager flagManager;
+    private PlayerManager playerManager;
     private EventUIManager uiManager;
 
     public EventSaveData EventSaveData;
-    public GameContext gameContext;
 
     public event Action<EventOption> OnOptionSelected;
 
@@ -24,13 +24,11 @@ class EventManager : MonoBehaviour
         flagManager = ServiceLocator.Get<FlagManager>();
 
         uiManager.OnOptionSelected += SelectOption;
-
-        gameContext = gameManager.GetGameContext();
     }
 
     public void OnEnterEvent()
     {
-        StartEvent(EventDatabase.GetRandomEvent(gameContext, flagManager));
+        StartEvent(EventDatabase.GetRandomEvent(gameManager, flagManager));
     }
 
     private void StartEvent(MultiStepEvent evt)
@@ -84,7 +82,7 @@ class EventManager : MonoBehaviour
 
         // --- 条件判定 ---
         string nextId = option.DefaultNextStepId;
-        if (option.Condition != null && option.Condition.IsMet(gameContext, flagManager))
+        if (option.Condition != null && option.Condition.IsMet(gameManager, flagManager))
             nextId = option.ConditionalNextStepId;
         return nextId;
     }

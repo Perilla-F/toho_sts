@@ -194,14 +194,9 @@ public class MapManager : MonoBehaviour
         CurrentCell = cellPos;
     }
 
-    public MapSaveData CreateSaveData()
+    public void MapSave()
     {
-        return new MapSaveData(
-                mapData,
-                CurrentCell.x,
-                CurrentCell.y,
-                ServiceLocator.Get<EventManager>().EventSaveData
-                );
+        ServiceLocator.Get<SaveManager>().SaveMap(new MapSaveData(mapData, CurrentCell.x, CurrentCell.y, ServiceLocator.Get<EventManager>().EventSaveData));
     }
 
     private void HandleCellClicked(Vector2Int pos)

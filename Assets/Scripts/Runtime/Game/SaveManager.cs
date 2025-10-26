@@ -2,7 +2,7 @@ using UnityEngine;
 using System.IO;
 using System.Collections.Generic;
 
-public class SaveManager : MonoBehaviour, ISaveManager
+public class SaveManager : ISaveManager
 {
     private GameManager gameManager;
     private FlagManager flagManager;
@@ -15,8 +15,6 @@ public class SaveManager : MonoBehaviour, ISaveManager
 
     private void Awake()
     {
-        DontDestroyOnLoad(gameObject);
-
         gameManager = ServiceLocator.Get<GameManager>();
         flagManager = ServiceLocator.Get<FlagManager>();
         savePath = Path.Combine(Application.persistentDataPath, "save.json");

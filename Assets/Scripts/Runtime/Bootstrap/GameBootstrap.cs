@@ -4,13 +4,8 @@ using UnityEngine;
 public class GameBootstrap : MonoBehaviour
 {
     [SerializeField] private string nextScene = "TitleScene";
-    [SerializeField] private GameManager gameManager;
-    [SerializeField] private SaveManager saveManager;
-    [SerializeField] private AudioManager audioManager;
-    [SerializeField] private SceneLoader sceneLoader;
-    [SerializeField] private MapManager mapManager;
-    [SerializeField] private EventManager eventManager;
-    [SerializeField] private FlagManager flagManager;
+    [SerializeField] private AudioManager audioManagerPrefab;
+    [SerializeField] private SceneLoader sceneLoaderPrefab;
 
     private void Awake()
     {
@@ -18,23 +13,23 @@ public class GameBootstrap : MonoBehaviour
 
         // 共通サービス登録
         ServiceLocator.Register(this);
-        ServiceLocator.Register(gameManager);
-        ServiceLocator.Register(saveManager);
-        ServiceLocator.Register(audioManager);
-        ServiceLocator.Register(sceneLoader);
-        ServiceLocator.Register(mapManager);
-        ServiceLocator.Register(eventManager);
-        ServiceLocator.Register(flagManager);
+        ServiceLocator.Register(new GameManager());
+        ServiceLocator.Register(new SaveManager());
+        ServiceLocator.Register(new PlayerManager());
 
-        RuntimeInstaller.InstallAll();
+        var audio = Instantiate(audioManagerPrefab);
+        var loader = Instantiate(sceneLoaderPrefab);
+
+        ServiceLocator.Register<IAudioManager>(audio);
+        ServiceLocator.Register<ISceneLoader>(loader);
 
         // 最初のシーンをロード（TitleSceneなど）
-        sceneLoader.LoadSceneAsync(nextScene);
+        ServiceLocator.Get<SceneLoader>().LoadSceneAsync(nextScene);
     }
 
     public void SaveGame(MapSaveData mapData)
     {
-        var playerData = gameManager.CreateSaveData();
+        var playerData = ServiceLocator.Get<PlayerManager>().CreateSaveData();
 
         var gameData = new SaveData
         {
@@ -52,7 +47,7 @@ public class GameBootstrap : MonoBehaviour
         var gameData = saveManager.LoadGame();
         if (gameData == null) return;
 
-        gameManager.LoadFromData(gameData.Player);
+        ServiceLocator.Get<PlayerManager>().LoadFromData(gameData.Player);
     }
 
     public void OnEventUIManagerReady(EventUIManager uIManager)

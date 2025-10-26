@@ -4,21 +4,27 @@ using UnityEngine;
 public static class EncounterLoader
 {
     /// <summary>
-    /// 参照カテゴリーの敵の名前とIDのリストを返す
+    /// 参照カテゴリーの敵グループ情報のリストを返す
     /// </summary>
-    /// <param name="category">参照パス"Data/Battlers/Encounters/{category}"</param>
+    /// <param name="type">Normal or Elite or Boss</param>
+    /// <param name="stageIndex">1 or 2 or 3</param>
     /// <returns></returns>
-    public static List<EncounterData> LoadEncounters(string category)
+    public static List<EncounterData> LoadEncounters(EnemyType type, int stageIndex)
     {
+        // Resources フォルダの相対パスを組み立て
+        string category = $"{type}/Stage{stageIndex}";
         string path = $"Data/Battlers/Encounters/{category}";
-        TextAsset[] files = Resources.LoadAll<TextAsset>(path);
 
-        var list = new List<EncounterData>();
-        foreach (var file in files)
+        // 指定パス以下の EncounterData をすべてロード
+        EncounterData[] assets = Resources.LoadAll<EncounterData>(path);
+
+        // nullチェック + List化して返す
+        if (assets == null || assets.Length == 0)
         {
-            list.Add(JsonUtility.FromJson<EncounterData>(file.text));
+            Debug.LogWarning($"EncounterLoader: 指定パス '{path}' に EncounterData が見つかりません。");
+            return new List<EncounterData>();
         }
 
-        return list;
+        return new List<EncounterData>(assets);
     }
 }

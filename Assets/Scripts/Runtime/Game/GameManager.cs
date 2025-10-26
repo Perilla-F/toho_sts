@@ -4,23 +4,13 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour, IGameManager
 {
-    private GameContext context;
-
-    public HeroData SelectedHeroData;
-    public HeroBattler HeroBattler;
-    public List<SourceCard> PlayerDeck = new List<SourceCard>();
-    public EncounterData CurrentEncounter;
+    public GameContext Context { get; private set; }
 
     private void Awake()
     {
         DontDestroyOnLoad(gameObject);
 
-        context = new GameContext(this);
-    }
-
-    public GameContext GetGameContext()
-    {
-        return context;
+        Context = new GameContext();
     }
 
     public void InitializeGame()
@@ -30,62 +20,45 @@ public class GameManager : MonoBehaviour, IGameManager
 
     public void InitializePlayer(HeroData heroData)
     {
-        SelectedHeroData = heroData;
+        var selectedHeroData = heroData;
         HPResource hPResource = new HPResource(heroData.MaxHP);
         Mana mana = new Mana(heroData.MaxMana);
-        HeroBattler = new HeroBattler(heroData, hPResource, mana);
+        var heroBattler = new HeroBattler(heroData, hPResource, mana);
+        var playerDeck = new List<SourceCard>();
+
         for (int i = 0; i < heroData.StartingDeck.Count; i++)
         {
             AddCard(new SourceCard(heroData.StartingDeck[i], hPResource, mana));
         }
-    }
 
-    public HeroData GetSelectedHeroData()
-    {
-        return SelectedHeroData;
-    }
-
-    public HeroBattler GetHeroBattler()
-    {
-        return HeroBattler;
-    }
-
-    public List<SourceCard> GetPlayerDeck()
-    {
-        return PlayerDeck;
-    }
-
-    public EncounterData GetEncounterData()
-    {
-        return CurrentEncounter;
+        Context.SelectedHeroData = selectedHeroData;
+        Context.HeroBattler = heroBattler;
+        Context.PlayerDeck = playerDeck;
     }
 
     public void AddCard(SourceCard card)
     {
-        PlayerDeck.Add(card);
+        Context.PlayerDeck.Add(card);
     }
 
     public void RemoveCard(SourceCard card)
     {
-        PlayerDeck.Remove(card);
+        Context.PlayerDeck.Remove(card);
     }
 
-    public void UpdateAfterBattle(List<SourceCard> updatedDeck)
+    public void UpdateDeckAfterBattle(List<SourceCard> updatedDeck)
     {
-        PlayerDeck = new List<SourceCard>(updatedDeck);
+        Context.PlayerDeck = new List<SourceCard>(updatedDeck);
     }
 
-    public PlayerSaveData CreateSaveData()
+    private void StartBattle(EnemyType type, int stageIndex)
     {
-        return new PlayerSaveData(
-            HeroBattler,
-            PlayerDeck
-        );
+        var loader = ServiceLocator.Get<ISceneLoader>();
+        var encounters = EncounterLoader.LoadEncounters(type, stageIndex);
+        var selected = encounters[UnityEngine.Random.Range(0, encounters.Count)];
+        var data = new BattleTransitionData(Context.HeroBattler, selected);
+        loader.SetTransitionData(data);
+        loader.LoadScene("BattleScene");
     }
 
-    public void LoadFromData(PlayerSaveData data)
-    {
-        HeroBattler = data.HeroBattler;
-        PlayerDeck = data.PlayerDeck;
-    }
 }

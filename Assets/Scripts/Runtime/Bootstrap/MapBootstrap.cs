@@ -17,8 +17,6 @@ public class MapBootstrap : MonoBehaviour
     [Header("Event Data")]
     [SerializeField] private EventDatabase EventDatabase;
 
-    private GameContext gameContext;
-
     private void Awake()
     {
         gameManager = ServiceLocator.Get<GameManager>();
@@ -28,8 +26,6 @@ public class MapBootstrap : MonoBehaviour
         saveManager = ServiceLocator.Get<SaveManager>();
 
         ServiceLocator.Register(eventUIManager);
-
-        gameContext = gameManager.GetGameContext();
 
         if (saveManager.HasSaveData())
         {
@@ -55,22 +51,6 @@ public class MapBootstrap : MonoBehaviour
     private void Start()
     {
         ServiceLocator.Get<GameBootstrap>().OnEventUIManagerReady(eventUIManager);
-    }
-
-    private void HandleAutoSaveRequested()
-    {
-        SaveMap();
-    }
-
-    private void HandleEventOptionSelected(EventOption option)
-    {
-        // セーブやマップ更新、フラグ管理など
-    }
-
-    public void SaveMap()
-    {
-        var saveData = mapManager.CreateSaveData();
-        saveManager.SaveMap(saveData);
     }
 
 }

@@ -6,9 +6,9 @@ public class CompositeResult : EventResult
 {
     public List<EventResult> results = new();
 
-    public override void Apply(GameContext context, IFlagManager flagManager)
+    public override void Apply(IGameManager game, IFlagManager flagManager)
     {
         foreach (var r in results)
-            r?.Apply(context, flagManager);
+            r?.Apply(game, flagManager);
     }
 }

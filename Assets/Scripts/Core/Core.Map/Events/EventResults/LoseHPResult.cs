@@ -4,9 +4,9 @@ using UnityEngine;
 public class LoseHPResult : EventResult
 {
     public int amount = 10;
-    public override void Apply(GameContext context, IFlagManager flagManager)
+    public override void Apply(IGameManager game, IFlagManager flagManager)
     {
-        context.GameManager.GetHeroBattler().HPResource.LoseHP(amount);
+        game.Context.HeroBattler.HPResource.LoseHP(amount);
         Debug.Log($"HP -{amount}");
     }
 }

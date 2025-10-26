@@ -7,10 +7,10 @@ public class ConditionalResult : EventResult
     public EventResult ifTrue;
     public EventResult ifFalse;
 
-    public override void Apply(GameContext context, IFlagManager flagManager)
+    public override void Apply(IGameManager game, IFlagManager flagManager)
     {
         bool has = flagManager.HasFlag(flagName);
         Debug.Log($"Condition: {flagName} = {has}");
-        (has ? ifTrue : ifFalse)?.Apply(context, flagManager);
+        (has ? ifTrue : ifFalse)?.Apply(game, flagManager);
     }
 }

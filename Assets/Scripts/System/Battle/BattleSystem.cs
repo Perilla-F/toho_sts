@@ -240,7 +240,7 @@ public class BattleSystem : MonoBehaviour, IBattleSystem
     {
         List<SourceCard> updatedDeck = _battleDeck.GetDeckAsSourceCards();
 
-        _gameManager.UpdateAfterBattle(updatedDeck);
+        _gameManager.UpdateDeckAfterBattle(updatedDeck);
 
         SceneManager.LoadScene("MapScene");
     }
