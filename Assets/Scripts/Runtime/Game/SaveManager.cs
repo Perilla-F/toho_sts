@@ -4,9 +4,6 @@ using System.Collections.Generic;
 
 public class SaveManager : ISaveManager
 {
-    private GameManager gameManager;
-    private FlagManager flagManager;
-
     private const string GameKey = "GameSaveData";
     private const string MapKey = "MapSaveData";
     private const string EventKey = "EventSaveData";
@@ -15,8 +12,6 @@ public class SaveManager : ISaveManager
 
     private void Awake()
     {
-        gameManager = ServiceLocator.Get<GameManager>();
-        flagManager = ServiceLocator.Get<FlagManager>();
         savePath = Path.Combine(Application.persistentDataPath, "save.json");
     }
 

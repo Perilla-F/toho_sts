@@ -1,1 +1,1 @@
-public enum EnemyType { normal, Elite, Boss }
+public enum EnemyType { Normal, Elite, Boss }

@@ -23,7 +23,7 @@ public class Cell : MonoBehaviour
     private Button _button;
     public bool IsSelectable;
 
-    public event Action<Vector2Int> OnClicked;
+    public event Action<Vector2Int, CellType> OnClicked;
 
     /// <summary>
     /// 初期化
@@ -92,6 +92,6 @@ public class Cell : MonoBehaviour
     private void OnMouseDown()
     {
         if (!IsSelectable) return;
-        OnClicked?.Invoke(GridPos);
+        OnClicked?.Invoke(GridPos, Type);
     }
 }

@@ -5,25 +5,12 @@ using UnityEngine;
 
 public class MapGenerator
 {
-    [SerializeField] private MapGenerationRule generationRule;
-    [SerializeField] private MapVisualSet visualSet;
-
-    [Header("Content")]
-    [SerializeField] private RectTransform _content;
-    [SerializeField] private RectTransform _scrollRect;
-
     [Header("Map Settings")]
     private int width;
     private int height;
 
-    public EventSaveData LastEventData;
-
-    public Vector2Int CurrentCell { get; private set; }
     public Dictionary<Vector2Int, MapCellState> mapData;
 
-    public MapGenerator()
-    {
-    }
 
     /// <summary>
     /// ランダムマップ生成リクエスト

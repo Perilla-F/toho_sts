@@ -19,13 +19,11 @@ public class BattleStarter : MonoBehaviour
     private GameManager gameManager;
     private SceneLoader sceneLoader;
     private IAudioManager audioManager;
-    private PlayerManager playerManager;
 
     private void Start()
     {
         gameManager = ServiceLocator.Get<GameManager>();
         sceneLoader = ServiceLocator.Get<SceneLoader>();
-        playerManager = ServiceLocator.Get<PlayerManager>();
 
         var encounterData = sceneLoader.GetTransitionData<BattleTransitionData>().EncounterData;
         if (encounterData == null)

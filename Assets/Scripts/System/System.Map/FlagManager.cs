@@ -1,13 +1,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class FlagManager : MonoBehaviour, IFlagManager
+public class FlagManager : IFlagManager
 {
     private HashSet<string> activeFlags = new();
 
-    private void Awake()
+    public FlagManager()
     {
-        DontDestroyOnLoad(gameObject);
     }
 
     /// <summary>

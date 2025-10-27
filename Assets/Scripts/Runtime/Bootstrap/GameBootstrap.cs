@@ -13,7 +13,6 @@ public class GameBootstrap : MonoBehaviour
 
         // 共通サービス登録
         ServiceLocator.Register(this);
-        ServiceLocator.Register(new GameManager());
         ServiceLocator.Register(new SaveManager());
         ServiceLocator.Register(new PlayerManager());
 
@@ -25,6 +24,8 @@ public class GameBootstrap : MonoBehaviour
 
         // 最初のシーンをロード（TitleSceneなど）
         ServiceLocator.Get<SceneLoader>().LoadSceneAsync(nextScene);
+
+        GameManager gameManager = new GameManager(loader);
     }
 
     public void SaveGame(MapSaveData mapData)
@@ -48,11 +49,6 @@ public class GameBootstrap : MonoBehaviour
         if (gameData == null) return;
 
         ServiceLocator.Get<PlayerManager>().LoadFromData(gameData.Player);
-    }
-
-    public void OnEventUIManagerReady(EventUIManager uIManager)
-    {
-        ServiceLocator.Register(uIManager);
     }
 
 }

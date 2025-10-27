@@ -11,6 +11,8 @@ public class GameContext
     public int StageIndex;
     public Vector2Int CurrentMapPosition;
     public List<string> AcquiredRelics;
+    public MapSaveData MapSaveData;
+    public EventSaveData EventSaveData;
 
     public GameContext()
     {

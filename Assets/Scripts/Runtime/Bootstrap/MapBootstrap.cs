@@ -3,12 +3,24 @@ using UnityEngine;
 
 public class MapBootstrap : MonoBehaviour
 {
+    [Header("MapRule")]
+    [SerializeField] private MapGenerationRule generationRule;
+
+    [Header("EventData")]
+    [SerializeField] private EventDatabase eventDatabase;
+
+    [Header("Managers")]
     private GameManager gameManager;
-    private MapManager mapManager;
-    private EventManager eventManager;
     private FlagManager flagManager;
     private SaveManager saveManager;
+    private MapManager mapManager;
+    private EventManager eventManager;
 
+    private MapPresenter mapPresenter;
+    private EventPresenter eventPresenter;
+
+    [Header("UI")]
+    [SerializeField] private MapView mapView;
     [SerializeField] private EventUIManager eventUIManager;
 
     [Header("Map Settings")]
@@ -20,12 +32,14 @@ public class MapBootstrap : MonoBehaviour
     private void Awake()
     {
         gameManager = ServiceLocator.Get<GameManager>();
-        mapManager = ServiceLocator.Get<MapManager>();
-        eventManager = ServiceLocator.Get<EventManager>();
-        flagManager = ServiceLocator.Get<FlagManager>();
         saveManager = ServiceLocator.Get<SaveManager>();
 
-        ServiceLocator.Register(eventUIManager);
+        mapManager = new MapManager(gameManager);
+        flagManager = new FlagManager();
+        eventManager = new EventManager(eventDatabase, gameManager, flagManager);
+
+        mapPresenter = new MapPresenter(gameManager, mapManager, eventManager, mapView);
+        eventPresenter = new EventPresenter(eventManager, eventUIManager);
 
         if (saveManager.HasSaveData())
         {
@@ -34,23 +48,16 @@ public class MapBootstrap : MonoBehaviour
             if (save != null)
             {
                 // System層に状態を復元（データ構築のみ）
-                mapManager.SetMapState(
-                    save.Map.mapData,
-                    new Vector2Int(save.Map.cellX, save.Map.cellY)
-                    );
+                mapView.BuildMapUI(save.Map.mapData, generationRule);
 
                 // MapManagerがデータを再構築
-                mapManager.RestoreMap(save);
+                mapManager.RestoreMap(save, generationRule);
                 return;
             }
         }
 
         // MapManagerに初期マップ生成をリクエスト
-        mapManager.GenerateMap();
-    }
-    private void Start()
-    {
-        ServiceLocator.Get<GameBootstrap>().OnEventUIManagerReady(eventUIManager);
+        mapManager.GenerateMap(generationRule);
     }
 
 }

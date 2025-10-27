@@ -8,4 +8,5 @@ public interface IGameManager
     public void AddCard(SourceCard card);
     public void RemoveCard(SourceCard card);
     public void UpdateDeckAfterBattle(List<SourceCard> updatedDeck);
+    public void SaveMap(MapSaveData data);
 }

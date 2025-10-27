@@ -2,15 +2,16 @@ using System.Collections.Generic;
 using System;
 using UnityEngine;
 
-public class GameManager : MonoBehaviour, IGameManager
+public class GameManager : IGameManager
 {
     public GameContext Context { get; private set; }
 
-    private void Awake()
-    {
-        DontDestroyOnLoad(gameObject);
+    private readonly ISceneLoader _sceneLoader;
 
+    public GameManager(ISceneLoader sceneLoader)
+    {
         Context = new GameContext();
+        _sceneLoader = sceneLoader;
     }
 
     public void InitializeGame()
@@ -51,14 +52,23 @@ public class GameManager : MonoBehaviour, IGameManager
         Context.PlayerDeck = new List<SourceCard>(updatedDeck);
     }
 
-    private void StartBattle(EnemyType type, int stageIndex)
+    public void StartBattle(EnemyType type)
     {
-        var loader = ServiceLocator.Get<ISceneLoader>();
-        var encounters = EncounterLoader.LoadEncounters(type, stageIndex);
+        var encounters = EncounterLoader.LoadEncounters(type, Context.StageIndex);
         var selected = encounters[UnityEngine.Random.Range(0, encounters.Count)];
         var data = new BattleTransitionData(Context.HeroBattler, selected);
-        loader.SetTransitionData(data);
-        loader.LoadScene("BattleScene");
+        _sceneLoader.SetTransitionData(data);
+        _sceneLoader.LoadScene("BattleScene");
+    }
+
+    public void SaveMap(MapSaveData data)
+    {
+        Context.MapSaveData = data;
+    }
+
+    public void SaveEvent(EventSaveData data)
+    {
+        Context.EventSaveData = data;
     }
 
 }
