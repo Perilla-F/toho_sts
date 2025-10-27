@@ -1,9 +1,17 @@
 fileFormatVersion: 2
+<<<<<<< HEAD
 <<<<<<<< HEAD:Assets/Scripts/Runtime/Game/ServiceLocator.cs.meta
 guid: ff724251f9a341845a81d81df8ed0752
 ========
 guid: 392d0231f9ef5d3499afc98b9129b909
 >>>>>>>> origin/feature/battle-system:Assets/Scripts/Bridge/Bridge.Map/IEventView.cs.meta
+=======
+<<<<<<<< HEAD:Assets/Scripts/Bridge/Bridge.Map/IEventView.cs.meta
+guid: fd92bedc6f58e4745bd852806e5d7e3e
+========
+guid: ff724251f9a341845a81d81df8ed0752
+>>>>>>>> origin/battle-system-laptop:Assets/Scripts/Runtime/Game/ServiceLocator.cs.meta
+>>>>>>> origin/feature/battle-system
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2

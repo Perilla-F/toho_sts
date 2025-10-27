@@ -7,17 +7,17 @@ public class RandomResult : EventResult
     public EventResult success;
     public EventResult fail;
 
-    public override void Apply(GameContext context, IFlagManager flagManager)
+    public override void Apply(IGameManager game, IFlagManager flagManager)
     {
         if (Random.value <= successRate)
         {
             Debug.Log("Random Success!");
-            success?.Apply(context, flagManager);
+            success?.Apply(game, flagManager);
         }
         else
         {
             Debug.Log("Random Fail!");
-            fail?.Apply(context, flagManager);
+            fail?.Apply(game, flagManager);
         }
     }
 }

@@ -10,7 +10,7 @@ using DG.Tweening;
 public class BattleTransition : MonoBehaviour
 {
     [SerializeField] private CanvasGroup fadeGroup; // Canvasに置いたフルスクリーン黒Imageにアタッチ
-    private SceneLoader sceneLoader;
+    private ISceneLoader sceneLoader;
 
     private void Awake()
     {
@@ -19,7 +19,7 @@ public class BattleTransition : MonoBehaviour
             fadeGroup.alpha = 0f;
             fadeGroup.gameObject.SetActive(true);
         }
-        sceneLoader = ServiceLocator.Get<SceneLoader>();
+        sceneLoader = ServiceLocator.Get<ISceneLoader>();
     }
 
     /// <summary>

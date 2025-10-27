@@ -6,7 +6,7 @@ public class PlayerSaveData
     public HeroBattler HeroBattler;
     public List<SourceCard> PlayerDeck;
     public List<string> Flags;
-    public LastEventData LastEvent;
+    public EventSaveData LastEvent;
 
     public PlayerSaveData(HeroBattler heroBattler, List<SourceCard> playerDeck)
     {

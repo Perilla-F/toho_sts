@@ -50,7 +50,7 @@ public class Cell : MonoBehaviour
 
         Cleared = false;
 
-        // クリック時にMapGeneratorへ通知
+        // クリック時にMapManagerへ通知
         _button.onClick.AddListener(OnMouseDown);
     }
 

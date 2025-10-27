@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class EventRunner
 {
-    private GameContext context;
+    private IGameManager game;
     private IFlagManager flagManager;
 
     public event Action<EventStep> OnStepChanged;
@@ -17,13 +17,13 @@ public class EventRunner
 
     public event Action<EventOption> OnOptionSelected;
 
-    public EventRunner(GameContext context, IFlagManager flagManager)
+    public EventRunner(IGameManager game, IFlagManager flagManager)
     {
-        this.context = context;
+        this.game = game;
         this.flagManager = flagManager;
     }
 
-    public LastEventData LastEventData { get; set; }
+    public EventSaveData EventSaveData { get; set; }
 
     public EventRunner(IEventView eventView)
     {
@@ -37,12 +37,12 @@ public class EventRunner
     public void StartEvent(MultiStepEvent evt)
     {
         currentEvent = evt;
-        LastEventData = new LastEventData
-        {
-            eventId = evt.EventId,
-            stepId = null,
-            isCompleted = false,
-        };
+        EventSaveData = new EventSaveData
+        (
+            evt.EventId,
+            null,
+            false
+        );
         currentStep = evt.GetStep("start");
         eventView.ShowStep(currentStep);
     }
@@ -59,8 +59,8 @@ public class EventRunner
         {
             OnOptionSelected?.Invoke(option);
             eventView.Hide();
-            if (LastEventData == null) return;
-            LastEventData.isCompleted = true;
+            if (EventSaveData == null) return;
+            EventSaveData.isCompleted = true;
         }
         else
         {
@@ -83,7 +83,7 @@ public class EventRunner
 
         // --- 条件判定 ---
         string nextId = option.DefaultNextStepId;
-        if (option.Condition != null && option.Condition.IsMet(context, flagManager))
+        if (option.Condition != null && option.Condition.IsMet(game, flagManager))
             nextId = option.ConditionalNextStepId;
         return nextId;
     }
@@ -95,12 +95,12 @@ public class EventRunner
     public void StartStep(string stepId)
     {
         currentStep = currentEvent.GetStep(stepId);
-        LastEventData = new LastEventData
-        {
-            eventId = currentEvent.EventId,
-            stepId = stepId,
-            isCompleted = false,
-        };
+        EventSaveData = new EventSaveData
+        (
+            currentEvent.EventId,
+            stepId,
+            false
+        );
         OnStartStep?.Invoke(currentStep);
         eventView.ShowStep(currentStep);
     }

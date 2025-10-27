@@ -904,50 +904,6 @@ MonoBehaviour:
   optionRoot: {fileID: 452165168}
   optionButtonPrefab: {fileID: 2491939565211909167, guid: f9e31a405a030de48bc05344a6536f13, type: 3}
   eventImage: {fileID: 1354011429}
---- !u!1 &944570921
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 944570923}
-  - component: {fileID: 944570922}
-  m_Layer: 0
-  m_Name: EventRunner
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &944570922
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 944570921}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e5aa67182f24a834a9fbf94a9dd1a05c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!4 &944570923
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 944570921}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 784.77673, y: 67.55887, z: -4.233664}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &988362671
 GameObject:
   m_ObjectHideFlags: 0
@@ -2519,4 +2475,3 @@ SceneRoots:
   - {fileID: 928585909}
   - {fileID: 1783572619}
   - {fileID: 2078152274}
-  - {fileID: 944570923}

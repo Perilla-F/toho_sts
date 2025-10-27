@@ -7,14 +7,14 @@ public class EventCondition : ScriptableObject
     public int intValue;
     public string stringValue;
 
-    public bool IsMet(GameContext context, IFlagManager flagManager)
+    public bool IsMet(IGameManager game, IFlagManager flagManager)
     {
         switch (type)
         {
             case EventConditionType.HPAtLeast:
-                return context.GameManager.GetHeroBattler().HPResource.GetHP() >= intValue;
+                return game.Context.HeroBattler.HPResource.GetHP() >= intValue;
             case EventConditionType.HPAtMost:
-                return context.GameManager.GetHeroBattler().HPResource.GetHP() <= intValue;
+                return game.Context.HeroBattler.HPResource.GetHP() <= intValue;
             case EventConditionType.FlagSet:
                 return flagManager.HasFlag(stringValue);
             default:
