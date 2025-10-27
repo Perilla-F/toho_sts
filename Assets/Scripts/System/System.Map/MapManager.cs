@@ -10,14 +10,12 @@ public class MapManager
     private int width;
     private int height;
 
-    [Header("Event Data")]
-    private EventDatabase eventDatabase;
-
     public Vector2Int CurrentCell { get; private set; }
     public Dictionary<Vector2Int, MapCellState> mapData;
-    public LastEventData LastEventData { get; set; }
 
     private readonly IMapView mapView;
+
+    private LastEventData lastEventData;
 
     public MapManager(IMapView mapView, int width, int height)
     {
@@ -125,14 +123,18 @@ public class MapManager
         if (mapData[current].IsWide)
         {
             list.Add(current + Vector2Int.up);
-            list.Add(current + Vector2Int.up + Vector2Int.left);
-            list.Add(current + Vector2Int.up + Vector2Int.left + Vector2Int.left);
-            list.Add(current + Vector2Int.up + Vector2Int.right);
-            list.Add(current + Vector2Int.up + Vector2Int.right + Vector2Int.right);
+            for (var dx = 0; current.x - dx >= 0; dx++)
+            {
+                list.Add(current + Vector2Int.up + new Vector2Int(-dx, 0));
+            }
+            for (var dx = 0; current.x + dx < width; dx++)
+            {
+                list.Add(current + Vector2Int.up + new Vector2Int(dx, 0));
+            }
         }
-        else if (mapData[new Vector2Int(2, current.y + 1)].IsWide)
+        else if (mapData[new Vector2Int(width / 2, current.y + 1)].IsWide)
         {
-            list.Add(new Vector2Int(2, current.y + 1));
+            list.Add(new Vector2Int(width / 2, current.y + 1));
         }
         else
         {
@@ -149,48 +151,10 @@ public class MapManager
     }
 
     // Coordinator から状態を設定
-    public void SetMapState(Dictionary<Vector2Int, MapCellState> mapCellStates, Vector2Int cellPos, LastEventData lastEventData)
+    public void SetMapState(Dictionary<Vector2Int, MapCellState> mapCellStates, Vector2Int cellPos)
     {
         mapData = mapCellStates;
         CurrentCell = cellPos;
-        LastEventData = lastEventData == null ? null : lastEventData;
-    }
-
-    /// <summary>
-    /// イベント開始前に呼ぶ
-    /// </summary>
-    public void SetLastEvent(string eventId)
-    {
-        LastEventData = new LastEventData
-        {
-            eventId = eventId,
-            stepId = null,
-            isCompleted = false,
-        };
-    }
-
-    /// <summary>
-    /// ステップ移動した際に呼ばれる
-    /// </summary>
-    /// <param name="eventId"></param>
-    /// <param name="stepId"></param>
-    public void StepLastEvent(string eventId, string stepId)
-    {
-        LastEventData = new LastEventData
-        {
-            eventId = eventId,
-            stepId = stepId,
-            isCompleted = false,
-        };
-    }
-
-    /// <summary>
-    /// イベント終了時に呼ばれる
-    /// </summary>
-    public void CompleteLastEvent()
-    {
-        if (LastEventData == null) return;
-        LastEventData.isCompleted = true;
     }
 
     public MapSaveData CreateSaveData()
@@ -199,7 +163,7 @@ public class MapManager
                 mapData,
                 CurrentCell.x,
                 CurrentCell.y,
-                LastEventData
+                lastEventData
                 );
     }
 

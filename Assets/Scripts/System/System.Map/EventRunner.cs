@@ -8,6 +8,9 @@ public class EventRunner
 
     public event Action<EventStep> OnStepChanged;
     public event Action OnEventEnded;
+    private IEventView eventView;
+
+    public event Action<EventStep> OnStartStep;
 
     private MultiStepEvent currentEvent;
     private EventStep currentStep;
@@ -20,28 +23,57 @@ public class EventRunner
         this.flagManager = flagManager;
     }
 
+    public LastEventData LastEventData { get; set; }
+
+    public EventRunner(IEventView eventView)
+    {
+        this.eventView = eventView;
+    }
+
+    /// <summary>
+    /// イベント開始
+    /// </summary>
+    /// <param name="evt"></param>
     public void StartEvent(MultiStepEvent evt)
     {
         currentEvent = evt;
-        currentStep = evt.Steps[0];
-        OnStepChanged?.Invoke(currentStep);
+        LastEventData = new LastEventData
+        {
+            eventId = evt.EventId,
+            stepId = null,
+            isCompleted = false,
+        };
+        currentStep = evt.GetStep("start");
+        eventView.ShowStep(currentStep);
     }
 
+    /// <summary>
+    /// 選択肢を押したら
+    /// </summary>
+    /// <param name="option"></param>
     public void SelectOption(EventOption option)
     {
-        ProcessOption(option);
+        var nextId = ProcessOption(option);
 
         if (option.EndsEvent)
         {
             OnOptionSelected?.Invoke(option);
+            eventView.Hide();
+            if (LastEventData == null) return;
+            LastEventData.isCompleted = true;
         }
         else
         {
-            StartStep(option.DefaultNextStepId);
+            StartStep(nextId);
         }
     }
 
-    private void ProcessOption(EventOption option)
+    /// <summary>
+    /// 選択肢の分岐
+    /// </summary>
+    /// <param name="option"></param>
+    /// <returns></returns>
+    private string ProcessOption(EventOption option)
     {
         // --- フラグ処理 ---
         if (!string.IsNullOrEmpty(option.FlagToSet))
@@ -53,11 +85,24 @@ public class EventRunner
         string nextId = option.DefaultNextStepId;
         if (option.Condition != null && option.Condition.IsMet(context, flagManager))
             nextId = option.ConditionalNextStepId;
+        return nextId;
     }
 
+    /// <summary>
+    /// ステップ開始
+    /// </summary>
+    /// <param name="stepId"></param>
     public void StartStep(string stepId)
     {
         currentStep = currentEvent.GetStep(stepId);
-        OnStepChanged?.Invoke(currentStep);
+        LastEventData = new LastEventData
+        {
+            eventId = currentEvent.EventId,
+            stepId = stepId,
+            isCompleted = false,
+        };
+        OnStartStep?.Invoke(currentStep);
+        eventView.ShowStep(currentStep);
     }
+
 }

@@ -1,7 +1,11 @@
 fileFormatVersion: 2
+<<<<<<< HEAD
+guid: a7ddbd53073df3a4ca3c8bd647e839fe
+=======
 guid: 0c3e1d7ce4ab6b24ebcb4bb626f4c1fc
 DefaultImporter:
   externalObjects: {}
   userData: 
   assetBundleName: 
   assetBundleVariant: 
+>>>>>>> origin/battle-system-laptop

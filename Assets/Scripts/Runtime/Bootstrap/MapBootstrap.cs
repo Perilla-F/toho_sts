@@ -50,8 +50,7 @@ public class MapBootstrap : MonoBehaviour
                     // System層に状態を復元（データ構築のみ）
                     Manager.SetMapState(
                         save.Map.mapData,
-                        new Vector2Int(save.Map.cellX, save.Map.cellY),
-                        save.Map.lastEventData
+                        new Vector2Int(save.Map.cellX, save.Map.cellY)
                         );
 
                     // MapManagerがデータを再構築
@@ -97,28 +96,8 @@ public class MapBootstrap : MonoBehaviour
 
         Manager.SetMapState(
             saveData.mapData,
-            new Vector2Int(saveData.cellX, saveData.cellY),
-            saveData.lastEventData
+            new Vector2Int(saveData.cellX, saveData.cellY)
         );
-
-        Manager.OnCellClicked(new Vector2Int(saveData.cellX, saveData.cellY));
-
-        // 未完了イベントがあれば再開
-        if (Manager.LastEventData != null && !Manager.LastEventData.isCompleted)
-        {
-            var evt = EventDatabase.GetEvent(Manager.LastEventData.eventId) as MultiStepEvent;
-            Runner.StartEvent(evt);
-        }
-    }
-
-    /// <summary>
-    /// イベント終了時に呼ばれる
-    /// MapManagerに状態更新を依頼し、SaveManagerで自動セーブ
-    /// </summary>
-    public void OnEventCompleted()
-    {
-        Manager.CompleteLastEvent();
-        SaveMap();
     }
 
     private void HandleEventOptionSelected(EventOption option)
