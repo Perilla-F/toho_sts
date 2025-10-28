@@ -7,22 +7,31 @@ using UnityEngine;
 public class MapManager
 {
     private readonly MapGenerator _generator;
-    private readonly GameManager _gameManager;
+    private GameManager _gameManager;
     private Dictionary<Vector2Int, MapCellState> _mapData;
+    private MapGenerationRule rule;
 
     public Vector2Int CurrentCell { get; private set; }
+
+    public int StageIndex;
 
     // イベント（UIに通知）
     public event Action<Dictionary<Vector2Int, MapCellState>, MapGenerationRule> OnMapGenerated;
     public event Action<Vector2Int, IEnumerable<Vector2Int>> OnCellSelectionChanged;
 
-    public MapManager(GameManager gameManager)
+    public MapManager(GameManager gameManager, MapGenerationRule rule)
     {
         _gameManager = gameManager;
         _generator = new MapGenerator();
+        this.rule = rule;
     }
 
-    public void GenerateMap(MapGenerationRule rule)
+    public void Inject(GameManager gameManager)
+    {
+        _gameManager = gameManager;
+    }
+
+    public void GenerateMap()
     {
         _mapData = _generator.GenerateMapData(rule);
         OnMapGenerated?.Invoke(_mapData, rule);
@@ -32,21 +41,21 @@ public class MapManager
     {
         CurrentCell = pos;
         var clickable = _generator.GetClickable(pos);
-        MapSave();
+        _gameManager.RequestSave();
         OnCellSelectionChanged?.Invoke(pos, clickable);
     }
 
-    public void MapSave()
+    public MapSaveData CreateSaveData()
     {
-        _gameManager.SaveMap(new MapSaveData(_mapData, CurrentCell.x, CurrentCell.y));
+        return new MapSaveData(_mapData, CurrentCell.x, CurrentCell.y, StageIndex);
     }
 
-    public void RestoreMap(SaveData saveData, MapGenerationRule rule)
+    public void RestoreFrom(MapSaveData data)
     {
-        _mapData = saveData.Map.mapData;
+        _mapData = data.mapData;
         OnMapGenerated?.Invoke(_mapData, rule);
 
-        CurrentCell = new Vector2Int(saveData.Map.cellX, saveData.Map.cellY);
+        CurrentCell = new Vector2Int(data.cellX, data.cellY);
         OnCellSelectionChanged?.Invoke(CurrentCell, _generator.GetClickable(CurrentCell));
     }
 

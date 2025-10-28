@@ -58,7 +58,7 @@ public class BattleSystem : MonoBehaviour, IBattleSystem
             foreach (var actionData in actionDatas)
             {
                 int priority = 2;
-                if (enemy.EnemyType != EnemyType.normal)
+                if (enemy.EnemyType != EnemyType.Normal)
                 {
                     priority = 1;
                 }

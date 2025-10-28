@@ -1,4 +1,4 @@
-public interface ISaveManager
+public interface ISaveService
 {
     public void SaveGame(SaveData data);
     public SaveData LoadGame();

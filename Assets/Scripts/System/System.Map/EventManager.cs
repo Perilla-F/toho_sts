@@ -5,10 +5,12 @@ public class EventManager
 {
     private readonly EventDatabase _eventDatabase;
 
-    private readonly GameManager _gameManager;
+    private GameManager _gameManager;
     private readonly FlagManager _flagManager;
 
-    public EventSaveData EventSaveData;
+    public string CurrentEventId;
+    public string CurrentStepId;
+    public bool CurrentEventCompleted;
 
     public event Action<EventStep> OnStepStarted;
     public event Action OnEventEnded;
@@ -20,6 +22,11 @@ public class EventManager
         _flagManager = flagManager;
     }
 
+    public void Inject(GameManager gameManager)
+    {
+        _gameManager = gameManager;
+    }
+
     public void OnEnterEvent()
     {
         StartEvent(_eventDatabase.GetRandomEvent(_gameManager, _flagManager));
@@ -27,29 +34,29 @@ public class EventManager
 
     private void StartEvent(MultiStepEvent evt)
     {
-        EventSaveData.eventId = evt.EventId;
-        EventSaveData.stepId = "start";
-        EventSaveData.isCompleted = false;
+        CurrentEventId = evt.EventId;
+        CurrentStepId = "start";
+        CurrentEventCompleted = false;
         StartStep("start");
     }
 
     private void StartStep(string stepId)
     {
-        EventSaveData.stepId = stepId;
-        EventSaveData.isCompleted = false;
+        CurrentStepId = stepId;
+        CurrentEventCompleted = false;
 
         // ロジックのみ：UIは操作しない
-        var step = _eventDatabase.GetEvent(EventSaveData.eventId).GetStep(stepId);
+        var step = _eventDatabase.GetEvent(CurrentEventId).GetStep(stepId);
         OnStepStarted?.Invoke(step);
 
-        _gameManager.SaveEvent(EventSaveData);
+        _gameManager.RequestSave();
     }
 
     public void SelectOption(EventOption option)
     {
         if (option.EndsEvent)
         {
-            EventSaveData.isCompleted = true;
+            CurrentEventCompleted = true;
             OnEventEnded?.Invoke();
         }
         else
@@ -58,7 +65,7 @@ public class EventManager
             StartStep(nextId);
         }
 
-        _gameManager.SaveEvent(EventSaveData);
+        _gameManager.RequestSave();
     }
 
     private string ProcessOption(EventOption option)
@@ -74,17 +81,22 @@ public class EventManager
         return nextId;
     }
 
-
-    public void LoadData(EventSaveData data)
+    public EventSaveData CreateSaveData()
     {
-        if (data.isCompleted) return;
-        EventSaveData = data;
-        StartStep(data.stepId);
+        return new EventSaveData(
+            CurrentEventId,
+            CurrentStepId,
+            CurrentEventCompleted
+        );
     }
 
-    private EventSaveData SaveEvent()
+    public void RestoreFrom(EventSaveData data)
     {
-        return EventSaveData;
+        if (data.isCompleted) return;
+        CurrentEventId = data.eventId;
+        CurrentStepId = data.stepId;
+        CurrentEventCompleted = data.isCompleted;
+        StartStep(data.stepId);
     }
 
 }
