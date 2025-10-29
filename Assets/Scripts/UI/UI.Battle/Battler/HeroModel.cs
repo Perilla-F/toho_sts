@@ -4,37 +4,33 @@ using Live2D.Cubism.Framework.Motion;
 public class HeroModel : MonoBehaviour, IBattleModel
 {
     [SerializeField] private CubismMotionController motionController;
-    private HeroUnit _hero;
+    private AnimationClip idle;
 
-    public void Init(HeroUnit hero)
+    public void Init(AnimationClip idle)
     {
-        _hero = hero;
         PlayIdle();
     }
 
     public void PlayIdle()
     {
-        if (_hero.IdleClip != null)
-            motionController.PlayAnimation(_hero.IdleClip, isLoop: true);
+        motionController.PlayAnimation(idle, isLoop: true);
     }
 
-    public void PlayAttack()
+    public void PlayAttack(AnimationClip attack)
     {
-        if (_hero.AttackClip != null)
-            motionController.PlayAnimation(_hero.AttackClip, isLoop: false);
+        motionController.PlayAnimation(attack, isLoop: false);
 
         // Coroutineでモーション終了後にIdleへ戻す
-        float duration = _hero.AttackClip.length;
+        float duration = attack.length;
         StartCoroutine(ReturnToIdleAfter(duration));
     }
 
-    public void PlayHit()
+    public void PlayHit(AnimationClip hit)
     {
-        if (_hero.HitClip != null)
-            motionController.PlayAnimation(_hero.HitClip, isLoop: false);
+        motionController.PlayAnimation(hit, isLoop: false);
 
         // 被ダメ後にIdleへ戻す
-        float duration = _hero.HitClip.length;
+        float duration = hit.length;
         StartCoroutine(ReturnToIdleAfter(duration));
     }
 

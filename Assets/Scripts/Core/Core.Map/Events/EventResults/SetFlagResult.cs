@@ -6,7 +6,7 @@ public class SetFlagResult : EventResult
     public string flagName;
     public bool value = true;
 
-    public override void Apply(IGameManager game, IFlagManager flagManager)
+    public override void Apply(IGameContext context, IFlagManager flagManager)
     {
         if (value)
             flagManager.SetFlag(flagName);

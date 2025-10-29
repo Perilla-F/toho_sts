@@ -6,23 +6,9 @@ using UnityEngine;
 public class ManaView : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI _manaText;
-    public Mana Mana { get; private set; }
 
-    public void Init(Mana mana)
+    public void UpdateUI(int count)
     {
-        Mana = mana;
-        mana.OnChanged += UpdateUI;
-        UpdateUI();
-    }
-
-    private void OnDestroy()
-    {
-        if (Mana != null)
-            Mana.OnChanged -= UpdateUI;
-    }
-
-    private void UpdateUI()
-    {
-        _manaText.text = Mana.GetMana().ToString();
+        _manaText.text = count.ToString();
     }
 }

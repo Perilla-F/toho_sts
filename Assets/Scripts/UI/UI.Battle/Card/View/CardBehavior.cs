@@ -10,9 +10,8 @@ using Unity.VisualScripting;
 using Cysharp.Threading.Tasks.Triggers;
 
 
-public class CardBehavior : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IBeginDragHandler, IDragHandler
+public class CardBehavior : MonoBehaviour, ICardView, IPointerEnterHandler, IPointerExitHandler, IBeginDragHandler, IDragHandler
 {
-    public CardObj CardObj;
     public DeckView DeckView { get; private set; }
     public HandView HandView { get; private set; }
     public DiscardAreaView DiscardAreaView { get; private set; }
@@ -42,15 +41,14 @@ public class CardBehavior : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
     /// </summary>
     private Vector2 _defaultPosition;
 
-    public void Init(CardObj obj, DeckView deckView, HandView handView, DiscardAreaView discardAreaView, TimelineView timelineView)
+    public void Init(DeckView deckView, HandView handView, DiscardAreaView discardAreaView, TimelineView timelineView)
     {
-        CardObj = obj;
         DeckView = deckView;
         HandView = handView;
         DiscardAreaView = discardAreaView;
         TimelineView = timelineView;
-        obj.BindMoveToHand(MoveToHandView);
-        obj.BindMoveToDiscard(MoveToDiscard);
+        // obj.BindMoveToHand(MoveToHandView);
+        // obj.BindMoveToDiscard(MoveToDiscard);
 
         SetUpState = new CardSetUpState(this);
         IdleState = new CardIdleState(this);
@@ -61,15 +59,15 @@ public class CardBehavior : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
         ChangeState(SetUpState);
     }
 
-    void OnEnable()
-    {
-        EventBus<CardStateChangeEvent>.Subscribe(OnCardStateChange);
-    }
+    // void OnEnable()
+    // {
+    //     EventBus<CardStateChangeEvent>.Subscribe(OnCardStateChange);
+    // }
 
-    void OnDisable()
-    {
-        EventBus<CardStateChangeEvent>.Unsubscribe(OnCardStateChange);
-    }
+    // void OnDisable()
+    // {
+    //     EventBus<CardStateChangeEvent>.Unsubscribe(OnCardStateChange);
+    // }
 
     public void ChangeState(CardStateBase newState)
     {
@@ -80,26 +78,26 @@ public class CardBehavior : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
 
     void OnCardStateChange(ICardStateChangeEvent evt)
     {
-        if (evt.Source is CardObj card && card == CardObj)
+        // if (evt.Source is CardObj card && card == CardObj)
+        // {
+        switch (evt.Source)
         {
-            switch (evt.Source)
-            {
-                case CardStateName.CardSetUpState:
-                    ChangeState(SetUpState);
-                    break;
-                case CardStateName.CardIdleState:
-                    ChangeState(IdleState);
-                    break;
-                case CardStateName.CardWaitState:
-                    ChangeState(WaitState);
-                    break;
-                case CardStateName.CardDraggingState:
-                    ChangeState(DraggingState);
-                    break;
-                case CardStateName.CardSelectedState:
-                    ChangeState(SelectedState);
-                    break;
-            }
+            case CardStateName.CardSetUpState:
+                ChangeState(SetUpState);
+                break;
+            case CardStateName.CardIdleState:
+                ChangeState(IdleState);
+                break;
+            case CardStateName.CardWaitState:
+                ChangeState(WaitState);
+                break;
+            case CardStateName.CardDraggingState:
+                ChangeState(DraggingState);
+                break;
+            case CardStateName.CardSelectedState:
+                ChangeState(SelectedState);
+                break;
+                // }
         }
     }
 
@@ -188,6 +186,18 @@ public class CardBehavior : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
         transform.DORotate(new Vector3(0, 0, -360), 0.3f, RotateMode.FastBeyond360);
         await transform.DOMove(DiscardAreaView.transform.position, 0.3f).AsyncWaitForCompletion();
         gameObject.SetActive(false);
+    }
+
+    public async UniTask MoveToHandAsync()
+    {
+        transform.DOScale(Vector3.one, 0.3f);
+        await transform.DOMove(HandView.transform.position, 0.3f).AsyncWaitForCompletion();
+    }
+
+    public async UniTask MoveToDiscardAsync()
+    {
+        transform.DOScale(Vector3.zero, 0.3f);
+        await transform.DOMove(DiscardAreaView.transform.position, 0.3f).AsyncWaitForCompletion();
     }
 
 }

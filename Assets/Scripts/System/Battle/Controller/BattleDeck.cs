@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,6 +7,8 @@ using UnityEngine;
 public class BattleDeck : IBattleDeck
 {
     private Queue<CardObj> _deckCards = new Queue<CardObj>();
+
+    public event Action<int> OnChangedDeckCount;
 
     /// <summary>
     /// 山札Queue<CardObj>→Queue<CardObj>のシャッフル
@@ -18,7 +21,7 @@ public class BattleDeck : IBattleDeck
         for (int i = 0; i < tempList.Count; i++)
         {
             var temp = tempList[i];
-            int randomIndex = Random.Range(i, tempList.Count);
+            int randomIndex = UnityEngine.Random.Range(i, tempList.Count);
             tempList[i] = tempList[randomIndex];
             tempList[randomIndex] = temp;
         }
@@ -35,14 +38,20 @@ public class BattleDeck : IBattleDeck
     /// <summary>
     /// 山札に追加
     /// </summary>
-    public void AddCard(CardObj card) => _deckCards.Enqueue(card);
+    public void AddCard(CardObj card)
+    {
+        _deckCards.Enqueue(card);
+        OnChangedDeckCount?.Invoke(_deckCards.Count);
+    }
 
     /// <summary>
     /// 山札からカードを1枚引く
     /// </summary>
     public CardObj Draw()
     {
-        return _deckCards.Dequeue();
+        var card = _deckCards.Dequeue();
+        OnChangedDeckCount?.Invoke(_deckCards.Count);
+        return card;
     }
 
     public List<SourceCard> GetDeckAsSourceCards()

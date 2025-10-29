@@ -46,7 +46,7 @@ public class GameBootstrap : MonoBehaviour
         var playerManager = new PlayerManager(null);
         var mapManger = new MapManager(null, generationRule);
         var flagManager = new FlagManager();
-        var eventManager = new EventManager(eventDatabase, null, flagManager);
+        var eventManager = new EventManager(eventDatabase, null, flagManager, null);
 
         // コンテキスト作成
         var context = new GameContext(playerManager, mapManger, eventManager);
@@ -56,7 +56,7 @@ public class GameBootstrap : MonoBehaviour
 
         playerManager.Inject(_gameManager);
         mapManger.Inject(_gameManager);
-        eventManager.Inject(_gameManager);
+        eventManager.Inject(_gameManager, context);
 
         // 最初のシーンをロード（TitleSceneなど）
         ServiceLocator.Get<SceneLoader>().LoadSceneAsync(nextScene);

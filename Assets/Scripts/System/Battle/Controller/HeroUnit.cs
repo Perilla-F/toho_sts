@@ -5,6 +5,10 @@ using UnityEngine;
 
 public class HeroUnit : IHeroUnit
 {
+
+    public event Action<AnimationClip> OnAttack;
+    public event Action<AnimationClip> OnHit;
+
     public void Setup(HeroBattler heroBattler)
     {
         HPResource = heroBattler.HPResource;
@@ -86,7 +90,7 @@ public class HeroUnit : IHeroUnit
 
     public override void Draw(int amount, BattleContext context)
     {
-        context.GetBattleSystem().Draw(amount);
+        context.BattleSystem.Draw(amount);
     }
 
     public override bool IsAlive()
@@ -121,5 +125,15 @@ public class HeroUnit : IHeroUnit
         {
             e.OnTurnEnd();
         }
+    }
+
+    public override void Attack()
+    {
+        OnAttack?.Invoke(AttackClip);
+    }
+
+    public override void Hit()
+    {
+        OnHit?.Invoke(HitClip);
     }
 }

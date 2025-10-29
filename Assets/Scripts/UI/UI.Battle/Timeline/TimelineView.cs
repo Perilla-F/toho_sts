@@ -16,32 +16,28 @@ public class TimelineView : MonoBehaviour, ITimelineView
     [SerializeField] private float unitWidth = 50f; // 1時間単位の幅(px)
     [SerializeField] private float slideSpeed = 10f; // スライド速度(補間)
 
-    private TimelineManager timeline;
     private int lastCurrentTime = 0;
     private float containerOffsetX = 0f;
 
     // --- 初期化 ---
-    public void Initialize(TimelineManager manager, IHeroUnit heroUnit)
+    public void Initialize(IHeroUnit heroUnit)
     {
-        timeline = manager;
         playerPredictionIcon = heroUnit.playerPredictionIcon;
         playerPreviewIcon = heroUnit.playerPreviewIcon;
     }
 
-    private void Update()
+    private void OnUpdate(int currentTime, int? predictedTime, int? previewTime)
     {
-        if (timeline == null) return;
-        UpdateTimelineSlide();
+        UpdateTimelineSlide(currentTime);
         UpdateEventIcons();
-        UpdatePlayerPrediction();
+        UpdatePlayerPrediction(predictedTime, previewTime);
     }
 
     /// <summary>
     /// タイムラインのスライド
     /// </summary>
-    private void UpdateTimelineSlide()
+    private void UpdateTimelineSlide(int currentTime)
     {
-        int currentTime = timeline.CurrentTime;
         if (currentTime != lastCurrentTime)
         {
             // 左端が現在時刻になるようにスライド
@@ -101,10 +97,10 @@ public class TimelineView : MonoBehaviour, ITimelineView
     /// <summary>
     /// プレイヤーの行動予告アイコン更新
     /// </summary>
-    private void UpdatePlayerPrediction()
+    private void UpdatePlayerPrediction(int? predictedTime, int? previewTime)
     {
-        int? predictedTime = PlayerController.Instance?.PredictedActionTime;
-        int? previewTime = PlayerController.Instance?.PreviewActionTime;
+        // int? predictedTime = PlayerController.Instance?.PredictedActionTime;
+        // int? previewTime = PlayerController.Instance?.PreviewActionTime;
 
         // --- 確定アイコン（不透明） ---
         if (predictedTime.HasValue)

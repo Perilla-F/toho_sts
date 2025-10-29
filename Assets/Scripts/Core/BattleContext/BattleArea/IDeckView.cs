@@ -1,4 +1,4 @@
 public interface IDeckView
 {
-    void UpdateDeckCount();
+    void UpdateDeckCount(int count);
 }

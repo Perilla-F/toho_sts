@@ -13,7 +13,7 @@ public class CardFactory : MonoBehaviour
     /// <summary>
     /// SourceCard から CardObj と UI を生成
     /// </summary>
-    public CardObj CreateCard(SourceCard sourceCard, Transform parent, DeckView deckView, HandView handView, DiscardAreaView discardAreaView, TimelineView timelineView, ResourceRegistry resourceRegistry)
+    public CardObj CreateCard(SourceCard sourceCard, BattleViewRoot view)
     {
         if (_cardPrefab == null)
         {
@@ -27,11 +27,11 @@ public class CardFactory : MonoBehaviour
         CardObj cardObj = new NomalCardObj(sourceCard, registry);
 
         // 見た目生成
-        GameObject cardGO = Object.Instantiate(_cardPrefab, parent);
+        GameObject cardGO = Instantiate(_cardPrefab, view.DeckView.transform);
         CardBehavior behaviour = cardGO.GetComponent<CardBehavior>();
 
         // 双方向の初期化
-        behaviour.Init(cardObj, deckView, handView, discardAreaView, timelineView);
+        behaviour.Init(cardObj, view.DeckView, view.HandView, view.DiscardAreaView, view.TimelineView);
 
         return cardObj;
     }

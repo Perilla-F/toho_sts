@@ -3,6 +3,6 @@ using UnityEngine;
 public interface IBattleModel
 {
     public void PlayIdle();
-    public void PlayAttack();
-    public void PlayHit();
+    public void PlayAttack(AnimationClip attack);
+    public void PlayHit(AnimationClip hit);
 }

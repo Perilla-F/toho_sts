@@ -7,6 +7,7 @@ public class EventManager
 
     private GameManager _gameManager;
     private readonly FlagManager _flagManager;
+    private GameContext _context;
 
     public string CurrentEventId;
     public string CurrentStepId;
@@ -15,21 +16,23 @@ public class EventManager
     public event Action<EventStep> OnStepStarted;
     public event Action OnEventEnded;
 
-    public EventManager(EventDatabase eventDatabase, GameManager gameManager, FlagManager flagManager)
+    public EventManager(EventDatabase eventDatabase, GameManager gameManager, FlagManager flagManager, GameContext context)
     {
         _eventDatabase = eventDatabase;
         _gameManager = gameManager;
         _flagManager = flagManager;
+        _context = context;
     }
 
-    public void Inject(GameManager gameManager)
+    public void Inject(GameManager gameManager, GameContext context)
     {
         _gameManager = gameManager;
+        _context = context;
     }
 
     public void OnEnterEvent()
     {
-        StartEvent(_eventDatabase.GetRandomEvent(_gameManager, _flagManager));
+        StartEvent(_eventDatabase.GetRandomEvent(_context, _flagManager));
     }
 
     private void StartEvent(MultiStepEvent evt)
@@ -76,7 +79,7 @@ public class EventManager
             _flagManager.RemoveFlag(option.FlagToRemove);
 
         string nextId = option.DefaultNextStepId;
-        if (option.Condition != null && option.Condition.IsMet(_gameManager, _flagManager))
+        if (option.Condition != null && option.Condition.IsMet(_context, _flagManager))
             nextId = option.ConditionalNextStepId;
         return nextId;
     }

@@ -11,6 +11,7 @@ public class CardObj : ICardObj
     public SourceCard Source;
     public readonly ResourceRegistry ResourceRegistry;
     public int Delay;
+    public ICardView cardView;
 
     public CardObj(SourceCard source, ResourceRegistry resourceRegistry)
     {

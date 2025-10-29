@@ -34,7 +34,6 @@ public abstract class BattleUnit
     public delegate void HpChanged(int newHp);
     public event HpChanged OnHpChanged;
 
-
     public abstract void TakeDamage(int amount);
     public abstract void Heal(int amount);
     public abstract void ApplyBlock(int amount);
@@ -49,4 +48,6 @@ public abstract class BattleUnit
     public abstract void ProcessTurnEnd();
     public abstract int GetCurrentHP();
     public abstract int GetMaxHP();
+    public abstract void Attack();
+    public abstract void Hit();
 }

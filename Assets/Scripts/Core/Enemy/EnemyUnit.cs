@@ -17,6 +17,9 @@ public class EnemyUnit : BattleUnit
 
     private EnemyUIEventChannel _uiChannel;
 
+    public event Action<AnimationClip> OnAttack;
+    public event Action<AnimationClip> OnHit;
+
     public void Setup(EnemyData data)
     {
         BattlerName = data.BattlerName;
@@ -138,6 +141,16 @@ public class EnemyUnit : BattleUnit
         {
             e.OnTurnEnd();
         }
+    }
+
+    public override void Attack()
+    {
+        OnAttack?.Invoke(AttackClip);
+    }
+
+    public override void Hit()
+    {
+        OnHit?.Invoke(HitClip);
     }
 
 }

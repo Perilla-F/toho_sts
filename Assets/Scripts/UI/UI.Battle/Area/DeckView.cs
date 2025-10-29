@@ -6,14 +6,9 @@ using UnityEngine;
 public class DeckView : MonoBehaviour, IDeckView
 {
     [SerializeField] private TextMeshProUGUI _deckCountText;
-    private BattleDeck _battleDeck;
-    public void UpdateDeckCount()
-    {
-        _deckCountText.text = _battleDeck.Count.ToString();
-    }
 
-    public void SetBattleDeck(BattleDeck battleDeck)
+    public void UpdateDeckCount(int count)
     {
-        this._battleDeck = battleDeck;
+        _deckCountText.text = count.ToString();
     }
 }

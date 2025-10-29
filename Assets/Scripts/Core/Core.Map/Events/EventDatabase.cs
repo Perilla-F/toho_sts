@@ -29,7 +29,7 @@ public class EventDatabase : ScriptableObject
         return null;
     }
 
-    public MultiStepEvent GetRandomEvent(IGameManager game, IFlagManager flagManager)
+    public MultiStepEvent GetRandomEvent(IGameContext context, IFlagManager flagManager)
     {
         if (events == null || events.Count == 0)
         {
@@ -55,7 +55,7 @@ public class EventDatabase : ScriptableObject
             bool valid = false;
             foreach (var option in firstStep.Options)
             {
-                if (option.Condition == null || option.Condition.IsMet(game, flagManager))
+                if (option.Condition == null || option.Condition.IsMet(context, flagManager))
                 {
                     valid = true;
                     break;

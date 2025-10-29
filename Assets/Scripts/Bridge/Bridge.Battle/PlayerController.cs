@@ -11,7 +11,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private TimelineManager timeline;
     public bool HasChosenAction { get; private set; } = false;
     public bool TurnEndRequested { get; private set; } = false;
-    public CardObj ChosenCard { get; private set; }
+    public ICardObj ChosenCard { get; private set; }
 
     /// <summary>
     /// 行動選択開始処理
@@ -26,7 +26,7 @@ public class PlayerController : MonoBehaviour
     /// 行動確定時処理
     /// </summary>
     /// <param name="card"></param>
-    public void SelectAction(CardObj card)
+    public void SelectAction(ICardObj card)
     {
         ChosenCard = card;
         HasChosenAction = true;

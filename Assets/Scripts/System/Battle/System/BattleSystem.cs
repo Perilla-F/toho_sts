@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
@@ -7,37 +8,37 @@ using UnityEngine.SceneManagement;
 public class BattleSystem : MonoBehaviour, IBattleSystem
 {
 
-    [SerializeField] private EnemyManager _enemyManager;
-    [SerializeField] private PlayerController player;
+    private EnemyManager _enemyManager;
+    private PlayerController _player;
     private IGameManager _gameManager;
-    private BattleDeck _battleDeck;
-    private Hand _hand;
-    private DiscardArea _discardArea;
-    private HeroUnit _heroUnit;
+    public BattleDeck BattleDeck;
+    public Hand Hand { get; private set; }
+    public DiscardArea DiscardArea { get; private set; }
+    public IHeroUnit Hero { get; private set; }
     private TimelineManager _timelineManager;
     private bool _isProcessingEvents;
     private BattlePhase phase = BattlePhase.TurnStart;
     public BattleContext BattleContext { get; private set; }
     private IAudioManager AudioService;
 
-    public Hand Hand { get => _hand; }
-    public BattleDeck BattleDeck { get => _battleDeck; }
-    public DiscardArea DiscardArea { get => _discardArea; }
-    public HeroUnit HeroUnit { get => _heroUnit; }
-    public EnemyManager EnemyManager { get => _enemyManager; }
-    public TimelineManager TimelineManager { get => _timelineManager; }
-
     public int TurnCount { get; private set; } = 1;
+
+    public event Action<int> OnTurnStart;
+
+    public void Init(EnemyManager enemy, PlayerController player)
+    {
+        _enemyManager = enemy;
+        _player = player;
+    }
 
     public void Setup(BattleContext context, HeroUnit heroUnit, BattleDeck battleDeck, Hand hand, DiscardArea discardArea, IGameManager gameManager, TimelineManager timelineManager, IAudioManager audioService)
     {
         BattleContext = context;
-        _heroUnit = heroUnit;
-        _battleDeck = battleDeck;
-        _hand = hand;
-        _discardArea = discardArea;
+        Hero = heroUnit;
+        BattleDeck = battleDeck;
+        Hand = hand;
+        DiscardArea = discardArea;
         _timelineManager = timelineManager;
-        context.GetDeckView().UpdateDeckCount();
 
         _gameManager = gameManager;
         AudioService = audioService;
@@ -90,10 +91,11 @@ public class BattleSystem : MonoBehaviour, IBattleSystem
     {
         phase = BattlePhase.TurnStart;
         Debug.Log("=== Turn Start ===");
-        BattleContext.GetTurnMessagePanel().ShowMessage($"{KanjiNumberConverteUtil.ConvertToKanjiWithUnits(TurnCount)}巡目");
+
+        OnTurnStart?.Invoke(TurnCount);
 
         AddActionToTimeline();
-        Draw(HeroUnit.DrawCount).Forget();
+        Draw(Hero.DrawCount).Forget();
 
         yield return null;
     }
@@ -107,35 +109,35 @@ public class BattleSystem : MonoBehaviour, IBattleSystem
         phase = BattlePhase.PlayerSelect;
         Debug.Log("=== Player Select Phase ===");
 
-        player.BeginSelection();
+        _player.BeginSelection();
 
         bool endTurn = false;
 
         while (!endTurn)
         {
             // プレイヤーが行動を選択した場合
-            if (player.HasChosenAction)
+            if (_player.HasChosenAction)
             {
-                var card = player.ChosenCard;
+                var card = _player.ChosenCard;
                 int actionTime = _timelineManager.CurrentTime + card.Delay;
 
                 _timelineManager.AddEvent(new PlayerActionEvent(
-                    player.ChosenCard,
-                    player,
-                    player.ChosenCard.Delay
+                    _player.ChosenCard,
+                    _player,
+                    _player.ChosenCard.Delay
                 ));
 
-                player.ConfirmAction();
+                _player.ConfirmAction();
 
                 // 行動発動時刻まで時間を進める（途中の敵行動などを処理）
                 yield return StartCoroutine(ProcessUntilTime(actionTime));
 
                 // 行動発動後 → 再び選択可能に
-                player.BeginSelection();
+                _player.BeginSelection();
             }
 
             // ターンエンドが押された場合
-            if (player.TurnEndRequested)
+            if (_player.TurnEndRequested)
             {
                 endTurn = true;
             }
@@ -200,9 +202,9 @@ public class BattleSystem : MonoBehaviour, IBattleSystem
     {
         for (int i = 0; i < count; i++)
         {
-            if (_battleDeck.IsEmpty()) break;
-            CardObj card = _battleDeck.Draw();
-            _hand.AddCard(card);
+            if (BattleDeck.IsEmpty()) break;
+            CardObj card = BattleDeck.Draw();
+            Hand.AddCard(card);
             if (i < count - 1)
             {
                 card.MoveCardAsync().Forget();
@@ -212,8 +214,6 @@ public class BattleSystem : MonoBehaviour, IBattleSystem
             {
                 await card.MoveCardAsync();
             }
-            BattleContext.GetDeckView().UpdateDeckCount();
-            BattleContext.GetHandView().ArrangeCards();
             card.CardStateChange(CardStateName.CardWaitState);
         }
     }
@@ -224,13 +224,13 @@ public class BattleSystem : MonoBehaviour, IBattleSystem
     /// <returns></returns>
     public async UniTask MoveAllToDiscard()
     {
-        foreach (var card in _hand.Cards)
+        foreach (var card in Hand.Cards)
         {
             card.CardStateChange(CardStateName.CardIdleState);
-            _discardArea.AddCard(card);
+            DiscardArea.AddCard(card);
             await card.MoveDisCardAsync();
         }
-        _hand.Clear();
+        Hand.Clear();
     }
 
     /// <summary>
@@ -238,7 +238,7 @@ public class BattleSystem : MonoBehaviour, IBattleSystem
     /// </summary>
     public void EndBattle()
     {
-        List<SourceCard> updatedDeck = _battleDeck.GetDeckAsSourceCards();
+        List<SourceCard> updatedDeck = BattleDeck.GetDeckAsSourceCards();
 
         _gameManager.UpdateDeckAfterBattle(updatedDeck);
 

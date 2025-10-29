@@ -7,13 +7,8 @@ using UnityEngine;
 
 public class HandView : MonoBehaviour, IHandView
 {
-    public Hand Hand { get; private set; }
     private List<Behaviour> _cards = new List<Behaviour>();
 
-    public void SetHand(Hand hand)
-    {
-        Hand = hand;
-    }
 
     // 手札を整列させる
     public void ArrangeCards()
