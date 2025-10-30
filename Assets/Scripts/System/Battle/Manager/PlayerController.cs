@@ -1,17 +1,19 @@
 using UnityEngine;
 
-public class PlayerController : MonoBehaviour
+public class PlayerController
 {
-    public static PlayerController Instance { get; private set; }
-    private void Awake() => Instance = this;
-
     public int? PredictedActionTime { get; private set; } = null;
     public int? PreviewActionTime { get; private set; } = null;
 
-    [SerializeField] private TimelineManager timeline;
+    private readonly TimelineManager _timeline;
     public bool HasChosenAction { get; private set; } = false;
     public bool TurnEndRequested { get; private set; } = false;
-    public ICardObj ChosenCard { get; private set; }
+    public CardObj ChosenCard { get; private set; }
+
+    public PlayerController(TimelineManager timeline)
+    {
+        _timeline = timeline;
+    }
 
     /// <summary>
     /// 行動選択開始処理
@@ -26,7 +28,7 @@ public class PlayerController : MonoBehaviour
     /// 行動確定時処理
     /// </summary>
     /// <param name="card"></param>
-    public void SelectAction(ICardObj card)
+    public void SelectAction(CardObj card)
     {
         ChosenCard = card;
         HasChosenAction = true;
@@ -55,7 +57,7 @@ public class PlayerController : MonoBehaviour
     /// <param name="delay">カードデータのDelay</param>
     public void SetPreviewDelay(int delay)
     {
-        PreviewActionTime = timeline.CurrentTime + delay;
+        PreviewActionTime = _timeline.CurrentTime + delay;
     }
 
     /// <summary>

@@ -1,10 +1,10 @@
 using UnityEngine.UI;
 
-public class EnemyActionEvent : BattleEvent
+public class EnemyActionEvent : BattleEvent, IEnemyActionEvent
 {
-    public EnemyUnit Enemy;
+    public IEnemyUnit Enemy { get; }
     private EnemyAction action;
-    public EnemyManager ReferenceEnemy;
+    public IEnemyManager ReferenceEnemy { get; }
 
     public EnemyActionEvent(EnemyUnit enemy, EnemyAction action, int scheduledTime, int priority)
         : base(scheduledTime, priority)

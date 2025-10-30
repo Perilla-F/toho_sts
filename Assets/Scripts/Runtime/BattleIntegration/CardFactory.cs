@@ -1,37 +1,33 @@
 using UnityEngine;
 
-public class CardFactory : MonoBehaviour
+public class CardFactory : ICardFactory
 {
-    public static CardFactory Instance { get; private set; }
-    [SerializeField] private GameObject _cardPrefab;
+    private PlayerController _controller;
+    private CardFactoryConfig _config;
 
-    void Awake()
+    public CardFactory(CardFactoryConfig config, PlayerController controller)
     {
-        Instance = this;
+        _config = config;
+        _controller = controller;
     }
 
     /// <summary>
     /// SourceCard から CardObj と UI を生成
     /// </summary>
-    public CardObj CreateCard(SourceCard sourceCard, BattleViewRoot view)
+    public CardObj CreateCard(SourceCard sourceCard, IBattleViewRoot view)
     {
-        if (_cardPrefab == null)
-        {
-            Debug.LogError("CardFactory: cardPrefabが設定されていません。Initialize()してください。");
-            return null;
-        }
-
         ResourceRegistry registry = new ResourceRegistry();
 
-        // 論理データ生成
-        CardObj cardObj = new NomalCardObj(sourceCard, registry);
-
         // 見た目生成
-        GameObject cardGO = Instantiate(_cardPrefab, view.DeckView.transform);
-        CardBehavior behaviour = cardGO.GetComponent<CardBehavior>();
+        var behavior = Object.Instantiate(_config.CardViewPrefab, view.DeckView.GetTransform());
 
         // 双方向の初期化
-        behaviour.Init(cardObj, view.DeckView, view.HandView, view.DiscardAreaView, view.TimelineView);
+        behavior.Init(view.DeckView, view.HandView, view.DiscardAreaView, view.TimelineView);
+
+        // 論理データ生成
+        CardObj cardObj = new NomalCardObj(sourceCard, registry, _controller);
+        cardObj.BindView(behavior);
+        behavior.BindCard(cardObj);
 
         return cardObj;
     }

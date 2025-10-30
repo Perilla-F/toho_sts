@@ -1,4 +1,7 @@
+using UnityEngine;
+
 public interface IDeckView
 {
-    void UpdateDeckCount(int count);
+    public Transform GetTransform();
+    public void UpdateDeckCount(int count);
 }

@@ -7,7 +7,7 @@ public class NomalCardObj : CardObj
     public int ChangedManaCost = 0;
     public int ChangedDelay = 0;
 
-    public NomalCardObj(SourceCard source, ResourceRegistry resourceRegistry) : base(source, resourceRegistry)
+    public NomalCardObj(SourceCard source, ResourceRegistry resourceRegistry, PlayerController controller) : base(source, resourceRegistry, controller)
     {
     }
 

@@ -3,9 +3,14 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
-public class DiscardAreaView : MonoBehaviour
+public class DiscardAreaView : MonoBehaviour, IDiscardAreaView
 {
     [SerializeField] private TextMeshProUGUI _discordCountText;
+
+    public Transform GetTransform()
+    {
+        return transform;
+    }
 
     public void UpdateDiscardCount(int count)
     {

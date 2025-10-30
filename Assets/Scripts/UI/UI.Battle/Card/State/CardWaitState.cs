@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -24,7 +25,7 @@ public class CardWaitState : CardStateBase
         // 一番上に表示する
         _behaviour.transform.SetAsLastSibling();
         // タイムライン上にアイコンを載せる
-        PlayerController.Instance.SetPreviewDelay(_behaviour.CardObj.Source.Data.Delay);
+        _behaviour.Card.SetPreviewDelay();
     }
 
     public override void OnPointerExit(PointerEventData eventData)
@@ -32,7 +33,7 @@ public class CardWaitState : CardStateBase
         _behaviour.transform.DOScale(Vector3.one, 0.1f);
         _behaviour.transform.SetSiblingIndex(_behaviour.DefaultSiblingIndex);
         // タイムライン上からアイコンを外す
-        PlayerController.Instance.ClearPreview();
+        _behaviour.Card.ClearPreview();
     }
 
 }

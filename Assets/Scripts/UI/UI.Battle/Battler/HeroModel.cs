@@ -8,6 +8,7 @@ public class HeroModel : MonoBehaviour, IBattleModel
 
     public void Init(AnimationClip idle)
     {
+        this.idle = idle;
         PlayIdle();
     }
 

@@ -5,37 +5,37 @@ using Live2D.Cubism.Framework.Motion;
 public class EnemyModel : MonoBehaviour, IBattleModel, IDropHandler
 {
     [SerializeField] private CubismMotionController motionController;
-    private EnemyUnit _self;
+    private BattleUnit _self;
 
-    public void Init(EnemyUnit enemy)
+    private AnimationClip idle;
+
+    public void Init(BattleUnit enemy, AnimationClip idle)
     {
         _self = enemy;
+        this.idle = idle;
         PlayIdle();
     }
 
     public void PlayIdle()
     {
-        if (_self.IdleClip != null)
-            motionController.PlayAnimation(_self.IdleClip, isLoop: true);
+        motionController.PlayAnimation(idle, isLoop: true);
     }
 
-    public void PlayAttack()
+    public void PlayAttack(AnimationClip attack)
     {
-        if (_self.AttackClip != null)
-            motionController.PlayAnimation(_self.AttackClip, isLoop: false);
+        motionController.PlayAnimation(attack, isLoop: false);
 
         // Coroutineでモーション終了後にIdleへ戻す
-        float duration = _self.AttackClip.length;
+        float duration = attack.length;
         StartCoroutine(ReturnToIdleAfter(duration));
     }
 
-    public void PlayHit()
+    public void PlayHit(AnimationClip hit)
     {
-        if (_self.HitClip != null)
-            motionController.PlayAnimation(_self.HitClip, isLoop: false);
+        motionController.PlayAnimation(hit, isLoop: false);
 
         // 被ダメ後にIdleへ戻す
-        float duration = _self.HitClip.length;
+        float duration = hit.length;
         StartCoroutine(ReturnToIdleAfter(duration));
     }
 
@@ -48,6 +48,7 @@ public class EnemyModel : MonoBehaviour, IBattleModel, IDropHandler
     public void OnDrop(PointerEventData eventData)
     {
         Debug.Log("drop!");
-        CardObj card = eventData.pointerDrag.GetComponent<CardObj>();
+        CardBehavior card = eventData.pointerDrag.GetComponent<CardBehavior>();
     }
+
 }

@@ -10,5 +10,5 @@ public abstract class EnemyAction : ScriptableObject
     public int ScheduledTime;
     public bool IsCanceled;
 
-    public abstract void Execute(BattleContext context, EnemyUnit enemy);
+    public abstract void Execute(BattleContext context, IEnemyUnit enemy);
 }

@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
@@ -16,14 +17,18 @@ public class TimelineView : MonoBehaviour, ITimelineView
     [SerializeField] private float unitWidth = 50f; // 1時間単位の幅(px)
     [SerializeField] private float slideSpeed = 10f; // スライド速度(補間)
 
+    private ITimelineManager _timeline;
+
     private int lastCurrentTime = 0;
     private float containerOffsetX = 0f;
 
     // --- 初期化 ---
-    public void Initialize(IHeroUnit heroUnit)
+    public void Initialize(IHeroUnit heroUnit, ITimelineManager timeline)
     {
         playerPredictionIcon = heroUnit.playerPredictionIcon;
         playerPreviewIcon = heroUnit.playerPreviewIcon;
+
+        _timeline = timeline;
     }
 
     private void OnUpdate(int currentTime, int? predictedTime, int? previewTime)
@@ -56,7 +61,7 @@ public class TimelineView : MonoBehaviour, ITimelineView
         foreach (Transform child in timelineContainer)
             Destroy(child.gameObject);
 
-        var grouped = timeline.GetUpcomingEvents()
+        var grouped = _timeline.GetUpcomingEvents()
             .GroupBy(e => e.Time)
             .OrderBy(g => g.Key);
 

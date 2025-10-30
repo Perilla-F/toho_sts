@@ -15,7 +15,7 @@ public class ActionIconController : MonoBehaviour
         enemyUI.SetActionIcon(icon, actionName);
     }
 
-    public void ExecuteAction(BattleContext ctx)
+    public void ExecuteAction(IBattleContext ctx)
     {
         enemyUI.SetActionIconVisible(false);
     }

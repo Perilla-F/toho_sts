@@ -4,15 +4,8 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 
-public class EnemyUnit : BattleUnit
+public class EnemyUnit : IEnemyUnit
 {
-    public EnemyType EnemyType { get; private set; }
-    public ConditionType currentCondition = ConditionType.Turn;
-    private ConditionType _lastCondition;
-    private int _turnCounter = 0;
-    public Sprite EventIcon;
-    public int EnemyID;
-
     private EnemyAIData _enemyAI;
 
     private EnemyUIEventChannel _uiChannel;
@@ -26,7 +19,7 @@ public class EnemyUnit : BattleUnit
         EventIcon = data.EventIcon;
         _enemyAI = data.EnemyAI;
         HPResource = new HPResource(data.MaxHP);
-        _lastCondition = currentCondition;
+        lastCondition = currentCondition;
         EnemyType = data.EnemyType;
         UIPrefab = data.UIPrefab;
         ModelPrefab = data.ModelPrefab;
@@ -75,10 +68,10 @@ public class EnemyUnit : BattleUnit
     /// <returns></returns>
     public EnemyAction[] PlanTurn(BattleContext context)
     {
-        if (currentCondition != _lastCondition)
+        if (currentCondition != lastCondition)
         {
-            _turnCounter = 0;
-            _lastCondition = currentCondition;
+            turnCounter = 0;
+            lastCondition = currentCondition;
         }
         _uiChannel?.Raise(new EnemyUIEventData
         {
@@ -86,7 +79,7 @@ public class EnemyUnit : BattleUnit
             Type = EnemyUIEventType.ShowIntent,
             Icon = EventIcon
         });
-        return _enemyAI.DecideActionPattern(context, this, _turnCounter);
+        return _enemyAI.DecideActionPattern(context, this, turnCounter);
     }
 
     public override void AddEffect(StatusEffectData data, int stacks)

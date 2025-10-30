@@ -8,6 +8,8 @@ public class HeroUnit : IHeroUnit
 
     public event Action<AnimationClip> OnAttack;
     public event Action<AnimationClip> OnHit;
+    public event Action<int> OnHpChanged;
+    public event Action<int> OnManaChanged;
 
     public void Setup(HeroBattler heroBattler)
     {
@@ -88,7 +90,7 @@ public class HeroUnit : IHeroUnit
         Mana.Gain(amount);
     }
 
-    public override void Draw(int amount, BattleContext context)
+    public override void Draw(int amount, IBattleContext context)
     {
         context.BattleSystem.Draw(amount);
     }
@@ -125,6 +127,16 @@ public class HeroUnit : IHeroUnit
         {
             e.OnTurnEnd();
         }
+    }
+
+    public void HPChanged()
+    {
+        OnHpChanged?.Invoke(HPResource.GetHP());
+    }
+
+    public void ManaChanged()
+    {
+        OnManaChanged?.Invoke(Mana.GetMana());
     }
 
     public override void Attack()

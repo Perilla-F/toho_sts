@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class BattleBootstrap : MonoBehaviour
 {
-
+    [SerializeField] private CardFactoryConfig _cardFactoryConfig;
     [SerializeField] private BattleViewRoot _battleViewRoot; // View全体のまとめ
     [SerializeField] private EnemyGenerator _enemyGenerator;
     [SerializeField] private BattleSystem _battleSystem;
@@ -13,8 +13,16 @@ public class BattleBootstrap : MonoBehaviour
         var playerManager = ServiceLocator.Get<PlayerManager>();
         var audioManager = ServiceLocator.Get<IAudioManager>();
 
-        var battleContext = BattleContextFactory.Create(encounter, playerManager);
-        var battleManager = new BattleManager(battleContext, _battleSystem, audioManager);
+
+
+        var timeLineManager = new TimelineManager();
+        var playerController = new PlayerController(timeLineManager);
+        var enemyManager = new EnemyManager();
+        var cardFactory = new CardFactory(_cardFactoryConfig, playerController);
+        var battleContext = BattleContextFactory.Create(encounter, playerManager, _battleViewRoot, cardFactory);
+        var battleManager = new BattleManager(battleContext, _battleSystem, audioManager, enemyManager, playerController);
+
+        var battlePresenter = new BattlePresenter(_battleSystem, _battleViewRoot, playerController);
 
         _enemyGenerator.SpawnEnemies(encounter);
         battleManager.StartBattle();

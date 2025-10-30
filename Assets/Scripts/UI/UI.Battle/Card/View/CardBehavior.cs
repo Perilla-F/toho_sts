@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -12,13 +13,14 @@ using Cysharp.Threading.Tasks.Triggers;
 
 public class CardBehavior : MonoBehaviour, ICardView, IPointerEnterHandler, IPointerExitHandler, IBeginDragHandler, IDragHandler
 {
-    public DeckView DeckView { get; private set; }
-    public HandView HandView { get; private set; }
-    public DiscardAreaView DiscardAreaView { get; private set; }
-    public TimelineView TimelineView;
+    public IDeckView DeckView { get; private set; }
+    public IHandView HandView { get; private set; }
+    public IDiscardAreaView DiscardAreaView { get; private set; }
+    public ITimelineView TimelineView;
     private RectTransform _rectTransform;
     private CanvasGroup _canvasGroup;
     public UnityAction<CardBehavior> OnUse;
+    public ICardObj Card;
 
     // State
     public CardSetUpState SetUpState { get; private set; }
@@ -29,6 +31,8 @@ public class CardBehavior : MonoBehaviour, ICardView, IPointerEnterHandler, IPoi
     public CardStateBase CurrentState { get; private set; }
 
     private CardStateBase _currentState;
+
+    public event Action<int> OnPointerCard;
 
 
     /// <summary>
@@ -41,7 +45,7 @@ public class CardBehavior : MonoBehaviour, ICardView, IPointerEnterHandler, IPoi
     /// </summary>
     private Vector2 _defaultPosition;
 
-    public void Init(DeckView deckView, HandView handView, DiscardAreaView discardAreaView, TimelineView timelineView)
+    public void Init(IDeckView deckView, IHandView handView, IDiscardAreaView discardAreaView, ITimelineView timelineView)
     {
         DeckView = deckView;
         HandView = handView;
@@ -57,6 +61,11 @@ public class CardBehavior : MonoBehaviour, ICardView, IPointerEnterHandler, IPoi
         SelectedState = new CardSelectedState(this);
 
         ChangeState(SetUpState);
+    }
+
+    public void BindCard(ICardObj card)
+    {
+        Card = card;
     }
 
     // void OnEnable()
@@ -171,7 +180,7 @@ public class CardBehavior : MonoBehaviour, ICardView, IPointerEnterHandler, IPoi
         // 回転する
         transform.DORotate(new Vector3(0, 0, -360), 0.3f, RotateMode.FastBeyond360);
         // handに移動する
-        await transform.DOMove(HandView.transform.position, 0.3f).AsyncWaitForCompletion();
+        await transform.DOMove(HandView.GetTransform().position, 0.3f).AsyncWaitForCompletion();
     }
 
     /// <summary>
@@ -184,20 +193,20 @@ public class CardBehavior : MonoBehaviour, ICardView, IPointerEnterHandler, IPoi
         transform.DOScale(Vector3.zero, 0.3f);
         // 回転する
         transform.DORotate(new Vector3(0, 0, -360), 0.3f, RotateMode.FastBeyond360);
-        await transform.DOMove(DiscardAreaView.transform.position, 0.3f).AsyncWaitForCompletion();
+        await transform.DOMove(DiscardAreaView.GetTransform().position, 0.3f).AsyncWaitForCompletion();
         gameObject.SetActive(false);
     }
 
     public async UniTask MoveToHandAsync()
     {
         transform.DOScale(Vector3.one, 0.3f);
-        await transform.DOMove(HandView.transform.position, 0.3f).AsyncWaitForCompletion();
+        await transform.DOMove(HandView.GetTransform().position, 0.3f).AsyncWaitForCompletion();
     }
 
     public async UniTask MoveToDiscardAsync()
     {
         transform.DOScale(Vector3.zero, 0.3f);
-        await transform.DOMove(DiscardAreaView.transform.position, 0.3f).AsyncWaitForCompletion();
+        await transform.DOMove(DiscardAreaView.GetTransform().position, 0.3f).AsyncWaitForCompletion();
     }
 
 }

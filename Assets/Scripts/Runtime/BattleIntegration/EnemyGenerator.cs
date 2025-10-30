@@ -38,7 +38,7 @@ public class EnemyGenerator : MonoBehaviour
             // モデル生成（UIを基準に Y座標だけオフセット）
             EnemyModel enemyModel = Instantiate(enemyUnit.ModelPrefab, _enemyModelsArea).GetComponent<EnemyModel>();
             enemyModel.transform.localPosition = new Vector3(uiPos.x, _modelBaseY + enemyUnit.ModelYOffset, 0);
-            enemyModel.Init(enemyUnit);
+            enemyModel.Init(enemyUnit, enemyUnit.IdleClip);
 
             // バインド
             enemyUnit.Model = enemyModel;

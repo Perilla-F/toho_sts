@@ -78,7 +78,7 @@ public class BattleDeck : IBattleDeck
         // シャッフル（Fisher-Yates）
         for (int i = deckList.Count - 1; i > 0; i--)
         {
-            int j = Random.Range(0, i + 1);
+            int j = UnityEngine.Random.Range(0, i + 1);
             (deckList[i], deckList[j]) = (deckList[j], deckList[i]);
         }
 

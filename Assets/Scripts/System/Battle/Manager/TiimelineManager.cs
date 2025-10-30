@@ -4,7 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TimelineManager
+public class TimelineManager : ITimelineManager
 {
     private List<BattleEvent> _events = new List<BattleEvent>();
     public int CurrentTime { get; set; }
@@ -47,7 +47,12 @@ public class TimelineManager
         });
     }
 
-    public IReadOnlyList<BattleEvent> GetUpcomingEvents()
+    public int GetCurrentTime()
+    {
+        return CurrentTime;
+    }
+
+    public IReadOnlyList<IBattleEvent> GetUpcomingEvents()
     {
         return _events
             .OrderBy(e => e.Time)

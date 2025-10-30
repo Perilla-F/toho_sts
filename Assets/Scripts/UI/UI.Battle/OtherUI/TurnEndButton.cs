@@ -1,11 +1,13 @@
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class TurnEndButton : MonoBehaviour
 {
-    [SerializeField] private PlayerController player;
+    public event Action OnClickTurnEnd;
+
     private void Start()
     {
-        GetComponent<Button>().onClick.AddListener(() => player.TurnEndButton());
+        GetComponent<Button>().onClick.AddListener(() => OnClickTurnEnd?.Invoke());
     }
 }

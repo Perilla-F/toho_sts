@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 
@@ -6,16 +7,23 @@ public class BattlePresenter
 {
     private readonly BattleSystem _battleSystem;
     private readonly BattleViewRoot _battleView;
+    private readonly PlayerController _player;
 
-    public BattlePresenter(BattleSystem battleSystem, BattleViewRoot battleView)
+    private readonly TurnEndButton _turnEndButton;
+
+    public BattlePresenter(BattleSystem battleSystem, BattleViewRoot battleView, PlayerController player)
     {
         _battleSystem = battleSystem;
         _battleView = battleView;
+        _player = player;
 
         _battleSystem.Hand.OnChangedHand += OnChangedHand;
         _battleSystem.BattleDeck.OnChangedDeckCount += OnChangedDeckCount;
         _battleSystem.DiscardArea.OnChangedDiscardCount += OnChangedDiscardCount;
         _battleSystem.Hero.Mana.OnChanged += OnManaChanged;
+
+        _turnEndButton = _battleView.TurnEndButton;
+        _turnEndButton.OnClickTurnEnd += OnClickTurnEnd;
     }
 
     private void OnChangedHand()
@@ -38,8 +46,13 @@ public class BattlePresenter
         _battleView.ManaView.UpdateUI(_battleSystem.Hero.Mana.GetMana());
     }
 
-    private void OnTurnStart(int turnCount)
+    private async Task OnTurnStart(int turnCount)
     {
-        _battleView.TurnMessagePanel.ShowMessage($"{KanjiNumberConverteUtil.ConvertToKanjiWithUnits(turnCount)}巡目");
+        await _battleView.TurnMessagePanel.ShowMessage($"{KanjiNumberConverteUtil.ConvertToKanjiWithUnits(turnCount)}巡目");
+    }
+
+    private void OnClickTurnEnd()
+    {
+        _player.TurnEndButton();
     }
 }

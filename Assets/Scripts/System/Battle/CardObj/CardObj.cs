@@ -10,40 +10,33 @@ public class CardObj : ICardObj
     public Func<UniTask> MoveToDiscardAsync { get; private set; }
     public SourceCard Source;
     public readonly ResourceRegistry ResourceRegistry;
+    private readonly PlayerController _controller;
     public int Delay;
-    public ICardView cardView;
+    public ICardView _view;
 
-    public CardObj(SourceCard source, ResourceRegistry resourceRegistry)
+    public CardObj(SourceCard source, ResourceRegistry resourceRegistry, PlayerController controller)
     {
         Source = source;
         ResourceRegistry = resourceRegistry;
         Delay = source.Data.Delay;
+        _controller = controller;
     }
 
-    public void BindMoveToHand(Func<UniTask> moveFunc)
+    public void BindView(ICardView cardView)
     {
-        MoveToHandAsync = moveFunc;
+        _view = cardView;
     }
 
-    public async UniTask MoveCardAsync()
+    public async UniTask MoveToHand()
     {
-        if (MoveToHandAsync != null)
-        {
-            await MoveToHandAsync();
-        }
+        if (_view != null)
+            await _view.MoveToHandAsync();
     }
 
-    public void BindMoveToDiscard(Func<UniTask> moveFunc)
+    public async UniTask MoveToDiscard()
     {
-        MoveToDiscardAsync = moveFunc;
-    }
-
-    public async UniTask MoveDisCardAsync()
-    {
-        if (MoveToHandAsync != null)
-        {
-            await MoveToDiscardAsync();
-        }
+        if (_view != null)
+            await _view.MoveToDiscardAsync();
     }
 
     public void CardStateChange(CardStateName stateName)
@@ -63,5 +56,15 @@ public class CardObj : ICardObj
     public virtual async UniTask Use()
     {
         await UniTask.CompletedTask;
+    }
+
+    public void SetPreviewDelay()
+    {
+        _controller.SetPreviewDelay(Source.Data.Delay);
+    }
+
+    public void ClearPreview()
+    {
+        _controller.ClearPreview();
     }
 }

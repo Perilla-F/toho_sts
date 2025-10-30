@@ -5,7 +5,7 @@ public class NormalAction : EnemyAction
 {
     public EnemyEffect[] effects;
 
-    public override void Execute(BattleContext context, EnemyUnit enemy)
+    public override void Execute(BattleContext context, IEnemyUnit enemy)
     {
         // 対象はターゲット選択などで決定
         BattleUnit target = context.SelectTarget(enemy);

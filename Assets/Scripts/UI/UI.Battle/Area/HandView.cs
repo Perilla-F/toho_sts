@@ -9,6 +9,11 @@ public class HandView : MonoBehaviour, IHandView
 {
     private List<Behaviour> _cards = new List<Behaviour>();
 
+    public Transform GetTransform()
+    {
+        return transform;
+    }
+
 
     // 手札を整列させる
     public void ArrangeCards()

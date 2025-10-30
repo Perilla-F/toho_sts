@@ -1,6 +1,6 @@
 public static class BattleContextFactory
 {
-    public static BattleContext Create(EncounterData encounter, PlayerManager player, BattleViewRoot view)
+    public static BattleContext Create(EncounterData encounter, PlayerManager player, IBattleViewRoot view, CardFactory factory)
     {
         var heroUnit = new HeroUnit();
         heroUnit.Setup(player.HeroBattler);
@@ -11,7 +11,7 @@ public static class BattleContextFactory
 
         foreach (var source in player.PlayerDeck)
         {
-            deck.AddCard(CardFactory.Instance.CreateCard(source, view));
+            deck.AddCard(factory.CreateCard(source, view));
         }
 
         return new BattleContext(heroUnit, hand, deck, discard);

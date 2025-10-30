@@ -7,7 +7,6 @@ using UnityEngine.SceneManagement;
 
 public class BattleSystem : MonoBehaviour, IBattleSystem
 {
-
     private EnemyManager _enemyManager;
     private PlayerController _player;
     private IGameManager _gameManager;
@@ -123,8 +122,7 @@ public class BattleSystem : MonoBehaviour, IBattleSystem
 
                 _timelineManager.AddEvent(new PlayerActionEvent(
                     _player.ChosenCard,
-                    _player,
-                    _player.ChosenCard.Delay
+                    _timelineManager.CurrentTime + _player.ChosenCard.Delay
                 ));
 
                 _player.ConfirmAction();
@@ -207,12 +205,12 @@ public class BattleSystem : MonoBehaviour, IBattleSystem
             Hand.AddCard(card);
             if (i < count - 1)
             {
-                card.MoveCardAsync().Forget();
+                card.MoveToHand().Forget();
                 await UniTask.Delay(100);
             }
             else
             {
-                await card.MoveCardAsync();
+                await card.MoveToHand();
             }
             card.CardStateChange(CardStateName.CardWaitState);
         }
@@ -228,7 +226,7 @@ public class BattleSystem : MonoBehaviour, IBattleSystem
         {
             card.CardStateChange(CardStateName.CardIdleState);
             DiscardArea.AddCard(card);
-            await card.MoveDisCardAsync();
+            await card.MoveToDiscard();
         }
         Hand.Clear();
     }

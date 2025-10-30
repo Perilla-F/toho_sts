@@ -4,10 +4,10 @@ using UnityEngine.UI;
 
 public class TimelineEventIcon : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
-    private EnemyActionEvent _event;
+    private IEnemyActionEvent _event;
     [SerializeField] private Image iconImage;
 
-    public void Initialize(EnemyActionEvent e)
+    public void Initialize(IEnemyActionEvent e)
     {
         _event = e;
         iconImage.sprite = e.Enemy.EventIcon;

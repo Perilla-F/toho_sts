@@ -1,3 +1,1 @@
-public interface IDiscardArea
-{
-}
+public interface IDiscardArea { }

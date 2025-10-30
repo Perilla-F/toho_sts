@@ -31,8 +31,8 @@ public abstract class BattleUnit
 
     public RuntimeAnimatorController AnimatorController { get; set; }
 
-    public delegate void HpChanged(int newHp);
-    public event HpChanged OnHpChanged;
+    // public delegate void HpChanged(int newHp);
+    // public event HpChanged OnHpChanged;
 
     public abstract void TakeDamage(int amount);
     public abstract void Heal(int amount);

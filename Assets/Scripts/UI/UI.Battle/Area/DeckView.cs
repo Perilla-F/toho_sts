@@ -7,6 +7,11 @@ public class DeckView : MonoBehaviour, IDeckView
 {
     [SerializeField] private TextMeshProUGUI _deckCountText;
 
+    public Transform GetTransform()
+    {
+        return transform;
+    }
+
     public void UpdateDeckCount(int count)
     {
         _deckCountText.text = count.ToString();
