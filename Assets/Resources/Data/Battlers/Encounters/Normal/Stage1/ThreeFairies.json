@@ -1,8 +1,0 @@
-{
-  "encounterName": "光の三妖精",
-  "enemyIds": [
-    "FirstBoss/SunnyMilk/EnemyAIData",
-    "FirstBoss/LunaChild/EnemyAIData",
-    "FirstBoss/StarSaphire/EnemyAIData"
-  ]
-}

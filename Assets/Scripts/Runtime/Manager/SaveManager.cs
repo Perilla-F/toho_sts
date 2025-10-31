@@ -41,8 +41,4 @@ public class SaveManager : MonoBehaviour, ISaveService
             File.Delete(savePath);
     }
 
-    public void Subscribe(GameManager gm)
-    {
-        gm.OnSaveRequested += SaveGame;
-    }
 }

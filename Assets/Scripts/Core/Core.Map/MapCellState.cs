@@ -11,7 +11,6 @@ public class MapCellState
     public bool Cleared;
     public CellType Type;
     public bool IsWide;
-    public MultiStepEvent AssignedEvent;
 
     public MapCellState(Vector2Int gridPos, bool cleared, CellType type, bool isWide)
     {

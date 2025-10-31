@@ -3,15 +3,13 @@ using System;
 using UnityEngine;
 using UnityEditorInternal;
 
-public class GameManager : IGameManager
+public class GameManager
 {
     private readonly ISaveService _saveService;
     private readonly ISceneLoader _sceneLoader;
     private readonly ISaveScheduler _saveScheduler;
 
     private readonly GameContext _context;
-
-    public event Action<SaveData> OnSaveRequested;
 
     public GameManager(ISceneLoader sceneLoader, ISaveService saveService, ISaveScheduler saveScheduler, GameContext context)
     {
@@ -44,6 +42,12 @@ public class GameManager : IGameManager
     public void UpdateDeckAfterBattle(List<SourceCard> deck)
     {
         _context.Player.UpdateDeck(deck);
+    }
+
+    public void SelectCharacter(HeroData data)
+    {
+        _sceneLoader.SetTransitionData(data);
+        _sceneLoader.LoadScene("MapSecne");
     }
 
     public void StartBattle(EnemyType type)

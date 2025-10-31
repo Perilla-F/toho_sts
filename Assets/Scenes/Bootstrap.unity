@@ -223,7 +223,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1446658736}
-  - component: {fileID: 1446658735}
+  - component: {fileID: 1446658737}
   m_Layer: 0
   m_Name: Bootstrap
   m_TagString: Untagged
@@ -231,19 +231,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1446658735
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1446658734}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ea55499125aff0a4882689342169f925, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  nextScene: TitleScene
 --- !u!4 &1446658736
 Transform:
   m_ObjectHideFlags: 0
@@ -259,6 +246,25 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1446658737
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1446658734}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9822e5dc84fa58f43a6c85c0ba152202, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  nextScene: TitleScene
+  saveManagerPrefab: {fileID: 5533598974139517715, guid: a264f5b584c74eb4596c205dcccdaf96, type: 3}
+  audioManagerPrefab: {fileID: 2260430296472909341, guid: f69a2d84a4f1cde46a246c293e3af2f9, type: 3}
+  sceneLoaderPrefab: {fileID: 8185678154857180027, guid: 4bd002ceaf08675488bafc4327e2940f, type: 3}
+  saveSchedulerPrefab: {fileID: 4218144779139007545, guid: f2159fa7d5f045844b941587bf12e3dd, type: 3}
+  generationRule: {fileID: 11400000, guid: 83a1bb092f15eca4ab5f57530d90d867, type: 2}
+  eventDatabase: {fileID: 11400000, guid: 612243d360527e546ba72bd581f6f342, type: 2}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

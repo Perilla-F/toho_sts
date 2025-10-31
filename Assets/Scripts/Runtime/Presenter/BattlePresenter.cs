@@ -17,9 +17,9 @@ public class BattlePresenter
         _battleView = battleView;
         _player = player;
 
-        _battleSystem.Hand.OnChangedHand += OnChangedHand;
-        _battleSystem.BattleDeck.OnChangedDeckCount += OnChangedDeckCount;
-        _battleSystem.DiscardArea.OnChangedDiscardCount += OnChangedDiscardCount;
+        _battleSystem.BattleContext.Hand.OnChangedHand += OnChangedHand;
+        _battleSystem.BattleContext.Deck.OnChangedDeckCount += OnChangedDeckCount;
+        _battleSystem.BattleContext.Discard.OnChangedDiscardCount += OnChangedDiscardCount;
         _battleSystem.Hero.Mana.OnChanged += OnManaChanged;
 
         _turnEndButton = _battleView.TurnEndButton;

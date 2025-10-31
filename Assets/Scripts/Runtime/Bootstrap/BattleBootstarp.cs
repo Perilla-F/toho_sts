@@ -13,8 +13,6 @@ public class BattleBootstrap : MonoBehaviour
         var playerManager = ServiceLocator.Get<PlayerManager>();
         var audioManager = ServiceLocator.Get<IAudioManager>();
 
-
-
         var timeLineManager = new TimelineManager();
         var playerController = new PlayerController(timeLineManager);
         var enemyManager = new EnemyManager();

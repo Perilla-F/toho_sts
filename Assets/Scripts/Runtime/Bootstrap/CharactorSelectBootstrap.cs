@@ -4,11 +4,13 @@ public class CharacterSelectBootstrap : MonoBehaviour
 {
     [SerializeField] CharacterSelectUI characterSelectUI;
 
+    private CharacterSelectPresenter presenter;
+
     private GameManager gameManager;
 
     private void Awake()
     {
         gameManager = ServiceLocator.Get<GameManager>();
-        characterSelectUI.Init(gameManager);
+        presenter = new CharacterSelectPresenter(gameManager, characterSelectUI);
     }
 }

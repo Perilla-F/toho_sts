@@ -61,8 +61,6 @@ public class GameBootstrap : MonoBehaviour
         // 最初のシーンをロード（TitleSceneなど）
         ServiceLocator.Get<SceneLoader>().LoadSceneAsync(nextScene);
 
-        // SaveManagerに購読登録（セーブイベントを受ける）
-        save.Subscribe(_gameManager);
     }
 
     // void Update()

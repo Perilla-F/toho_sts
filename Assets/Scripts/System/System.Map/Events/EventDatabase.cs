@@ -1,0 +1,91 @@
+using System.Collections.Generic;
+using System.Linq;
+using UnityEngine;
+
+[CreateAssetMenu(menuName = "Game/Event/EventDatabase")]
+public class EventDatabase : ScriptableObject
+{
+    [SerializeField] private List<MultiStepEvent> events = new();
+    private Dictionary<string, MultiStepEvent> dict;
+
+    private void OnEnable()
+    {
+        dict = new Dictionary<string, MultiStepEvent>();
+        foreach (var evt in events)
+        {
+            dict[evt.EventId] = evt;
+        }
+    }
+
+    public MultiStepEvent GetEvent(string id)
+    {
+        dict ??= new Dictionary<string, MultiStepEvent>();
+        if (dict.TryGetValue(id, out var evt))
+            return evt;
+
+        Debug.LogWarning($"Event not found: {id}");
+        return null;
+    }
+
+    public MultiStepEvent GetRandomEvent(GameContext context, IFlagManager flagManager)
+    {
+        if (events == null || events.Count == 0)
+        {
+            Debug.LogWarning("No events registered in EventDatabase.");
+            return null;
+        }
+
+        // 1. 発生済みイベントや条件未達イベントを除外
+        List<MultiStepEvent> available = new();
+
+        foreach (var e in events)
+        {
+            // 発生済みフラグをチェック
+            if (flagManager.HasFlag($"Event_{e.EventId}_Done"))
+                continue;
+
+            // 最初のステップ条件を満たしているか？
+            var firstStep = e.Steps.Count > 0 ? e.Steps[0] : null;
+            if (firstStep == null)
+                continue;
+
+            // 最初のステップに条件付き選択肢がある場合、最低1つは有効か？
+            bool valid = false;
+            foreach (var option in firstStep.Options)
+            {
+                if (option.Condition == null || option.Condition.IsMet(context, flagManager))
+                {
+                    valid = true;
+                    break;
+                }
+            }
+
+            if (valid)
+                available.Add(e);
+        }
+
+        // 2. 対象がなければ全イベントから再抽選
+        if (available.Count == 0)
+            available.AddRange(events);
+
+        // 3. 重み（Weight）を考慮した合計値を算出
+        int totalWeight = available.Sum(e => e.Weight);
+
+        // 4. ランダムな値を取得
+        int randomValue = UnityEngine.Random.Range(0, totalWeight);
+        int currentWeight = 0;
+
+        // 5. ルーレット選択
+        foreach (var e in available)
+        {
+            currentWeight += e.Weight;
+            if (randomValue < currentWeight)
+            {
+                return e;
+            }
+        }
+        // フォールバック（ロジック上は到達しないはずだが念のため）
+        return available[0];
+    }
+
+}

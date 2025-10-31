@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 518407f8eaba28c41b742d2a02893da0, type: 3}
+  m_Name: MapVisualSet
+  m_EditorClassIdentifier: 
+  BattleIcon: {fileID: 21300000, guid: a4cae21b82ecd494082ed7b9eaa058e3, type: 3}
+  EliteIcon: {fileID: 21300000, guid: f9299ec0cbef0ec4c91d654edffd2e62, type: 3}
+  BossIcon: {fileID: 21300000, guid: 9954ba92132b51d4185892ec3bd7cf03, type: 3}
+  EventIcon: {fileID: 21300000, guid: 0dc759cffe551204bb979f26acfc9fe9, type: 3}
+  RestIcon: {fileID: 21300000, guid: dd00069b2acd42b4da29999cc3f71b37, type: 3}
+  ShopIcon: {fileID: 21300000, guid: 67c2baeae75b44844b05241a65bfe732, type: 3}
+  TreasureIcon: {fileID: 21300000, guid: 616ea153b3265ea46bca38ba771d64f3, type: 3}
+  StartIcon: {fileID: 21300000, guid: 8f878fee43d6b4f46a89013b237f10f0, type: 3}
+  GoalIcon: {fileID: 21300000, guid: ca25c094509ee9d429e3f8d9589026a6, type: 3}
+  NormalCellPrefab: {fileID: 7379848415420959257, guid: 8b0ed3e340546a84d89e25645193c0b9, type: 3}
+  WideCellPrefab: {fileID: 3461358932549203380, guid: d932630bd2eca5e4f915eeccdc175179, type: 3}

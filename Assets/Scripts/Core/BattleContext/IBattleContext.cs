@@ -1,4 +1,4 @@
 public interface IBattleContext
 {
-    IBattleSystem BattleSystem { get; }
+    public BattleUnit SelectTarget(BattleUnit enemy);
 }

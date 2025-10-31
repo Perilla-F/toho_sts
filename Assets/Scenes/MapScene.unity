@@ -867,7 +867,7 @@ GameObject:
   - component: {fileID: 928585909}
   - component: {fileID: 928585910}
   m_Layer: 0
-  m_Name: UIManager
+  m_Name: EventUIManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1694,7 +1694,7 @@ GameObject:
   - component: {fileID: 1527092566}
   - component: {fileID: 1527092567}
   m_Layer: 5
-  m_Name: MapGenerator
+  m_Name: MapView
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1728,24 +1728,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 1527092565}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8dc3c799e36effa40aa14343a5aa1b96, type: 3}
+  m_Script: {fileID: 11500000, guid: 92a346d5747fafe42a82bbfb31f85e68, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  NormalCellPrefab: {fileID: 7379848415420959257, guid: 8b0ed3e340546a84d89e25645193c0b9, type: 3}
-  WideCellPrefab: {fileID: 3461358932549203380, guid: d932630bd2eca5e4f915eeccdc175179, type: 3}
-  _content: {fileID: 1527092566}
-  _scrollRect: {fileID: 2035445392}
-  verticalMarginPercent: 0.1
-  horizontalMarginPercent: 0.05
-  StartIcon: {fileID: 21300000, guid: 8f878fee43d6b4f46a89013b237f10f0, type: 3}
-  GoalIcon: {fileID: 21300000, guid: ca25c094509ee9d429e3f8d9589026a6, type: 3}
-  BattleIcon: {fileID: 21300000, guid: a4cae21b82ecd494082ed7b9eaa058e3, type: 3}
-  EliteBattleIcon: {fileID: 21300000, guid: f9299ec0cbef0ec4c91d654edffd2e62, type: 3}
-  BossBattleIcon: {fileID: 21300000, guid: 9954ba92132b51d4185892ec3bd7cf03, type: 3}
-  ShopIcon: {fileID: 21300000, guid: 67c2baeae75b44844b05241a65bfe732, type: 3}
-  TreasureIcon: {fileID: 21300000, guid: 616ea153b3265ea46bca38ba771d64f3, type: 3}
-  RestIcon: {fileID: 21300000, guid: dd00069b2acd42b4da29999cc3f71b37, type: 3}
-  EventIcon: {fileID: 21300000, guid: 0dc759cffe551204bb979f26acfc9fe9, type: 3}
+  content: {fileID: 1527092566}
+  scrollRect: {fileID: 2035445392}
+  visualSet: {fileID: 11400000, guid: 203dca103576b364bab8bdc3831d6022, type: 2}
 --- !u!1 &1599202796
 GameObject:
   m_ObjectHideFlags: 0
@@ -2460,11 +2448,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 10d22fea94339084095a330a38291249, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  generator: {fileID: 1527092567}
-  eventUIManager: {fileID: 0}
-  Width: 5
-  Height: 10
-  EventDatabase: {fileID: 11400000, guid: 612243d360527e546ba72bd581f6f342, type: 2}
+  mapView: {fileID: 1527092567}
+  eventUIManager: {fileID: 928585910}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

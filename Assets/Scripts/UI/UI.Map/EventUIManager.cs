@@ -5,13 +5,14 @@ using UnityEngine.UI;
 using UnityEngine.AddressableAssets;
 using TMPro;
 
-public class EventUIManager : MonoBehaviour, IEventView
+public class EventUIManager : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI descriptionText;
     [SerializeField] private Transform optionRoot;
     [SerializeField] private Button optionButtonPrefab;
     [SerializeField] private Image eventImage;
 
+    private UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle<Sprite> currentImageHandle;
     public event Action<EventOption> OnOptionSelected;
 
     private readonly List<Button> currentButtons = new();
@@ -22,14 +23,25 @@ public class EventUIManager : MonoBehaviour, IEventView
 
         descriptionText.text = step.Text;
 
+        // 古い画像の解放
+        if (currentImageHandle.IsValid())
+        {
+            Addressables.Release(currentImageHandle);
+            currentImageHandle = new UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle<Sprite>(); // リセット
+        }
+
         // 画像表示
         if (eventImage != null)
         {
             if (step.EventImageRef != null)
-                step.EventImageRef.LoadAssetAsync<Sprite>().Completed += handle =>
+            {
+                // 新しいHandleを保持
+                currentImageHandle = step.EventImageRef.LoadAssetAsync<Sprite>();
+                currentImageHandle.Completed += handle =>
                 {
                     eventImage.sprite = handle.Result;
                 };
+            }
             else
                 eventImage.sprite = null;
         }
@@ -42,7 +54,7 @@ public class EventUIManager : MonoBehaviour, IEventView
         foreach (var option in step.Options)
         {
             var btn = Instantiate(optionButtonPrefab, optionRoot);
-            btn.GetComponentInChildren<Text>().text = option.Text;
+            btn.GetComponentInChildren<TextMeshProUGUI>().text = option.Text;
             btn.onClick.AddListener(() => OnOptionSelected?.Invoke(option));
             currentButtons.Add(btn);
         }
