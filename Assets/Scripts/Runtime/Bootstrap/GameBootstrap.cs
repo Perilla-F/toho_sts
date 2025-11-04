@@ -14,12 +14,6 @@ public class GameBootstrap : MonoBehaviour
     [Header("SystemPrefabs")]
     [SerializeField] private SaveScheduler saveSchedulerPrefab;
 
-    [Header("MapRule")]
-    [SerializeField] private MapGenerationRule generationRule;
-
-    [Header("EventData")]
-    [SerializeField] private EventDatabase eventDatabase;
-
     public GameManager _gameManager;
 
     private void Awake()
@@ -41,25 +35,23 @@ public class GameBootstrap : MonoBehaviour
         ServiceLocator.Register<ISaveService>(save);
         ServiceLocator.Register<IAudioManager>(audio);
         ServiceLocator.Register<ISceneLoader>(loader);
+        ServiceLocator.Register<ISaveScheduler>(scheduler);
 
         // 各種Manager作成
         var playerManager = new PlayerManager(null);
-        var mapManger = new MapManager(null, generationRule);
-        var flagManager = new FlagManager();
-        var eventManager = new EventManager(eventDatabase, null, flagManager, null);
 
         // コンテキスト作成
-        var context = new GameContext(playerManager, mapManger, eventManager);
+        var context = new GameContext(playerManager, null, null);
+        ServiceLocator.Register<GameContext>(context);
 
         // ゲームマネージャー作成
         _gameManager = new GameManager(loader, save, scheduler, context);
+        ServiceLocator.Register<GameManager>(_gameManager);
 
         playerManager.Inject(_gameManager);
-        mapManger.Inject(_gameManager);
-        eventManager.Inject(_gameManager, context);
 
         // 最初のシーンをロード（TitleSceneなど）
-        ServiceLocator.Get<SceneLoader>().LoadSceneAsync(nextScene);
+        ServiceLocator.Get<ISceneLoader>().LoadScene(nextScene);
 
     }
 

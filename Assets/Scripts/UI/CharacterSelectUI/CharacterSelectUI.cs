@@ -12,11 +12,13 @@ public class CharacterSelectUI : MonoBehaviour
 
     public void OnSelectReimu()
     {
+        _reimu = heroDatabase.GetHeroData("reimu");
         OnCharacterSelect?.Invoke(_reimu);
     }
 
     public void OnSelectMarisa()
     {
+        _marisa = heroDatabase.GetHeroData("marisa");
         OnCharacterSelect?.Invoke(_marisa);
     }
 }

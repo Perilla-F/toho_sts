@@ -168,6 +168,19 @@ public class CardBehavior : MonoBehaviour, ICardView, IPointerEnterHandler, IPoi
         CurrentState.OnPointerExit(eventData);
     }
 
+    public IEnumerator MoveTo(Vector3 targetPos, float duration)
+    {
+        Vector3 startPos = transform.position;
+        float time = 0f;
+        while (time < duration)
+        {
+            transform.position = Vector3.Lerp(startPos, targetPos, time / duration);
+            time += Time.deltaTime;
+            yield return null;
+        }
+        transform.position = targetPos;
+    }
+
     /// <summary>
     /// カードを手札に移動させる
     /// </summary>

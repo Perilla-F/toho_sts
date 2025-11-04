@@ -19,26 +19,25 @@ public class BattleSystem : MonoBehaviour, IBattleSystem
 
     public int TurnCount { get; private set; } = 1;
 
+    public event Action BattleStart;
     public event Action<int> OnTurnStart;
 
-    public void Init(EnemyManager enemy, PlayerController player)
-    {
-        _enemyManager = enemy;
-        _player = player;
-    }
-
-    public void Setup(BattleContext context, HeroUnit heroUnit, GameManager gameManager, TimelineManager timelineManager, IAudioManager audioService)
+    public void Setup(BattleContext context, HeroUnit heroUnit, GameManager gameManager, EnemyManager enemy, PlayerController player, TimelineManager timelineManager, IAudioManager audioService)
     {
         BattleContext = context;
         Hero = heroUnit;
+        _enemyManager = enemy;
+        _player = player;
         _timelineManager = timelineManager;
 
         this.gameManager = gameManager;
         AudioService = audioService;
 
+        BattleStart?.Invoke();
+
         StartCoroutine(BattleLoop());
 
-        audioService?.PlayBGM("battle_theme", true);
+        //audioService?.PlayBGM("battle_theme", true);
     }
 
     /// <summary>

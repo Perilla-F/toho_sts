@@ -24,6 +24,7 @@ public class MapManager
         _gameManager = gameManager;
         _generator = new MapGenerator();
         this.rule = rule;
+        StageIndex = 1;
     }
 
     public void Inject(GameManager gameManager)
@@ -35,6 +36,8 @@ public class MapManager
     {
         _mapData = _generator.GenerateMapData(rule);
         OnMapGenerated?.Invoke(_mapData, rule);
+        CurrentCell = new(rule.width / 2, 0);
+        OnCellSelectionChanged?.Invoke(CurrentCell, _generator.GetClickable(CurrentCell));
     }
 
     public void SelectCell(Vector2Int pos)

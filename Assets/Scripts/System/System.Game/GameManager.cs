@@ -50,6 +50,11 @@ public class GameManager
         _sceneLoader.LoadScene("MapSecne");
     }
 
+    public HeroBattler GetHeroBattler()
+    {
+        return _context.Player.HeroBattler;
+    }
+
     public void StartBattle(EnemyType type)
     {
         var encounters = EncounterLoader.LoadEncounters(type, _context.Map.StageIndex);

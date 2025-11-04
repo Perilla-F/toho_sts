@@ -17,6 +17,8 @@ public class BattlePresenter
         _battleView = battleView;
         _player = player;
 
+        _battleSystem.BattleStart += BattleStart;
+
         _battleSystem.BattleContext.Hand.OnChangedHand += OnChangedHand;
         _battleSystem.BattleContext.Deck.OnChangedDeckCount += OnChangedDeckCount;
         _battleSystem.BattleContext.Discard.OnChangedDiscardCount += OnChangedDiscardCount;
@@ -24,6 +26,11 @@ public class BattlePresenter
 
         _turnEndButton = _battleView.TurnEndButton;
         _turnEndButton.OnClickTurnEnd += OnClickTurnEnd;
+    }
+
+    private void BattleStart()
+    {
+        _battleView.BattleStart();
     }
 
     private void OnChangedHand()

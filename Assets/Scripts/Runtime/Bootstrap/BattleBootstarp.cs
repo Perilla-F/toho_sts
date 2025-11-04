@@ -9,16 +9,18 @@ public class BattleBootstrap : MonoBehaviour
 
     private void Start()
     {
-        var encounter = ServiceLocator.Get<SceneLoader>().GetTransitionData<BattleTransitionData>().EncounterData;
+        var encounter = ServiceLocator.Get<ISceneLoader>().GetTransitionData<BattleTransitionData>().EncounterData;
+        var game = ServiceLocator.Get<GameManager>();
+        var gameContext = ServiceLocator.Get<GameContext>();
         var playerManager = ServiceLocator.Get<PlayerManager>();
         var audioManager = ServiceLocator.Get<IAudioManager>();
 
-        var timeLineManager = new TimelineManager();
-        var playerController = new PlayerController(timeLineManager);
+        var timelineManager = new TimelineManager();
+        var playerController = new PlayerController(timelineManager);
         var enemyManager = new EnemyManager();
         var cardFactory = new CardFactory(_cardFactoryConfig, playerController);
         var battleContext = BattleContextFactory.Create(encounter, playerManager, _battleViewRoot, cardFactory);
-        var battleManager = new BattleManager(battleContext, _battleSystem, audioManager, enemyManager, playerController);
+        var battleManager = new BattleManager(game, gameContext, battleContext, _battleSystem, audioManager, enemyManager, playerController, timelineManager);
 
         var battlePresenter = new BattlePresenter(_battleSystem, _battleViewRoot, playerController);
 

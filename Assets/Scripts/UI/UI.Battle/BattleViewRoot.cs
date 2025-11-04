@@ -10,4 +10,8 @@ public class BattleViewRoot : MonoBehaviour, IBattleViewRoot
     [SerializeField] public TurnMessagePanel TurnMessagePanel;
     [SerializeField] public TurnEndButton TurnEndButton;
 
+    public void BattleStart()
+    {
+    }
+
 }

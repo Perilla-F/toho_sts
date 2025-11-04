@@ -17,6 +17,16 @@ public class GameContext : IGameContext
         Hero = Player.HeroBattler;
     }
 
+    public void InjectMap(MapManager map)
+    {
+        Map = map;
+    }
+
+    public void InjectEvent(EventManager evt)
+    {
+        Event = evt;
+    }
+
     /// <summary>
     /// セーブデータへ変換
     /// </summary>

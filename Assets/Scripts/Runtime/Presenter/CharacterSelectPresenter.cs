@@ -16,5 +16,6 @@ public class CharacterSelectPresenter
     public void OnCharacterSelect(HeroData data)
     {
         _game.SelectCharacter(data);
+        ServiceLocator.Get<ISceneLoader>().LoadScene("MapScene");
     }
 }
