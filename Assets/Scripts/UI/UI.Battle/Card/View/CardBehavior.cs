@@ -30,8 +30,6 @@ public class CardBehavior : MonoBehaviour, ICardView, IPointerEnterHandler, IPoi
     public CardSelectedState SelectedState { get; private set; }
     public CardStateBase CurrentState { get; private set; }
 
-    private CardStateBase _currentState;
-
     public event Action<int> OnPointerCard;
 
 
@@ -80,12 +78,12 @@ public class CardBehavior : MonoBehaviour, ICardView, IPointerEnterHandler, IPoi
 
     public void ChangeState(CardStateBase newState)
     {
-        _currentState?.OnExit();
-        _currentState = newState;
-        _currentState.OnEnter();
+        CurrentState?.OnExit();
+        CurrentState = newState;
+        CurrentState.OnEnter();
     }
 
-    void OnCardStateChange(ICardStateChangeEvent evt)
+    public void OnCardStateChange(ICardStateChangeEvent evt)
     {
         // if (evt.Source is CardObj card && card == CardObj)
         // {
@@ -112,13 +110,14 @@ public class CardBehavior : MonoBehaviour, ICardView, IPointerEnterHandler, IPoi
 
     public void Update()
     {
-        _currentState?.OnUpdate();
+        CurrentState?.OnUpdate();
     }
 
     public void OnClick()
     {
-        _currentState?.OnClick();
+        CurrentState?.OnClick();
     }
+
     private void Awake()
     {
         _rectTransform = GetComponent<RectTransform>();
@@ -139,7 +138,7 @@ public class CardBehavior : MonoBehaviour, ICardView, IPointerEnterHandler, IPoi
     /// <param name="eventData"></param>
     public void OnBeginDrag(PointerEventData eventData)
     {
-        if (_currentState == WaitState)
+        if (CurrentState == WaitState)
         {
             _defaultPosition = transform.position;
             ChangeState(DraggingState);
@@ -181,35 +180,6 @@ public class CardBehavior : MonoBehaviour, ICardView, IPointerEnterHandler, IPoi
         transform.position = targetPos;
     }
 
-    /// <summary>
-    /// カードを手札に移動させる
-    /// </summary>
-    /// <returns></returns>
-    private async UniTask MoveToHandView()
-    {
-        transform.gameObject.SetActive(true);
-        // 拡大する
-        transform.DOScale(Vector3.one, 0.3f);
-        // 回転する
-        transform.DORotate(new Vector3(0, 0, -360), 0.3f, RotateMode.FastBeyond360);
-        // handに移動する
-        await transform.DOMove(HandView.GetTransform().position, 0.3f).AsyncWaitForCompletion();
-    }
-
-    /// <summary>
-    /// カードを墓場へ移動させる
-    /// </summary>
-    /// <returns></returns>
-    public async UniTask MoveToDiscard()
-    {
-        // 縮小する
-        transform.DOScale(Vector3.zero, 0.3f);
-        // 回転する
-        transform.DORotate(new Vector3(0, 0, -360), 0.3f, RotateMode.FastBeyond360);
-        await transform.DOMove(DiscardAreaView.GetTransform().position, 0.3f).AsyncWaitForCompletion();
-        gameObject.SetActive(false);
-    }
-
     public async UniTask MoveToHandAsync()
     {
         transform.DOScale(Vector3.one, 0.3f);
@@ -218,8 +188,18 @@ public class CardBehavior : MonoBehaviour, ICardView, IPointerEnterHandler, IPoi
 
     public async UniTask MoveToDiscardAsync()
     {
-        transform.DOScale(Vector3.zero, 0.3f);
-        await transform.DOMove(DiscardAreaView.GetTransform().position, 0.3f).AsyncWaitForCompletion();
+        gameObject.SetActive(true);
+        transform.SetParent(HandView.GetTransform(), worldPositionStays: true);
+
+        // デッキ位置からスケール・回転付きで移動
+        transform.localScale = Vector3.zero;
+        transform.DOScale(Vector3.one, 0.3f).SetEase(Ease.OutBack);
+        transform.DORotate(new Vector3(0, 0, -360), 0.3f, RotateMode.FastBeyond360);
+
+        // 位置補正（HandView中央へ）
+        await transform.DOMove(HandView.GetTransform().position, 0.3f)
+            .SetEase(Ease.OutCubic)
+            .AsyncWaitForCompletion();
     }
 
 }

@@ -10,6 +10,7 @@ public class BattleBootstrap : MonoBehaviour
     private void Start()
     {
         var encounter = ServiceLocator.Get<ISceneLoader>().GetTransitionData<BattleTransitionData>().EncounterData;
+        UnityEngine.Debug.Log(encounter.EncounterID);
         var game = ServiceLocator.Get<GameManager>();
         var gameContext = ServiceLocator.Get<GameContext>();
         var playerManager = ServiceLocator.Get<PlayerManager>();

@@ -17,6 +17,8 @@ public class TimelineView : MonoBehaviour, ITimelineView
     [SerializeField] private float unitWidth = 50f; // 1時間単位の幅(px)
     [SerializeField] private float slideSpeed = 10f; // スライド速度(補間)
 
+    [Header("EventHave")]
+    [SerializeField] private EnemyUIEventChannel _enemyUIChannel;
     private ITimelineManager _timeline;
 
     private int lastCurrentTime = 0;
@@ -61,40 +63,32 @@ public class TimelineView : MonoBehaviour, ITimelineView
         foreach (Transform child in timelineContainer)
             Destroy(child.gameObject);
 
-        var grouped = _timeline.GetUpcomingEvents()
-            .GroupBy(e => e.Time)
-            .OrderBy(g => g.Key);
+        var grouped = _timeline.GetUpcomingEvents().GroupBy(e => e.Time).OrderBy(g => g.Key);
 
         foreach (var group in grouped)
         {
             var first = group.First();
-            var icon = Instantiate(eventIconPrefab, timelineContainer);
-            var rect = icon.GetComponent<RectTransform>();
 
-            // タイムライン上の位置
+            var iconObj = Instantiate(eventIconPrefab, timelineContainer);
+            var icon = iconObj.GetComponent<TimelineEventIcon>();
+            var rect = iconObj.GetComponent<RectTransform>();
+
             float x = group.Key * unitWidth;
             rect.anchoredPosition = new Vector2(x, 0);
 
-            // テキスト（×2など）
-            var label = icon.GetComponentInChildren<TextMeshProUGUI>();
-            if (group.Count() > 1)
-                label.text = $"×{group.Count()}";
-            else
-                label.text = "";
+            // TimelineEventIconに初期化情報を渡す
+            if (first.Type == EventType.Enemy && first.EnemyId >= 0)
+            {
+                icon.Initialize(first.EnemyId, first.Enemy.EventIcon, _enemyUIChannel);
+            }
 
-            // アイコンの色区別（プレイヤー/敵など）
-            var image = icon.GetComponent<Image>();
+            // 色分けはこれまで通り
+            var image = iconObj.GetComponent<Image>();
             switch (first.Type)
             {
-                case EventType.Player:
-                    image.color = Color.cyan;
-                    break;
-                case EventType.Boss:
-                    image.color = Color.red;
-                    break;
-                case EventType.Enemy:
-                    image.color = Color.yellow;
-                    break;
+                case EventType.Player: image.color = Color.cyan; break;
+                case EventType.Boss: image.color = Color.red; break;
+                case EventType.Enemy: image.color = Color.yellow; break;
             }
         }
     }

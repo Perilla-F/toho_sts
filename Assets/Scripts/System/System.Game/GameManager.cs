@@ -46,8 +46,9 @@ public class GameManager
 
     public void SelectCharacter(HeroData data)
     {
+        InitializePlayer(data);
         _sceneLoader.SetTransitionData(data);
-        _sceneLoader.LoadScene("MapSecne");
+        _sceneLoader.LoadScene("MapScene");
     }
 
     public HeroBattler GetHeroBattler()

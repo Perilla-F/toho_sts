@@ -6,8 +6,6 @@ using System;
 
 public class CardObj : ICardObj
 {
-    public Func<UniTask> MoveToHandAsync { get; private set; }
-    public Func<UniTask> MoveToDiscardAsync { get; private set; }
     public SourceCard Source;
     public readonly ResourceRegistry ResourceRegistry;
     private readonly PlayerController _controller;

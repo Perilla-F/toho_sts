@@ -49,6 +49,7 @@ public class GameBootstrap : MonoBehaviour
         ServiceLocator.Register<GameManager>(_gameManager);
 
         playerManager.Inject(_gameManager);
+        ServiceLocator.Register<PlayerManager>(playerManager);
 
         // 最初のシーンをロード（TitleSceneなど）
         ServiceLocator.Get<ISceneLoader>().LoadScene(nextScene);

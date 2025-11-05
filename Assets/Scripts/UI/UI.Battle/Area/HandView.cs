@@ -1,19 +1,11 @@
-using System.Collections;
 using System.Collections.Generic;
-using System.Threading.Tasks;
-using Cysharp.Threading.Tasks;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class HandView : MonoBehaviour, IHandView
 {
     private List<Behaviour> _cards = new List<Behaviour>();
 
-    public Transform GetTransform()
-    {
-        return transform;
-    }
-
+    public Transform GetTransform() => transform;
 
     // 手札を整列させる
     public void ArrangeCards()

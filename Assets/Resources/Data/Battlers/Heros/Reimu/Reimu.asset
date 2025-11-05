@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d1b8840d9bfb4ee41bf956c20ad63ba8, type: 3}
   m_Name: Reimu
   m_EditorClassIdentifier: 
+  HeroID: reimu
   _battlerName: "\u535A\u9E97 \u970A\u5922"
   _maxHP: 100
   _maxMana: 3
@@ -29,8 +30,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 46dcad6cfe080e249b9e20349555493f, type: 2}
   - {fileID: 11400000, guid: 46dcad6cfe080e249b9e20349555493f, type: 2}
   - {fileID: 11400000, guid: 9f6dafda4b1f3fa469e2056a7f08e6f8, type: 2}
-  UIPrefab: {fileID: 0}
-  ModelPrefab: {fileID: 0}
+  UIPrefab: {fileID: 2858867881816413968, guid: bfb9275c2eb0dfc468e2710ecbabdbd7, type: 3}
+  ModelPrefab: {fileID: 6021527161346520988, guid: 0d162d78ac348c144ab470bfec330990, type: 3}
   ModelYOffset: 0
   IdleClip: {fileID: 7400000, guid: e0d5e10136f505348843cad4a67fad66, type: 2}
   AttackClip: {fileID: 7400000, guid: 854ed8b9790d00b4d8250aa31d3deafb, type: 2}

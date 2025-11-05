@@ -8,6 +8,7 @@ public class EnemyGenerator : MonoBehaviour
     [SerializeField] private Transform _enemyArea;        // Canvas内
     [SerializeField] private Transform _enemyModelsArea;  // モデル配置用
     [SerializeField] private float _modelBaseY = -200f;  // モデルのY初期位置
+    [SerializeField] private EnemyUIEventChannel _enemyUIChannel;
 
     private int _nextEnemyId = 0;
 
@@ -43,6 +44,14 @@ public class EnemyGenerator : MonoBehaviour
             // バインド
             enemyUnit.Model = enemyModel;
             enemyUnit.UI = enemyUI;
+
+            // EventListenerを追加
+            var listener = enemyUI.gameObject.AddComponent<EnemyUIEventListener>();
+            listener.Initialize(enemyUnit.EnemyID, _enemyUIChannel, enemyUI);
+
+            // EnemyControllerを生成・初期化
+            var controller = enemyUI.gameObject.AddComponent<EnemyController>();
+            controller.Initialize(enemyUnit.EnemyID, enemyData, _enemyUIChannel);
 
             // Bridgeに登録
             _enemyManager.RegisterEnemy(enemyUnit);

@@ -28,6 +28,7 @@ public class CardFactory : ICardFactory
         CardObj cardObj = new NomalCardObj(sourceCard, registry, _controller);
         cardObj.BindView(behavior);
         behavior.BindCard(cardObj);
+        behavior.gameObject.SetActive(false);
 
         return cardObj;
     }

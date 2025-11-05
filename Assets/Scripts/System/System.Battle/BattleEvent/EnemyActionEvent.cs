@@ -3,14 +3,14 @@ using System.Threading.Tasks;
 
 public class EnemyActionEvent : BattleEvent, IEnemyActionEvent
 {
-    public IEnemyUnit Enemy { get; }
     private EnemyAction action;
     public IEnemyManager ReferenceEnemy { get; }
 
     public EnemyActionEvent(EnemyUnit enemy, EnemyAction action, int scheduledTime, int priority)
         : base(scheduledTime, priority)
     {
-        this.Enemy = enemy;
+        EnemyId = enemy.EnemyID;
+        Enemy = enemy;
         this.action = action;
     }
 

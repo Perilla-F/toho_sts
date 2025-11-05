@@ -4,22 +4,33 @@ using UnityEngine.UI;
 
 public class TimelineEventIcon : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
-    private IEnemyActionEvent _event;
+    private int _enemyId;
+    private EnemyUIEventChannel _uiChannel;
     [SerializeField] private Image iconImage;
 
-    public void Initialize(IEnemyActionEvent e)
+    public void Initialize(int enemyId, Sprite sprite, EnemyUIEventChannel uiChannel)
     {
-        _event = e;
-        iconImage.sprite = e.Enemy.EventIcon;
+        _enemyId = enemyId;
+        _uiChannel = uiChannel;
+        if (iconImage != null)
+            iconImage.sprite = sprite;
     }
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        _event?.ReferenceEnemy?.ShowActionHighlight(true);
+        _uiChannel?.Raise(new EnemyUIEventData
+        {
+            EnemyId = _enemyId,
+            Type = EnemyUIEventType.Highlight
+        });
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        _event?.ReferenceEnemy?.ShowActionHighlight(false);
+        _uiChannel?.Raise(new EnemyUIEventData
+        {
+            EnemyId = _enemyId,
+            Type = EnemyUIEventType.Unhighlight
+        });
     }
 }
