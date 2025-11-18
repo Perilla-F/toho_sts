@@ -76,7 +76,7 @@ public class GameManager
 
     public void StartBattle(EnemyType type)
     {
-        var encounters = EncounterLoader.LoadEncounters(type, _context.Map.StageIndex);
+        var encounters = EncounterLoader.LoadEncounters(type, _context.StageIndex);
         var selected = encounters[UnityEngine.Random.Range(0, encounters.Count)];
         var data = new BattleTransitionData(_context.Hero, selected);
         _sceneLoader.SetTransitionData(data);

@@ -41,7 +41,7 @@ public class GameBootstrap : MonoBehaviour
         var playerManager = new PlayerManager(null);
 
         // コンテキスト作成
-        var context = new GameContext(playerManager, null, null);
+        var context = new GameContext();
         ServiceLocator.Register<GameContext>(context);
 
         // ゲームマネージャー作成

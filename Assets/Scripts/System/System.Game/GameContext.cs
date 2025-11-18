@@ -4,36 +4,21 @@ using UnityEngine;
 [System.Serializable]
 public class GameContext : IGameContext
 {
-    public PlayerManager Player { get; private set; }
-    public MapManager Map { get; private set; }
-    public EventManager Event { get; private set; }
     public HeroBattler Hero { get; private set; }
     public List<SourceCard> PlayerDeck { get; private set; }
 
     public Dictionary<Vector2Int, MapCellState> MapData { get; private set; }
     public Vector2Int CurrentCell { get; private set; }
+    public int StageIndex { get; private set; }
 
     public string CurrentEventId { get; private set; }
     public string CurrentStepId { get; private set; }
     public bool CurrentEventCompleted { get; private set; }
 
 
-    public GameContext(PlayerManager player, MapManager map, EventManager evt)
+    public GameContext()
     {
-        Player = player;
-        Map = map;
-        Event = evt;
         PlayerDeck = new List<SourceCard>();
-    }
-
-    public void InjectMap(MapManager map)
-    {
-        Map = map;
-    }
-
-    public void InjectEvent(EventManager evt)
-    {
-        Event = evt;
     }
 
     /// <summary>
@@ -45,7 +30,7 @@ public class GameContext : IGameContext
         return new SaveData
         (
             new PlayerSaveData(Hero, PlayerDeck),
-            Map.CreateSaveData(),
+            new MapSaveData(MapData, CurrentCell.x, CurrentCell.y, StageIndex),
             new EventSaveData(CurrentEventId, CurrentStepId, CurrentEventCompleted)
         );
     }
@@ -87,6 +72,16 @@ public class GameContext : IGameContext
     public void SetMapData(Dictionary<Vector2Int, MapCellState> data)
     {
         MapData = data;
+    }
+
+    public void SetCurrentCell(Vector2Int pos)
+    {
+        CurrentCell = pos;
+    }
+
+    public void SetStageIndex(int index)
+    {
+        StageIndex = index;
     }
 
     public void SetEventId(string id)
