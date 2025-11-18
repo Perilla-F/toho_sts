@@ -14,10 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   EventId: Kogasa
   EventName: "\u5C0F\u5098\u306E\u935B\u51B6\u55B6\u696D"
-  Description: "\u5C0F\u5098\u304C\u5F37\u5316\u3092\u3057\u3066\u304F\u308C\u308B\u305D\u3046\u3060\u3002"
+  Weight: 0
+  Description: "\u5C0F\u5098\u306E\u5F37\u5316\u30A4\u30D9\u30F3\u30C8"
   Steps:
-  - StepId: OK
-    Text: "\u3044\u3044\u3088\u3002"
+  - StepId: start
+    Text: "\u5C0F\u5098\u304C\u5F37\u5316\u3092\u3057\u3066\u304F\u308C\u308B\u305D\u3046\u3060\u3002"
     EventImageRef:
       m_AssetGUID: b3b4795f699ddef459190f8849ec1afd
       m_SubObjectName: 
@@ -25,15 +26,47 @@ MonoBehaviour:
       m_EditorAssetChanged: 0
     Options:
     - Id: KogasaOK
-      Text: 
+      Text: "\u3044\u3044\u3088"
+      DefaultNextStepId: Kogasa2-1
+      ConditionalNextStepId: 
+      Condition: {fileID: 0}
+      FlagToSet: 
+      FlagToRemove: 
+      EndsEvent: 0
+    - Id: KogasaNo
+      Text: "\u3044\u3084\u3060\u3088"
+      DefaultNextStepId: Kogasa2-2
+      ConditionalNextStepId: 
+      Condition: {fileID: 0}
+      FlagToSet: 
+      FlagToRemove: 
+      EndsEvent: 0
+  - StepId: Kogasa2-1
+    Text: "\u5C0F\u5098\u304C\u5F37\u5316\u3092\u3057\u3066\u304F\u308C\u305F\u3002"
+    EventImageRef:
+      m_AssetGUID: b3b4795f699ddef459190f8849ec1afd
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_EditorAssetChanged: 0
+    Options:
+    - Id: Kogasa2-1
+      Text: "\u3042\u308A\u304C\u3068\u3046\uFF01"
       DefaultNextStepId: 
       ConditionalNextStepId: 
       Condition: {fileID: 0}
       FlagToSet: 
       FlagToRemove: 
       EndsEvent: 1
-    - Id: KogasaNo
-      Text: "\u3044\u3084\u3060\u3088"
+  - StepId: Kogasa2-2
+    Text: "\u5C0F\u5098\u306F\u60B2\u3057\u305D\u3046\u306B\u53BB\u3063\u3066\u3044\u3063\u305F\u3002"
+    EventImageRef:
+      m_AssetGUID: b3b4795f699ddef459190f8849ec1afd
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_EditorAssetChanged: 0
+    Options:
+    - Id: Kogasa2-2
+      Text: "\u3042\u3070\u3088\uFF01"
       DefaultNextStepId: 
       ConditionalNextStepId: 
       Condition: {fileID: 0}

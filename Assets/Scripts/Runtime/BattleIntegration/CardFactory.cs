@@ -17,10 +17,10 @@ public class CardFactory
     public CardObj CreateCard(SourceCard sourceCard, BattleViewRoot view)
     {
         ResourceRegistry registry = new ResourceRegistry();
+        UnityEngine.Debug.Log("OK!");
 
         // 見た目生成
         var behavior = Object.Instantiate(_config.CardViewPrefab, view.DeckView.GetTransform());
-
         // 双方向の初期化
         behavior.Init(view.DeckView, view.HandView, view.DiscardAreaView, view.TimelineView);
 

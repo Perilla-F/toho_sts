@@ -8,6 +8,7 @@ public class MapManager
 {
     private readonly MapGenerator _generator;
     private GameManager _gameManager;
+    private GameContext _context;
     private Dictionary<Vector2Int, MapCellState> _mapData;
     private MapGenerationRule rule;
 
@@ -19,9 +20,10 @@ public class MapManager
     public event Action<Dictionary<Vector2Int, MapCellState>, MapGenerationRule> OnMapGenerated;
     public event Action<Vector2Int, IEnumerable<Vector2Int>> OnCellSelectionChanged;
 
-    public MapManager(GameManager gameManager, MapGenerationRule rule)
+    public MapManager(GameManager gameManager, GameContext context, MapGenerationRule rule)
     {
         _gameManager = gameManager;
+        _context = context;
         _generator = new MapGenerator();
         this.rule = rule;
         StageIndex = 1;
@@ -34,10 +36,11 @@ public class MapManager
 
     public void GenerateMap()
     {
-        _mapData = _generator.GenerateMapData(rule);
+        _context.SetMapData(_generator.GenerateMapData(rule));
         OnMapGenerated?.Invoke(_mapData, rule);
         CurrentCell = new(rule.width / 2, 0);
         OnCellSelectionChanged?.Invoke(CurrentCell, _generator.GetClickable(CurrentCell));
+        _gameManager.RequestSave();
     }
 
     public void SelectCell(Vector2Int pos)
@@ -60,6 +63,7 @@ public class MapManager
 
         CurrentCell = new Vector2Int(data.cellX, data.cellY);
         OnCellSelectionChanged?.Invoke(CurrentCell, _generator.GetClickable(CurrentCell));
+        _gameManager.RequestSave();
     }
 
 }

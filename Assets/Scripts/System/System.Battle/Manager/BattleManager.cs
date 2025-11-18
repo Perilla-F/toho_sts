@@ -24,7 +24,7 @@ public class BattleManager
     public void StartBattle()
     {
         var hero = new HeroUnit();
-        hero.Setup(_gameContext.Player.HeroBattler);
+        hero.Setup(_gameContext.Hero);
         _battleSystem.Setup(_context, hero, _game, _enemy, _controller, _timeline, _audio);
         //_audio.PlayBGM("battle", true);
     }

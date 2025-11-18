@@ -16,17 +16,16 @@ public class SaveManager : MonoBehaviour, ISaveService
     public void SaveGame(SaveData data)
     {
         string json = JsonUtility.ToJson(data);
-        PlayerPrefs.SetString(GameKey, json);
-        PlayerPrefs.Save();
+        File.WriteAllText(savePath, json);
         Debug.Log("Game saved!");
     }
 
     public SaveData LoadGame()
     {
-        if (!PlayerPrefs.HasKey(GameKey))
+        if (!File.Exists(savePath))
             return null;
 
-        string json = PlayerPrefs.GetString(GameKey);
+        string json = File.ReadAllText(savePath);
         return JsonUtility.FromJson<SaveData>(json);
     }
 
