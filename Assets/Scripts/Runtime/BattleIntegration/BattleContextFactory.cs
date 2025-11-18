@@ -1,6 +1,6 @@
 public static class BattleContextFactory
 {
-    public static BattleContext Create(EncounterData encounter, PlayerManager player, IBattleViewRoot view, CardFactory factory)
+    public static BattleContext Create(EncounterData encounter, PlayerManager player, BattleViewRoot view, CardFactory factory)
     {
         var heroUnit = new HeroUnit();
         heroUnit.Setup(player.HeroBattler);

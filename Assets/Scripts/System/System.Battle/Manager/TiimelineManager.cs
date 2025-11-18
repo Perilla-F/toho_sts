@@ -25,7 +25,6 @@ public class TimelineManager : ITimelineManager
     public BattleEvent PopNextEvent()
     {
         if (_events.Count == 0) return null;
-        _events = _events.OrderBy(e => e.Time).ThenBy(e => e.Priority).ToList();
         var next = _events[0];
         _events.RemoveAt(0);
         return next;
@@ -75,14 +74,13 @@ public class TimelineManager : ITimelineManager
         {
             var e = PopNextEvent();
             e.Execute(context);
+            CurrentTime = e.Time;
 
             // ここでアニメーション終了を待つ
             yield return new WaitUntil(() => e.IsFinished);
 
             // ちょっと間を置く演出
             yield return new WaitForSeconds(0.3f);
-
-            _events.Remove(e);
         }
     }
 
