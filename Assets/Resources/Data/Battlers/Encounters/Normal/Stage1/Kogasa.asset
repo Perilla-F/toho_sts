@@ -15,4 +15,5 @@ MonoBehaviour:
   EncounterID: Kogasa
   Enemies:
   - {fileID: 11400000, guid: 2b47de6901924164e8725bc0836cca59, type: 2}
-  UIPositions: []
+  UIPositions:
+  - {x: 0, y: 0}

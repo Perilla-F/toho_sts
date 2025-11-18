@@ -9,10 +9,6 @@ public class EventManager
     private readonly FlagManager _flagManager;
     private GameContext _context;
 
-    public string CurrentEventId;
-    public string CurrentStepId;
-    public bool CurrentEventCompleted;
-
     public event Action<EventStep> OnStepStarted;
     public event Action OnEventEnded;
 
@@ -37,19 +33,19 @@ public class EventManager
 
     private void StartEvent(MultiStepEvent evt)
     {
-        CurrentEventId = evt.EventId;
-        CurrentStepId = "start";
-        CurrentEventCompleted = false;
+        _context.SetEventId(evt.EventId);
+        _context.SetEventStepId("start");
+        _context.SetEventConpleted(false);
         StartStep("start");
     }
 
     private void StartStep(string stepId)
     {
-        CurrentStepId = stepId;
-        CurrentEventCompleted = false;
+        _context.SetEventStepId(stepId);
+        _context.SetEventConpleted(false);
 
         // ロジックのみ：UIは操作しない
-        var step = _eventDatabase.GetEvent(CurrentEventId).GetStep(stepId);
+        var step = _eventDatabase.GetEvent(_context.CurrentEventId).GetStep(stepId);
         OnStepStarted?.Invoke(step);
 
         _gameManager.RequestSave();
@@ -59,7 +55,7 @@ public class EventManager
     {
         if (option.EndsEvent)
         {
-            CurrentEventCompleted = true;
+            _context.SetEventConpleted(true);
             OnEventEnded?.Invoke();
         }
         else
@@ -87,18 +83,14 @@ public class EventManager
     public EventSaveData CreateSaveData()
     {
         return new EventSaveData(
-            CurrentEventId,
-            CurrentStepId,
-            CurrentEventCompleted
+            _context.CurrentEventId,
+            _context.CurrentStepId,
+            _context.CurrentEventCompleted
         );
     }
 
     public void RestoreFrom(EventSaveData data)
     {
-        if (data.isCompleted) return;
-        CurrentEventId = data.eventId;
-        CurrentStepId = data.stepId;
-        CurrentEventCompleted = data.isCompleted;
         StartStep(data.stepId);
     }
 

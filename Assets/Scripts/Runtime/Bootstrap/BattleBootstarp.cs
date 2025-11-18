@@ -20,7 +20,7 @@ public class BattleBootstrap : MonoBehaviour
         var playerController = new PlayerController(timelineManager);
         var enemyManager = new EnemyManager();
         var cardFactory = new CardFactory(_cardFactoryConfig, playerController);
-        var battleContext = BattleContextFactory.Create(encounter, playerManager, _battleViewRoot, cardFactory);
+        var battleContext = BattleContextFactory.Create(encounter, game, _battleViewRoot, cardFactory);
         var battleManager = new BattleManager(game, gameContext, battleContext, _battleSystem, audioManager, enemyManager, playerController, timelineManager);
 
         var battlePresenter = new BattlePresenter(_battleSystem, _battleViewRoot, playerController);

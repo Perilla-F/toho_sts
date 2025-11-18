@@ -26,41 +26,59 @@ public class GameManager
 
     public void InitializePlayer(HeroData heroData)
     {
-        _context.Player.InitializePlayer(heroData);
+        HPResource hPResource = new HPResource(heroData.MaxHP);
+        Mana mana = new Mana(heroData.MaxMana);
+
+        SetHeroBattler(new HeroBattler(heroData, hPResource, mana));
+
+        for (int i = 0; i < heroData.StartingDeck.Count; i++)
+        {
+            AddCard(new SourceCard(heroData.StartingDeck[i], hPResource, mana));
+        }
+    }
+
+    public void SetHeroBattler(HeroBattler hero)
+    {
+        _context.SetHeroBattler(hero);
     }
 
     public void AddCard(SourceCard card)
     {
-        _context.Player.AddCard(card);
+        _context.AddCard(card);
     }
 
     public void RemoveCard(SourceCard card)
     {
-        _context.Player.RemoveCard(card);
+        _context.RemoveCard(card);
     }
 
     public void UpdateDeckAfterBattle(List<SourceCard> deck)
     {
-        _context.Player.UpdateDeck(deck);
+        _context.UpdateDeck(deck);
+    }
+
+    public List<SourceCard> GetSourceCards()
+    {
+        return _context.GetSourceCards();
     }
 
     public void SelectCharacter(HeroData data)
     {
         InitializePlayer(data);
-        _sceneLoader.SetTransitionData(data);
+        _saveService.DeleteSave();
         _sceneLoader.LoadScene("MapScene");
     }
 
     public HeroBattler GetHeroBattler()
     {
-        return _context.Player.HeroBattler;
+        return _context.Hero;
     }
 
     public void StartBattle(EnemyType type)
     {
         var encounters = EncounterLoader.LoadEncounters(type, _context.Map.StageIndex);
         var selected = encounters[UnityEngine.Random.Range(0, encounters.Count)];
-        var data = new BattleTransitionData(_context.Player.HeroBattler, selected);
+        var data = new BattleTransitionData(_context.Hero, selected);
         _sceneLoader.SetTransitionData(data);
         _sceneLoader.LoadScene("BattleScene");
     }
@@ -71,6 +89,7 @@ public class GameManager
         if (data == null) return;
 
         _context.FromSaveData(data);
+        _sceneLoader.LoadScene("MapScene");
     }
 
     public void RequestSave()

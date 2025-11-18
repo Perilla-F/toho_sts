@@ -678,7 +678,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _cardFactoryConfig: {fileID: 11400000, guid: 739345073655de741a8ec1a4e302e44b, type: 2}
-  _battleViewRoot: {fileID: 1170700411}
+  _battleViewRoot: {fileID: 0}
   _enemyGenerator: {fileID: 1445532306}
   _battleSystem: {fileID: 1646716178}
 --- !u!4 &950920778
@@ -785,7 +785,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1170700412}
-  - component: {fileID: 1170700411}
+  - component: {fileID: 1170700413}
   m_Layer: 0
   m_Name: BattleViewRoot
   m_TagString: Untagged
@@ -793,21 +793,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1170700411
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1170700410}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f86883aa894b7794780d249c5e4472fd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ManaView: {fileID: 3867821990310341972}
-  TurnMessagePanel: {fileID: 207355601}
-  TurnEndButton: {fileID: 8412751644743474425}
 --- !u!4 &1170700412
 Transform:
   m_ObjectHideFlags: 0
@@ -823,6 +808,25 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1170700413
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1170700410}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f86883aa894b7794780d249c5e4472fd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  HandView: {fileID: 0}
+  DeckView: {fileID: 7951553286948534527}
+  DiscardAreaView: {fileID: 0}
+  TimelineView: {fileID: 0}
+  ManaView: {fileID: 0}
+  TurnMessagePanel: {fileID: 0}
+  TurnEndButton: {fileID: 0}
 --- !u!1 &1411600886
 GameObject:
   m_ObjectHideFlags: 0
@@ -931,6 +935,7 @@ MonoBehaviour:
   _enemyArea: {fileID: 320248039}
   _enemyModelsArea: {fileID: 0}
   _modelBaseY: -200
+  _enemyUIChannel: {fileID: 0}
 --- !u!4 &1445532307
 Transform:
   m_ObjectHideFlags: 0

@@ -1,15 +1,17 @@
 public static class BattleContextFactory
 {
-    public static BattleContext Create(EncounterData encounter, PlayerManager player, IBattleViewRoot view, CardFactory factory)
+    public static BattleContext Create(EncounterData encounter, GameManager game, BattleViewRoot view, CardFactory factory)
     {
         var heroUnit = new HeroUnit();
-        heroUnit.Setup(player.HeroBattler);
+        heroUnit.Setup(game.GetHeroBattler());
 
         var hand = new Hand();
         var deck = new BattleDeck();
         var discard = new DiscardArea();
 
-        foreach (var source in player.PlayerDeck)
+        var sources = game.GetSourceCards();
+
+        foreach (var source in sources)
         {
             deck.AddCard(factory.CreateCard(source, view));
         }

@@ -7,6 +7,7 @@ using TMPro;
 
 public class EventUIManager : MonoBehaviour
 {
+    [SerializeField] private GameObject eventPanel;
     [SerializeField] private TextMeshProUGUI descriptionText;
     [SerializeField] private Transform optionRoot;
     [SerializeField] private Button optionButtonPrefab;
@@ -17,9 +18,14 @@ public class EventUIManager : MonoBehaviour
 
     private readonly List<Button> currentButtons = new();
 
+    public void Awake()
+    {
+        eventPanel.SetActive(false);
+    }
+
     public void ShowStep(EventStep step)
     {
-        gameObject.SetActive(true);
+        eventPanel.SetActive(true);
 
         descriptionText.text = step.Text;
 
@@ -60,5 +66,5 @@ public class EventUIManager : MonoBehaviour
         }
     }
 
-    public void Hide() => gameObject.SetActive(false);
+    public void Hide() => eventPanel.SetActive(false);
 }
