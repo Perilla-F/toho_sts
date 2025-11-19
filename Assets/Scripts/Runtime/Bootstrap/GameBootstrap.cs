@@ -37,9 +37,6 @@ public class GameBootstrap : MonoBehaviour
         ServiceLocator.Register<ISceneLoader>(loader);
         ServiceLocator.Register<ISaveScheduler>(scheduler);
 
-        // 各種Manager作成
-        var playerManager = new PlayerManager(null);
-
         // コンテキスト作成
         var context = new GameContext();
         ServiceLocator.Register<GameContext>(context);
@@ -48,7 +45,8 @@ public class GameBootstrap : MonoBehaviour
         _gameManager = new GameManager(loader, save, scheduler, context);
         ServiceLocator.Register<GameManager>(_gameManager);
 
-        playerManager.Inject(_gameManager);
+        // PlayerManager作成
+        var playerManager = new PlayerManager(_gameManager);
         ServiceLocator.Register<PlayerManager>(playerManager);
 
         // 最初のシーンをロード（TitleSceneなど）

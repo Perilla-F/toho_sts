@@ -28,12 +28,6 @@ public class HPResource : IResource
         OnChanged?.Invoke();
     }
 
-    public void LoseHP(int amount)
-    {
-        CurrentResource = Mathf.Max(0, CurrentResource - amount);
-        OnChanged?.Invoke();
-    }
-
     public bool IsAlive()
     {
         return CurrentResource > 0;
@@ -92,6 +86,12 @@ public class HPResource : IResource
     public void Gain(int amount)
     {
         Mathf.Min(MaxHP, CurrentResource + amount);
+        OnChanged?.Invoke();
+    }
+
+    public void LoseHP(int amount)
+    {
+        CurrentResource = Mathf.Max(0, CurrentResource - amount);
         OnChanged?.Invoke();
     }
 

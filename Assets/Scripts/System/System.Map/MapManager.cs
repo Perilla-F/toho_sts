@@ -19,7 +19,7 @@ public class MapManager
     {
         _gameManager = gameManager;
         _context = context;
-        _generator = new MapGenerator();
+        _generator = new MapGenerator(context, rule);
         this.rule = rule;
         _context.SetStageIndex(1);
     }
@@ -31,7 +31,7 @@ public class MapManager
 
     public void GenerateMap()
     {
-        _context.SetMapData(_generator.GenerateMapData(rule));
+        _context.SetMapData(_generator.GenerateMapData());
         OnMapGenerated?.Invoke(_context.MapData, rule);
         _context.SetCurrentCell(new(rule.width / 2, 0));
         OnCellSelectionChanged?.Invoke(_context.CurrentCell, _generator.GetClickable(_context.CurrentCell));
@@ -51,12 +51,10 @@ public class MapManager
         return new MapSaveData(_context.MapData, _context.CurrentCell.x, _context.CurrentCell.y, _context.StageIndex);
     }
 
-    public void RestoreFrom(MapSaveData data)
+    public void RestoreFrom()
     {
-        _context.SetMapData(data.mapData);
         OnMapGenerated?.Invoke(_context.MapData, rule);
 
-        _context.SetCurrentCell(new Vector2Int(data.cellX, data.cellY));
         OnCellSelectionChanged?.Invoke(_context.CurrentCell, _generator.GetClickable(_context.CurrentCell));
         _gameManager.RequestSave();
     }

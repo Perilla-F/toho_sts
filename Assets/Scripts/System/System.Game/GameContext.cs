@@ -36,12 +36,25 @@ public class GameContext : IGameContext
     }
 
     /// <summary>
-    /// セーブデータから復元
+    /// セーブデータから取得
     /// </summary>
     /// <param name="data"></param>
     public void FromSaveData(SaveData data)
     {
+        Hero = data.Player.HeroBattler;
+        PlayerDeck = data.Player.PlayerDeck;
 
+        MapData = new Dictionary<Vector2Int, MapCellState>();
+        foreach (var d in data.Map.mapData)
+        {
+            MapData.Add(d.Position, d.MapCellState);
+        }
+        CurrentCell = new Vector2Int(data.Map.cellX, data.Map.cellY);
+        StageIndex = data.Map.stageIndex;
+
+        CurrentEventId = data.Event.eventId;
+        CurrentStepId = data.Event.stepId;
+        CurrentEventCompleted = data.Event.isCompleted;
     }
 
     public void SetHeroBattler(HeroBattler hero)

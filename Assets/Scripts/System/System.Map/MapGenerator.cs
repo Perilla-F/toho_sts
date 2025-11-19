@@ -6,21 +6,25 @@ using UnityEngine;
 public class MapGenerator
 {
     [Header("Map Settings")]
-    private int width;
-    private int height;
+    private readonly MapGenerationRule _rule;
 
-    public Dictionary<Vector2Int, MapCellState> mapData;
+    private readonly GameContext _context;
 
+    public MapGenerator(GameContext context, MapGenerationRule rule)
+    {
+        _context = context;
+        _rule = rule;
+    }
 
     /// <summary>
     /// ランダムマップ生成リクエスト
     /// </summary>
-    public Dictionary<Vector2Int, MapCellState> GenerateMapData(MapGenerationRule rule)
+    public Dictionary<Vector2Int, MapCellState> GenerateMapData()
     {
-        mapData = new Dictionary<Vector2Int, MapCellState>();
+        var mapData = new Dictionary<Vector2Int, MapCellState>();
 
-        width = rule.width;
-        height = rule.height;
+        var width = _rule.width;
+        var height = _rule.height;
 
         Vector2Int startPos = new(width / 2, 0);
         MapCellState startCellState = new MapCellState(
@@ -92,9 +96,11 @@ public class MapGenerator
 
     public List<Vector2Int> GetClickable(Vector2Int current)
     {
+        var width = _rule.width;
+
         var list = new List<Vector2Int>();
 
-        if (mapData[current].IsWide)
+        if (_context.MapData[current].IsWide)
         {
             list.Add(current + Vector2Int.up);
             for (var dx = 0; current.x - dx >= 0; dx++)
@@ -106,7 +112,7 @@ public class MapGenerator
                 list.Add(current + Vector2Int.up + new Vector2Int(dx, 0));
             }
         }
-        else if (mapData[new Vector2Int(width / 2, current.y + 1)].IsWide)
+        else if (_context.MapData[new Vector2Int(width / 2, current.y + 1)].IsWide)
         {
             list.Add(new Vector2Int(width / 2, current.y + 1));
         }
@@ -115,7 +121,7 @@ public class MapGenerator
             for (int dx = -1; dx <= 1; dx++)
             {
                 Vector2Int next = new(current.x + dx, current.y + 1);
-                if (mapData.ContainsKey(next))
+                if (_context.MapData.ContainsKey(next))
                 {
                     list.Add(next);
                 }

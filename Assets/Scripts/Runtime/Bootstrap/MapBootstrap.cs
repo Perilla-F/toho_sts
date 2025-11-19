@@ -20,6 +20,7 @@ public class MapBootstrap : MonoBehaviour
     [Header("UI")]
     [SerializeField] private MapView _mapView;
     [SerializeField] private EventUIManager _eventUIManager;
+    [SerializeField] private RestUIManager _restUIManager;
 
     [Header("Data")]
     [SerializeField] private MapGenerationRule _rule;
@@ -36,20 +37,17 @@ public class MapBootstrap : MonoBehaviour
         _mapManager = new MapManager(_gameManager, _context, _rule);
 
         mapPresenter = new MapPresenter(_gameManager, _mapManager, _eventManager, _mapView);
-        eventPresenter = new EventPresenter(_eventManager, _eventUIManager);
+        eventPresenter = new EventPresenter(_eventManager, _eventUIManager, _restUIManager);
 
-        if (_saveManager.HasSaveData())
+        if (_context.MapData != null)
         {
-            // セーブデータがある場合はロード
-            var save = _saveManager.LoadGame();
-            if (save != null)
-            {
-                // MapManagerがデータを再構築
-                _mapManager.RestoreFrom(save.Map);
-                return;
-            }
+            UnityEngine.Debug.Log("MapLoaded!");
+            // MapManagerがデータを再構築
+            _mapManager.RestoreFrom();
+            return;
         }
 
+        UnityEngine.Debug.Log("NewMapGenerate!");
         // MapManagerに初期マップ生成をリクエスト
         _mapManager.GenerateMap();
     }

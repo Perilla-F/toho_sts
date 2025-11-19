@@ -20,12 +20,6 @@ public class EventManager
         _context = context;
     }
 
-    public void Inject(GameManager gameManager, GameContext context)
-    {
-        _gameManager = gameManager;
-        _context = context;
-    }
-
     public void OnEnterEvent()
     {
         StartEvent(_eventDatabase.GetRandomEvent(_context, _flagManager));
@@ -69,11 +63,6 @@ public class EventManager
 
     private string ProcessOption(EventOption option)
     {
-        if (!string.IsNullOrEmpty(option.FlagToSet))
-            _flagManager.SetFlag(option.FlagToSet);
-        if (!string.IsNullOrEmpty(option.FlagToRemove))
-            _flagManager.RemoveFlag(option.FlagToRemove);
-
         string nextId = option.DefaultNextStepId;
         if (option.Condition != null && option.Condition.IsMet(_context, _flagManager))
             nextId = option.ConditionalNextStepId;
@@ -93,5 +82,7 @@ public class EventManager
     {
         StartStep(data.stepId);
     }
+
+    public void StartRestEvent() { }
 
 }
