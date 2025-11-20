@@ -21,6 +21,8 @@ public class EventOption
     public int HPChangePer;
     public int GoldAmount;
     public string ItemId;
+    public string FlagToSet;
+    public string FlagToRemove;
 
     // 終了フラグ
     [Header("終了判定")]
