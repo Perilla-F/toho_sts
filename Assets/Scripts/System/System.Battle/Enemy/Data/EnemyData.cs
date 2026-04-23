@@ -14,7 +14,7 @@ public class EnemyData : ScriptableObject
 
     [SerializeField] public GameObject UIPrefab;    // HPバーなどのUIPrefab
     [SerializeField] public GameObject ModelPrefab;
-    public float ModelYOffset;
+    [SerializeField] public float ModelYOffset;
 
     [SerializeField] public AnimationClip IdleClip;
     [SerializeField] public AnimationClip AttackClip;

@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class CardSelectedState : CardStateBase
 {
-    public CardSelectedState(CardBehavior behaviour) : base(behaviour)
+    public CardSelectedState(BattleCard behaviour) : base(behaviour)
     {
     }
 

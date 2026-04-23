@@ -10,8 +10,14 @@ public class BattleViewRoot : MonoBehaviour
     [SerializeField] public TurnMessagePanel TurnMessagePanel;
     [SerializeField] public TurnEndButton TurnEndButton;
 
-    public void BattleStart()
+    public async void BattleStart()
     {
+        await TurnMessagePanel.ShowMessage("戦闘開始");
+    }
+
+    public async void TurnStart(int turn)
+    {
+        await TurnMessagePanel.ShowMessage("第" + turn + "巡目");
     }
 
 }

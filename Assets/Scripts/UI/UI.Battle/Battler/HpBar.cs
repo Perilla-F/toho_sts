@@ -58,6 +58,6 @@ public class HpBar : MonoBehaviour
         }
 
         if (_hpText)
-            _hpText.text = $"{_resource.GetHP()} / {_resource.MaxHP}";
+            _hpText.text = $"{_resource.GetHP()}";
     }
 }

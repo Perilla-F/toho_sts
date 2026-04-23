@@ -19,7 +19,6 @@ public class HeroPresenter
         // System層 → UI層 通知
         _heroUnit.OnAttack += OnAttack;
         _heroUnit.OnHit += OnHit;
-        _heroUnit.OnHpChanged += HPChange;
         _heroUnit.OnManaChanged += ManaChange;
     }
 
@@ -34,10 +33,6 @@ public class HeroPresenter
         _model.PlayHit(hit);
     }
 
-    public void HPChange(int value)
-    {
-        _heroUI.UpdateHp(value);
-    }
 
     public void ManaChange(int value)
     {

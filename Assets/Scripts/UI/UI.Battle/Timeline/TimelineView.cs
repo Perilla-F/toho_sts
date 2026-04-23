@@ -5,126 +5,88 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-public class TimelineView : MonoBehaviour, ITimelineView
+public class TimelineView : MonoBehaviour
 {
-    [Header("References")]
-    [SerializeField] private RectTransform timelineContainer; // タイムライン本体
-    [SerializeField] private GameObject eventIconPrefab;      // 敵/プレイヤーのアイコンPrefab
-    [SerializeField] private Image playerPredictionIcon;      // プレイヤーの行動予告アイコン
-    [SerializeField] private Image playerPreviewIcon;
+    [SerializeField] private Transform _iconContainer; // VerticalLayoutGroupがついた親
+    [SerializeField] private GameObject _iconPrefab;
 
-    [Header("Layout Settings")]
-    [SerializeField] private float unitWidth = 50f; // 1時間単位の幅(px)
-    [SerializeField] private float slideSpeed = 10f; // スライド速度(補間)
+    private List<TimelineIcon> _activeBars = new List<TimelineIcon>();
 
-    [Header("EventHave")]
-    [SerializeField] private EnemyUIEventChannel _enemyUIChannel;
-    private ITimelineManager _timeline;
-
-    private int lastCurrentTime = 0;
-    private float containerOffsetX = 0f;
-
-    // --- 初期化 ---
-    public void Initialize(IHeroUnit heroUnit, ITimelineManager timeline)
+    private void OnEnable()
     {
-        playerPredictionIcon = heroUnit.playerPredictionIcon;
-        playerPreviewIcon = heroUnit.playerPreviewIcon;
-
-        _timeline = timeline;
+        // Managerからの通知を購読
+        BattleEventBus.OnActionsDecided += RefreshTimeline;
+        BattleEventBus.OnActionExecuted += RemoveTopEvent;
     }
 
-    private void OnUpdate(int currentTime, int? predictedTime, int? previewTime)
+    // 1. タイムラインの初期描画 / 全更新
+    public void RefreshTimeline(List<BattleEvent> events)
     {
-        UpdateTimelineSlide(currentTime);
-        UpdateEventIcons();
-        UpdatePlayerPrediction(predictedTime, previewTime);
-    }
+        // 既存のアイコンをクリア（プール化するとより軽量）
+        foreach (var icon in _activeBars) Destroy(icon.gameObject);
+        _activeBars.Clear();
 
-    /// <summary>
-    /// タイムラインのスライド
-    /// </summary>
-    private void UpdateTimelineSlide(int currentTime)
-    {
-        if (currentTime != lastCurrentTime)
+        foreach (var e in events)
         {
-            // 左端が現在時刻になるようにスライド
-            float targetOffset = -currentTime * unitWidth;
-            containerOffsetX = Mathf.Lerp(containerOffsetX, targetOffset, Time.deltaTime * slideSpeed);
-            timelineContainer.anchoredPosition = new Vector2(containerOffsetX, 0);
-            lastCurrentTime = currentTime;
+            CreateIcon(e);
         }
     }
 
-    /// <summary>
-    /// イベントアイコンの更新
-    /// </summary>
-    private void UpdateEventIcons()
+    private void CreateIcon(BattleEvent e)
     {
-        foreach (Transform child in timelineContainer)
-            Destroy(child.gameObject);
-
-        var grouped = _timeline.GetUpcomingEvents().GroupBy(e => e.Time).OrderBy(g => g.Key);
-
-        foreach (var group in grouped)
-        {
-            var first = group.First();
-
-            var iconObj = Instantiate(eventIconPrefab, timelineContainer);
-            var icon = iconObj.GetComponent<TimelineEventIcon>();
-            var rect = iconObj.GetComponent<RectTransform>();
-
-            float x = group.Key * unitWidth;
-            rect.anchoredPosition = new Vector2(x, 0);
-
-            // TimelineEventIconに初期化情報を渡す
-            if (first.Type == EventType.Enemy && first.EnemyId >= 0)
-            {
-                icon.Initialize(first.EnemyId, first.Enemy.EventIcon, _enemyUIChannel);
-            }
-
-            // 色分けはこれまで通り
-            var image = iconObj.GetComponent<Image>();
-            switch (first.Type)
-            {
-                case EventType.Player: image.color = Color.cyan; break;
-                case EventType.Boss: image.color = Color.red; break;
-                case EventType.Enemy: image.color = Color.yellow; break;
-            }
-        }
+        var obj = Instantiate(_iconPrefab, _iconContainer);
+        var actionBar = obj.GetComponent<TimelineIcon>();
+        actionBar.Setup(e);
+        _activeBars.Add(actionBar);
     }
 
-    /// <summary>
-    /// プレイヤーの行動予告アイコン更新
-    /// </summary>
-    private void UpdatePlayerPrediction(int? predictedTime, int? previewTime)
+    // 2. プレビュー表示（プレイヤーの行動選択中）
+    public void ShowPlayerPreview(BattleEvent playerPotentialEvent, List<BattleEvent> currentEvents)
     {
-        // int? predictedTime = PlayerController.Instance?.PredictedActionTime;
-        // int? previewTime = PlayerController.Instance?.PreviewActionTime;
+        _iconPrefab.SetActive(true);
 
-        // --- 確定アイコン（不透明） ---
-        if (predictedTime.HasValue)
-        {
-            playerPredictionIcon.enabled = true;
-            playerPredictionIcon.color = new Color(0f, 1f, 1f, 1f); // 不透明シアン
-            float x = predictedTime.Value * unitWidth;
-            playerPredictionIcon.rectTransform.anchoredPosition = new Vector2(x, 50f);
-        }
-        else
-        {
-            playerPredictionIcon.enabled = false;
-        }
+        // 予測されるTimeに基づいて、どこに挿入されるかインデックスを計算
+        int insertIndex = CalculateInsertIndex(playerPotentialEvent, currentEvents);
 
-        // --- プレビューアイコン（半透明） ---
-        if (previewTime.HasValue)
+        // VerticalLayoutGroup内での表示順を制御
+        _iconPrefab.transform.SetSiblingIndex(insertIndex);
+        // アイコンの中身（スキル名など）を更新
+        _iconPrefab.GetComponent<TimelineIcon>().Setup(playerPotentialEvent);
+    }
+
+    private int CalculateInsertIndex(BattleEvent playerEvent, List<BattleEvent> currentEvents)
+    {
+        // TimelineManagerのSortEventsと同じロジックでシミュレーション
+        int index = 0;
+        foreach (var e in currentEvents)
         {
-            playerPreviewIcon.enabled = true;
-            playerPreviewIcon.color = new Color(0f, 1f, 1f, 0.4f); // 半透明
-            float x = previewTime.Value * unitWidth;
-            playerPreviewIcon.rectTransform.anchoredPosition = new Vector2(x, 50f);
+            if (CompareEvents(playerEvent, e) < 0) break;
+            index++;
         }
-        else
-        {
-            playerPreviewIcon.enabled = false;
-        }
+        return index;
+    }
+
+    // TimelineManager.SortEvents と同じ比較ロジック
+    private int CompareEvents(BattleEvent a, BattleEvent b)
+    {
+        int cmp = a.Time.CompareTo(b.Time);
+        if (cmp != 0) return cmp;
+        cmp = a.Type.CompareTo(b.Type);
+        if (cmp != 0) return cmp;
+        return a.Order.CompareTo(b.Order);
+    }
+
+    // 3. アイコンの削除と詰め
+    private void RemoveTopEvent(BattleEvent executedEvent)
+    {
+        if (_activeBars.Count == 0) return;
+
+        Debug.Log($"EnemyUI: エネミーID{executedEvent.EnemyId} の行動実行通知を受け取りました。");
+        var topIcon = _activeBars[0];
+        _activeBars.RemoveAt(0);
+
+        // ここでアニメーション（横にスライドして消えるなど）
+        // アニメーション終了後にDestroy
+        Destroy(topIcon.gameObject);
     }
 }

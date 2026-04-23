@@ -12,11 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6edabe9fe89488943a86912369e786f0, type: 3}
   m_Name: OdorokiFlash
   m_EditorClassIdentifier: 
-  actionName: 
-  icon: {fileID: 0}
+  actionName: "\u5F8C\u5149\u300C\u304B\u3089\u304B\u3055\u9A5A\u304D\u30D5\u30E9\u30C3\u30B7\u30E5\u300D"
   target: 1
   ScheduledTime: 3
   IsCanceled: 0
   effects:
   - {fileID: 11400000, guid: 02d3b6412637a04419a6f9a94204bdbe, type: 2}
   - {fileID: 11400000, guid: 78cdfd7e8802285408b0bdf3f14b2d0b, type: 2}
+  description: 
+  actionType: 0

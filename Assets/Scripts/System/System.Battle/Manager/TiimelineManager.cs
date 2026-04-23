@@ -4,7 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TimelineManager : ITimelineManager
+public class TimelineManager
 {
     private List<BattleEvent> _events = new List<BattleEvent>();
     public int CurrentTime { get; set; }
@@ -22,12 +22,21 @@ public class TimelineManager : ITimelineManager
         CurrentTime = next.Time;
     }
 
-    public BattleEvent PopNextEvent()
+    public IEnumerator PopNextEvent(BattleContext context)
     {
-        if (_events.Count == 0) return null;
         var next = _events[0];
         _events.RemoveAt(0);
-        return next;
+        //next.Execute(context);
+        ExecuteAction(next, context);
+
+        CurrentTime = next.Time;
+
+        // ここでアニメーション終了を待つ
+        yield return new WaitUntil(() => next.IsFinished);
+        BattleEventBus.OnActionExecuted?.Invoke(next);
+
+        // ちょっと間を置く演出
+        yield return new WaitForSeconds(0.3f);
     }
 
     private void SortEvents()
@@ -66,25 +75,6 @@ public class TimelineManager : ITimelineManager
     }
 
     /// <summary>
-    /// 残りイベントを一斉消化
-    /// </summary>
-    public IEnumerator FlushAll(BattleContext context)
-    {
-        while (_events.Count > 0)
-        {
-            var e = PopNextEvent();
-            e.Execute(context);
-            CurrentTime = e.Time;
-
-            // ここでアニメーション終了を待つ
-            yield return new WaitUntil(() => e.IsFinished);
-
-            // ちょっと間を置く演出
-            yield return new WaitForSeconds(0.3f);
-        }
-    }
-
-    /// <summary>
     /// 次のイベントを引っ張る
     /// </summary>
     /// <returns></returns>
@@ -92,6 +82,27 @@ public class TimelineManager : ITimelineManager
     {
         if (_events.Count == 0) return null;
         return _events[0];
+    }
+
+    /// <summary>
+    /// タイムラインの構築が完了した時に呼び出されるメソッド
+    /// </summary>
+    public void OnTimelineBuilt()
+    {
+        // Bridge層のイベントを呼び出し、UI層に通知する
+        BattleEventBus.OnActionsDecided?.Invoke(_events);
+    }
+
+    /// <summary>
+    /// 規定時間に行動を実行するメソッド
+    /// </summary>
+    public void ExecuteAction(BattleEvent info, BattleContext context)
+    {
+        // 実際のロジック（ダメージ計算など）を実行...
+        info.Execute(context);
+
+        // Bridge層のイベントを呼び出し、UI層に演出を通知する
+        BattleEventBus.OnActionExecuted?.Invoke(info);
     }
 
 }

@@ -17,8 +17,33 @@ MonoBehaviour:
     m_SerializedData: []
   m_GUID: 77878ff9bc48fd645a549257db1b96e0
   m_SerializeEntries:
+  - m_GUID: 0b5b507ca61d2a54daf97fae4c18fc8d
+    m_Address: Fear_Icon
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 378be9b171ca94a42a7d82f816e2be4a
+    m_Address: Defence_Icon
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 865ba8a9fee89f04fa8a755df220310a
+    m_Address: Strength_Icon
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8711099639a831d4bb8587cae11c67a5
+    m_Address: Poison_Icon
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: b3b4795f699ddef459190f8849ec1afd
     m_Address: Assets/AddressableAssets/EventsImages/KogasaEvent.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d299e3fb286c73d4f97f082a4aa8069a
+    m_Address: White
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

@@ -3,32 +3,22 @@ using UnityEngine;
 public class CardFactory
 {
     private PlayerController _controller;
-    private CardFactoryConfig _config;
 
-    public CardFactory(CardFactoryConfig config, PlayerController controller)
+    public CardFactory(PlayerController controller)
     {
-        _config = config;
         _controller = controller;
     }
 
     /// <summary>
     /// SourceCard から CardObj と UI を生成
     /// </summary>
-    public CardObj CreateCard(SourceCard sourceCard, BattleViewRoot view)
+    public CardObj CreateCard(SourceCard sourceCard)
     {
         ResourceRegistry registry = new ResourceRegistry();
         UnityEngine.Debug.Log("OK!");
 
-        // 見た目生成
-        var behavior = Object.Instantiate(_config.CardViewPrefab, view.DeckView.GetTransform());
-        // 双方向の初期化
-        behavior.Init(view.DeckView, view.HandView, view.DiscardAreaView, view.TimelineView);
-
         // 論理データ生成
         CardObj cardObj = new NomalCardObj(sourceCard, registry, _controller);
-        cardObj.BindView(behavior);
-        behavior.BindCard(cardObj);
-        behavior.gameObject.SetActive(false);
 
         return cardObj;
     }

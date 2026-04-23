@@ -122,6 +122,53 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &75272419
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 75272421}
+  - component: {fileID: 75272420}
+  m_Layer: 0
+  m_Name: RestUIManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &75272420
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 75272419}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f0fcc6b74b2b65d40b5b58f899fa70a9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  restPanel: {fileID: 612077863}
+  restButton: {fileID: 1735178941}
+  enhanceButton: {fileID: 2105748634}
+--- !u!4 &75272421
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 75272419}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 925.9962, y: 537.69794, z: 5.3895597}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &193497885
 GameObject:
   m_ObjectHideFlags: 0
@@ -828,7 +875,7 @@ MonoBehaviour:
       m_Calls: []
   m_text: Button
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 0}
+  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
@@ -1011,8 +1058,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Event Text
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 0}
-  m_sharedMaterial: {fileID: 4359656274917946969, guid: b4976d53f7ab0cd46859c669afd93b54, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -1145,8 +1192,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Event Text
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 0}
-  m_sharedMaterial: {fileID: 4359656274917946969, guid: b4976d53f7ab0cd46859c669afd93b54, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -2156,7 +2203,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3997377851314804545, guid: f9e31a405a030de48bc05344a6536f13, type: 3}
       propertyPath: m_Name
-      value: EventOption
+      value: RestButton
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -2168,6 +2215,17 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 2478360095821827471, guid: f9e31a405a030de48bc05344a6536f13, type: 3}
   m_PrefabInstance: {fileID: 1735178939}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1735178941 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2491939565211909167, guid: f9e31a405a030de48bc05344a6536f13, type: 3}
+  m_PrefabInstance: {fileID: 1735178939}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1783572617
 GameObject:
   m_ObjectHideFlags: 0
@@ -2273,7 +2331,7 @@ MonoBehaviour:
       m_Calls: []
   m_text: Button
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 0}
+  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
@@ -2949,7 +3007,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _mapView: {fileID: 1527092567}
   _eventUIManager: {fileID: 928585910}
-  _restUIManager: {fileID: 0}
+  _restUIManager: {fileID: 75272420}
   _rule: {fileID: 11400000, guid: 83a1bb092f15eca4ab5f57530d90d867, type: 2}
   _eventDatabase: {fileID: 11400000, guid: 612243d360527e546ba72bd581f6f342, type: 2}
 --- !u!1001 &2105748632
@@ -3042,7 +3100,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3997377851314804545, guid: f9e31a405a030de48bc05344a6536f13, type: 3}
       propertyPath: m_Name
-      value: EventOption (1)
+      value: EnhanceButton
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -3054,6 +3112,17 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 2478360095821827471, guid: f9e31a405a030de48bc05344a6536f13, type: 3}
   m_PrefabInstance: {fileID: 2105748632}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &2105748634 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2491939565211909167, guid: f9e31a405a030de48bc05344a6536f13, type: 3}
+  m_PrefabInstance: {fileID: 2105748632}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -3064,3 +3133,4 @@ SceneRoots:
   - {fileID: 928585909}
   - {fileID: 1783572619}
   - {fileID: 2078152274}
+  - {fileID: 75272421}

@@ -4,13 +4,17 @@ using UnityEngine;
 
 public class EnemyGenerator : MonoBehaviour
 {
-    [SerializeField] private EnemyManager _enemyManager;
-    [SerializeField] private Transform _enemyArea;        // Canvas内
-    [SerializeField] private Transform _enemyModelsArea;  // モデル配置用
-    [SerializeField] private float _modelBaseY = -200f;  // モデルのY初期位置
-    [SerializeField] private EnemyUIEventChannel _enemyUIChannel;
+    private EnemyManager _enemyManager;
+    private Transform _enemyArea;
+    private float _modelBaseY = -200f;  // モデルのY初期位置
 
     private int _nextEnemyId = 0;
+
+    public EnemyGenerator(EnemyManager enemyManager, Transform enemyArea)
+    {
+        _enemyManager = enemyManager;
+        _enemyArea = enemyArea;
+    }
 
     /// <summary>
     /// 敵の生成
@@ -37,8 +41,9 @@ public class EnemyGenerator : MonoBehaviour
             enemyUI.Bind(enemyUnit.HPResource);
 
             // モデル生成（UIを基準に Y座標だけオフセット）
-            EnemyModel enemyModel = Instantiate(enemyUnit.ModelPrefab, _enemyModelsArea).GetComponent<EnemyModel>();
-            enemyModel.transform.localPosition = new Vector3(uiPos.x, _modelBaseY + enemyUnit.ModelYOffset, 0);
+            EnemyModel enemyModel = Instantiate(enemyUnit.ModelPrefab, _enemyArea).GetComponent<EnemyModel>();
+            enemyModel.transform.localPosition = new Vector3(uiPos.x, uiPos.y + _modelBaseY, -1f);
+            enemyModel.transform.localScale = Vector3.one * 100f;
             enemyModel.Init(enemyUnit, enemyUnit.IdleClip);
 
             // バインド
@@ -46,12 +51,8 @@ public class EnemyGenerator : MonoBehaviour
             enemyUnit.UI = enemyUI;
 
             // EventListenerを追加
-            var listener = enemyUI.gameObject.AddComponent<EnemyUIEventListener>();
-            listener.Initialize(enemyUnit.EnemyID, _enemyUIChannel, enemyUI);
-
-            // EnemyControllerを生成・初期化
-            var controller = enemyUI.gameObject.AddComponent<EnemyController>();
-            controller.Initialize(enemyUnit.EnemyID, enemyData, _enemyUIChannel);
+            EnemyUIEventListener listener = new EnemyUIEventListener();
+            listener.Initialize(enemyUnit.EnemyID, enemyUI);
 
             // Bridgeに登録
             _enemyManager.RegisterEnemy(enemyUnit);

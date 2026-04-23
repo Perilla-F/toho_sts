@@ -1,12 +1,13 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 
 [CreateAssetMenu(menuName = "Card/CardData")]
 public class CardData : ScriptableObject
 {
     public string CardName;
     public CardRarity Rarity;
-    public Sprite Artwork;
+    public AssetReferenceSprite CardIllustration;
     public List<ResourceCost> Costs;
     public int Delay;
     public int UpgradedLevel;

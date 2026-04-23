@@ -8,8 +8,6 @@ public class EnemyUnit : IEnemyUnit
 {
     private EnemyAIData _enemyAI;
 
-    private EnemyUIEventChannel _uiChannel;
-
     public event Action<AnimationClip> OnAttack;
     public event Action<AnimationClip> OnHit;
 
@@ -73,13 +71,17 @@ public class EnemyUnit : IEnemyUnit
             turnCounter = 0;
             lastCondition = currentCondition;
         }
-        _uiChannel?.Raise(new EnemyUIEventData
+
+        EnemyAction[] actions = _enemyAI.DecideActionPattern(context, this, turnCounter);
+        switch (actions)
         {
-            EnemyId = EnemyID,
-            Type = EnemyUIEventType.ShowIntent,
-            Icon = EventIcon
-        });
-        return _enemyAI.DecideActionPattern(context, this, turnCounter);
+            case NormalAction[] ns:
+                EnemyUIEventChannel.OnEventPlaned(ns);
+                break;
+            default:
+                break;
+        }
+        return actions;
     }
 
     public override void AddEffect(StatusEffectData data, int stacks)
@@ -88,11 +90,13 @@ public class EnemyUnit : IEnemyUnit
         if (existing != null)
         {
             existing.AddStacks(stacks);
+            BuffUIChannel.OnBuffUpdated(existing);
         }
         else
         {
             var effect = StatusEffectFactory.Create(data, stacks, this);
             Effects.Add(effect);
+            BuffUIChannel.OnBuffAdded(effect);
         }
     }
 

@@ -1,15 +1,11 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(menuName = "Channels/Enemy UI Event Channel")]
-public class EnemyUIEventChannel : ScriptableObject
+public static class EnemyUIEventChannel
 {
-    public Action<EnemyUIEventData> OnEventRaised;
-
-    public void Raise(EnemyUIEventData data)
-    {
-        OnEventRaised?.Invoke(data);
-    }
+    public static Action<EnemyUIEventData> OnEventRaised;
+    public static Action<NormalAction[]> OnEventPlaned;
 }
 
 [Serializable]
@@ -18,13 +14,23 @@ public class EnemyUIEventData
     public int EnemyId;
     public EnemyUIEventType Type;
     public Sprite Icon;
-    public float Duration;
+    public int Value;
+
+    /// <summary>
+    /// このターン中の何回目の自分の行動か
+    /// </summary>
+    public int Number;
 }
 
 public enum EnemyUIEventType
 {
-    ShowIntent,   // 行動予定を表示
-    Highlight,    // マウスオーバーなどのハイライト
-    Unhighlight,  // ハイライト解除
-    Damage,       // 被ダメージ表示など
+    /// <summary>
+    /// イベントアイコンがハイライトされている
+    /// </summary>
+    Highlight,
+
+    /// <summary>
+    /// イベントアイコンがハイライトされていない
+    /// </summary>
+    Unhighlight,
 }

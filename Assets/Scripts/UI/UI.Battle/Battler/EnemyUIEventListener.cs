@@ -1,41 +1,58 @@
+using System.Collections.Generic;
 using UnityEngine;
 
-public class EnemyUIEventListener : MonoBehaviour
+public class EnemyUIEventListener
 {
     private int _enemyId;
     private EnemyUI _ui;
-    private EnemyUIEventChannel _channel;
 
-    public void Initialize(int enemyId, EnemyUIEventChannel channel, EnemyUI ui)
+    public void Initialize(int enemyId, EnemyUI ui)
     {
         _enemyId = enemyId;
-        _channel = channel;
         _ui = ui;
 
-        _channel.OnEventRaised += HandleEvent;
+        EnemyUIEventChannel.OnEventRaised += HandleEventChanging;
+        EnemyUIEventChannel.OnEventPlaned += HandleEventPlanning;
+        BuffUIChannel.OnBuffAdded += HandleBuffAdd;
+        BuffUIChannel.OnBuffUpdated += HandleBuffUpdate;
     }
 
-    private void HandleEvent(EnemyUIEventData data)
+    private void HandleEventChanging(EnemyUIEventData data)
     {
         if (data.EnemyId != _enemyId) return;
 
         switch (data.Type)
         {
-            case EnemyUIEventType.ShowIntent:
-                _ui.ShowIntentIcon(data.Icon);
-                break;
             case EnemyUIEventType.Highlight:
-                _ui.Highlight(true);
+                _ui.Highlight(true, data.Number);
                 break;
             case EnemyUIEventType.Unhighlight:
-                _ui.Highlight(false);
+                _ui.Highlight(false, data.Number);
                 break;
         }
     }
 
+    private void HandleEventPlanning(NormalAction[] actions)
+    {
+        for (int i = 0; i < actions.Length; i++)
+        {
+            _ui.SetActionIcon(actions[i].actionType, actions[i].ScheduledTime, i);
+        }
+    }
+
+    private void HandleBuffAdd(StatusEffect data)
+    {
+        _ui.SetBuffIcon(data);
+    }
+
+    private void HandleBuffUpdate(StatusEffect data)
+    {
+        _ui.UpdateBuffIcon(data);
+    }
+
     public void OnMouseEnter()
     {
-        _channel.Raise(new EnemyUIEventData
+        EnemyUIEventChannel.OnEventRaised.Invoke(new EnemyUIEventData
         {
             EnemyId = _enemyId,
             Type = EnemyUIEventType.Highlight
@@ -44,7 +61,7 @@ public class EnemyUIEventListener : MonoBehaviour
 
     public void OnMouseExit()
     {
-        _channel.Raise(new EnemyUIEventData
+        EnemyUIEventChannel.OnEventRaised.Invoke(new EnemyUIEventData
         {
             EnemyId = _enemyId,
             Type = EnemyUIEventType.Unhighlight

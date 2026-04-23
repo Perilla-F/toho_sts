@@ -7,7 +7,6 @@ public class HeroUnit : IHeroUnit
 {
     public event Action<AnimationClip> OnAttack;
     public event Action<AnimationClip> OnHit;
-    public event Action<int> OnHpChanged;
     public event Action<int> OnManaChanged;
 
     public void Setup(HeroBattler heroBattler)
@@ -18,8 +17,7 @@ public class HeroUnit : IHeroUnit
         Mana = heroBattler.Mana;
         DrawCount = heroBattler.DrawCount;
 
-        playerPredictionIcon = heroBattler.BaseData.playerPredictionIcon;
-        playerPreviewIcon = heroBattler.BaseData.playerPreviewIcon;
+        playerEventIcon = heroBattler.BaseData.playerEventIcon;
 
         UIPrefab = heroBattler.BaseData.UIPrefab;
         ModelPrefab = heroBattler.BaseData.ModelPrefab;
@@ -121,16 +119,6 @@ public class HeroUnit : IHeroUnit
         {
             e.OnTurnEnd();
         }
-    }
-
-    public void HPChanged()
-    {
-        OnHpChanged?.Invoke(HPResource.GetHP());
-    }
-
-    public void ManaChanged()
-    {
-        OnManaChanged?.Invoke(Mana.GetMana());
     }
 
     public override void Attack()

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-[CreateAssetMenu(menuName = "Data/HeroData")]
+[CreateAssetMenu(menuName = "Hero/HeroData")]
 public class HeroData : ScriptableObject
 {
     [SerializeField] public String HeroID;
@@ -23,14 +23,9 @@ public class HeroData : ScriptableObject
     [SerializeField] public AnimationClip HitClip;
 
     /// <summary>
-    /// プレイヤーの行動予告アイコン
+    /// プレイヤーの行動予告用アイコン
     /// </summary>
-    [SerializeField] public Image playerPredictionIcon;
-
-    /// <summary>
-    /// プレイヤーの行動予告アイコン(半透明)
-    /// </summary>
-    [SerializeField] public Image playerPreviewIcon;
+    [SerializeField] public Sprite playerEventIcon;
 
 
     public String BattlerName => _battlerName;

@@ -28562,7 +28562,7 @@ MonoBehaviour:
   _isOverriddenParameterRepeat: 1
 --- !u!114 &114148491653208130
 MonoBehaviour:
-  m_ObjectHideFlags: 16
+  m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
@@ -28574,7 +28574,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
 --- !u!114 &114933646327758878
 MonoBehaviour:
-  m_ObjectHideFlags: 16
+  m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}

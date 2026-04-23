@@ -12,6 +12,7 @@ public class TurnMessagePanel : MonoBehaviour, ITurnMessagePanel
 {
     [SerializeField] GameObject _panel;
     [SerializeField] TextMeshProUGUI _messageText;
+
     public async UniTask ShowMessage(String message)
     {
         gameObject.SetActive(true);

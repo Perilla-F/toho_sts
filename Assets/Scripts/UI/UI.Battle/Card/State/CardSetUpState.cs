@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class CardSetUpState : CardStateBase
 {
-    public CardSetUpState(CardBehavior behaviour) : base(behaviour)
+    public CardSetUpState(BattleCard behaviour) : base(behaviour)
     {
     }
 

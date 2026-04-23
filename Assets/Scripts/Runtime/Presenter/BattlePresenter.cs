@@ -18,8 +18,9 @@ public class BattlePresenter
         _player = player;
 
         _battleSystem.BattleStart += BattleStart;
+        _battleSystem.OnTurnStart += TurnStart;
 
-        _battleSystem.BattleContext.Hand.OnChangedHand += OnChangedHand;
+        _battleSystem.BattleContext.Hand.OnChangedHand += ArrangeHand;
         _battleSystem.BattleContext.Deck.OnChangedDeckCount += OnChangedDeckCount;
         _battleSystem.BattleContext.Discard.OnChangedDiscardCount += OnChangedDiscardCount;
         _battleSystem.Hero.Mana.OnChanged += OnManaChanged;
@@ -33,7 +34,12 @@ public class BattlePresenter
         _battleView.BattleStart();
     }
 
-    private void OnChangedHand()
+    private void TurnStart(int turn)
+    {
+        _battleView.TurnStart(turn);
+    }
+
+    private void ArrangeHand()
     {
         _battleView.HandView.ArrangeCards();
     }

@@ -4,10 +4,24 @@ using Live2D.Cubism.Framework.Motion;
 
 public class EnemyModel : MonoBehaviour, IBattleModel, IDropHandler
 {
-    [SerializeField] private CubismMotionController motionController;
     private BattleUnit _self;
 
     private AnimationClip idle;
+
+    private CubismMotionController MotionController
+    {
+        get
+        {
+            if (_motionController == null)
+            {
+                _motionController = GetComponent<CubismMotionController>();
+            }
+            return _motionController;
+        }
+    }
+    private CubismMotionController _motionController;
+
+    private void Start() { }
 
     public void Init(BattleUnit enemy, AnimationClip idle)
     {
@@ -16,14 +30,18 @@ public class EnemyModel : MonoBehaviour, IBattleModel, IDropHandler
         PlayIdle();
     }
 
+
     public void PlayIdle()
     {
-        motionController.PlayAnimation(idle, isLoop: true);
+        if (MotionController != null)
+        {
+            MotionController.PlayAnimation(idle, isLoop: true);
+        }
     }
 
     public void PlayAttack(AnimationClip attack)
     {
-        motionController.PlayAnimation(attack, isLoop: false);
+        MotionController.PlayAnimation(attack, isLoop: false);
 
         // Coroutineでモーション終了後にIdleへ戻す
         float duration = attack.length;
@@ -32,7 +50,7 @@ public class EnemyModel : MonoBehaviour, IBattleModel, IDropHandler
 
     public void PlayHit(AnimationClip hit)
     {
-        motionController.PlayAnimation(hit, isLoop: false);
+        MotionController.PlayAnimation(hit, isLoop: false);
 
         // 被ダメ後にIdleへ戻す
         float duration = hit.length;
@@ -48,7 +66,7 @@ public class EnemyModel : MonoBehaviour, IBattleModel, IDropHandler
     public void OnDrop(PointerEventData eventData)
     {
         Debug.Log("drop!");
-        CardBehavior card = eventData.pointerDrag.GetComponent<CardBehavior>();
+        BattleCard card = eventData.pointerDrag.GetComponent<BattleCard>();
     }
 
 }

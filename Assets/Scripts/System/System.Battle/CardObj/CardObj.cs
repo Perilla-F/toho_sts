@@ -6,7 +6,7 @@ using System;
 
 public class CardObj : ICardObj
 {
-    public SourceCard Source;
+    public SourceCard Source { get; private set; }
     public readonly ResourceRegistry ResourceRegistry;
     private readonly PlayerController _controller;
     public int Delay;

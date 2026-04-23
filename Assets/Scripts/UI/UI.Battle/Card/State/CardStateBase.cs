@@ -5,9 +5,9 @@ using UnityEngine.EventSystems;
 
 public class CardStateBase
 {
-    protected CardBehavior _behaviour;
+    protected BattleCard _behaviour;
 
-    public CardStateBase(CardBehavior behaviour)
+    public CardStateBase(BattleCard behaviour)
     {
         this._behaviour = behaviour;
     }

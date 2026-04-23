@@ -18,7 +18,7 @@ MonoBehaviour:
       - action: {fileID: 11400000, guid: 944077cc52fd0da49927c9e09b5135e6, type: 2}
         damageOverride: 7
         amountOverride: 3
-      - action: {fileID: 11400000, guid: 944077cc52fd0da49927c9e09b5135e6, type: 2}
-        damageOverride: 7
-        amountOverride: 3
+      - action: {fileID: 11400000, guid: 05328320c86c7f94d85f19940b654d43, type: 2}
+        damageOverride: 14
+        amountOverride: 0
     weights: 64000000

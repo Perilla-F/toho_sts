@@ -6,7 +6,7 @@ using Cysharp.Threading.Tasks;
 
 public class BattleContext : IBattleContext
 {
-    public BattleSystem BattleSystem { get; }
+    public IBattleSystem BattleSystem { get; }
     public IHeroUnit Hero { get; private set; }
     public Hand Hand { get; private set; }
     public BattleDeck Deck { get; private set; }

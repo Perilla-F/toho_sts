@@ -14,7 +14,7 @@ public class CardWaitState : CardStateBase
     private Vector2 _defaultPosition;
 
 
-    public CardWaitState(CardBehavior behaviour) : base(behaviour)
+    public CardWaitState(BattleCard behaviour) : base(behaviour)
     {
     }
 

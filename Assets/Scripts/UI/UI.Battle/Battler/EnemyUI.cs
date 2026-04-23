@@ -1,24 +1,25 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System.Collections.Generic;
+using System.Linq;
 
 public class EnemyUI : MonoBehaviour, IBattleUI
 {
     [Header("UI References")]
     [SerializeField] private HpBar hpBar;
+    [SerializeField] private Transform actionContainer;
     [SerializeField] private Transform buffContainer;
-    [SerializeField] private Image actionIcon;
-    [SerializeField] private TMP_Text actionNameText;
 
-    [SerializeField] private Image intentIcon;
-    [SerializeField] private Transform highlightEffect;
+    [SerializeField] private GameObject actionIconPrefab;
+    [SerializeField] private GameObject buffIconPrefab;
 
     private Vector3 _baseScale;
+    private List<ActionIcon> actionList;
+    private List<BuffIcon> buffList;
 
     private void Start()
     {
-        _baseScale = actionIcon.transform.localScale;
-        SetActionIconVisible(false);
     }
 
     public void Bind(HPResource resource)
@@ -26,40 +27,35 @@ public class EnemyUI : MonoBehaviour, IBattleUI
         hpBar.Bind(resource);
     }
 
-    public void SetActionIcon(Sprite sprite, string actionName = "")
+    public void SetActionIcon(EnemyActionType type, int time, int number)
     {
-        if (actionIcon == null) return;
-        actionIcon.sprite = sprite;
-        actionNameText.text = actionName;
-        SetActionIconVisible(true);
+        ActionIcon actionIcon = Instantiate(actionIconPrefab, actionContainer).GetComponent<ActionIcon>();
+        actionIcon.SetIcon(type, time, number);
+        actionList.Add(actionIcon);
     }
 
-    public void SetActionIconVisible(bool visible)
+    public void SetBuffIcon(StatusEffect data)
     {
-        if (actionIcon != null) actionIcon.enabled = visible;
-        if (actionNameText != null) actionNameText.enabled = visible;
+        BuffIcon buffIcon = Instantiate(buffIconPrefab, buffContainer).GetComponent<BuffIcon>();
+        buffIcon.SetIcon(data);
+        buffList.Add(buffIcon);
     }
 
-    public void HighlightAction(bool highlight)
+    public void UpdateBuffIcon(StatusEffect data)
     {
-        if (actionIcon == null) return;
-        actionIcon.transform.localScale = highlight ? _baseScale * 1.3f : _baseScale;
+        var buffIcon = buffList.FirstOrDefault(l => l.effect.Data.effectId == data.Data.effectId);
+        buffIcon.UpdateIcon(data);
     }
 
-    public void ShowIntentIcon(Sprite icon)
+    public void Highlight(bool active, int number)
     {
-        intentIcon.sprite = icon;
-        intentIcon.gameObject.SetActive(true);
-    }
-
-    public void Highlight(bool active)
-    {
-        if (highlightEffect)
-            highlightEffect.gameObject.SetActive(active);
+        var actionIcon = actionList.FirstOrDefault(l => l.number == number);
+        actionIcon.HighlightIcon(active);
     }
 
     public void ShowDamageEffect(float duration)
     {
         // 被ダメージエフェクト処理など
     }
+
 }
