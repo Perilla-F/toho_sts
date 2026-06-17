@@ -4,7 +4,7 @@ using Live2D.Cubism.Framework.Motion;
 
 public class EnemyModel : MonoBehaviour, IBattleModel, IDropHandler
 {
-    private BattleUnit _self;
+    public BattleUnit Self;
 
     private AnimationClip idle;
 
@@ -25,7 +25,7 @@ public class EnemyModel : MonoBehaviour, IBattleModel, IDropHandler
 
     public void Init(BattleUnit enemy, AnimationClip idle)
     {
-        _self = enemy;
+        Self = enemy;
         this.idle = idle;
         PlayIdle();
     }

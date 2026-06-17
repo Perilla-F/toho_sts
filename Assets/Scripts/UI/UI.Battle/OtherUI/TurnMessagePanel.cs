@@ -26,7 +26,7 @@ public class TurnMessagePanel : MonoBehaviour, ITurnMessagePanel
         //0.3秒待機
         await UniTask.Delay(300);
         //90度回転状態に戻す
-        _panel.transform.DORotate(new Vector3(90, 0, 0), 0.5f).SetEase(Ease.Linear);
+        await _panel.transform.DORotate(new Vector3(90, 0, 0), 0.5f).SetEase(Ease.Linear);
         gameObject.SetActive(false);
     }
 }

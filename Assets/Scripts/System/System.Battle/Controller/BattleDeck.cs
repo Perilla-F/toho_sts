@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class BattleDeck
 {
-    private Queue<CardObj> _deckCards = new Queue<CardObj>();
+    private Queue<ICardObj> _deckCards = new Queue<ICardObj>();
 
     public event Action<int> OnChangedDeckCount;
 
@@ -15,7 +15,7 @@ public class BattleDeck
     public void Shuffle()
     {
         // 1. QueueからListに取り出す
-        List<CardObj> tempList = new List<CardObj>(_deckCards);
+        List<ICardObj> tempList = new List<ICardObj>(_deckCards);
         _deckCards.Clear();
 
         // 2. Fisher-Yates シャッフルアルゴリズム
@@ -44,7 +44,7 @@ public class BattleDeck
     /// <summary>
     /// 山札に追加
     /// </summary>
-    public void AddCard(CardObj card)
+    public void AddCard(ICardObj card)
     {
         _deckCards.Enqueue(card);
         OnChangedDeckCount?.Invoke(_deckCards.Count);
@@ -53,7 +53,7 @@ public class BattleDeck
     /// <summary>
     /// 山札からカードを1枚引く
     /// </summary>
-    public CardObj Draw()
+    public ICardObj Draw()
     {
         var card = _deckCards.Dequeue();
         OnChangedDeckCount?.Invoke(_deckCards.Count);
@@ -76,9 +76,9 @@ public class BattleDeck
     /// <param name="deck"></param>
     /// <param name="count"></param>
     /// <returns></returns>
-    private List<CardObj> PeekTopCards(Queue<CardObj> deck, int count)
+    private List<ICardObj> PeekTopCards(Queue<ICardObj> deck, int count)
     {
-        List<CardObj> list = new List<CardObj>(deck);
+        List<ICardObj> list = new List<ICardObj>(deck);
         return list.GetRange(0, Mathf.Min(count, list.Count));
     }
 
@@ -88,9 +88,9 @@ public class BattleDeck
     /// <param name="deck"></param>
     /// <param name="selectedCard"></param>
     /// <returns></returns>
-    private Queue<CardObj> RebuildDeckWithTopCard(Queue<CardObj> deck, CardObj selectedCard)
+    private Queue<ICardObj> RebuildDeckWithTopCard(Queue<ICardObj> deck, ICardObj selectedCard)
     {
-        List<CardObj> deckList = new List<CardObj>(deck);
+        List<ICardObj> deckList = new List<ICardObj>(deck);
         deckList.Remove(selectedCard); // 選んだカードを除く
 
         // シャッフル（Fisher-Yates）
@@ -101,7 +101,7 @@ public class BattleDeck
         }
 
         // 新しいデッキ構成：選んだカード + シャッフル済みカード
-        Queue<CardObj> newDeck = new Queue<CardObj>();
+        Queue<ICardObj> newDeck = new Queue<ICardObj>();
         newDeck.Enqueue(selectedCard);
         foreach (var card in deckList)
         {

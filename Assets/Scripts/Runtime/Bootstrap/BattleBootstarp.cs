@@ -5,6 +5,9 @@ public class BattleBootstrap : MonoBehaviour
 {
     [SerializeField] private BattleViewRoot _battleViewRoot; // View全体のまとめ
     [SerializeField] private BattleSystem _battleSystem;
+    [SerializeField] private BattleManager _battleManager;
+    [SerializeField] private TimelineManager _timelineManager;
+    [SerializeField] private TimelineView _timelineView;
     [SerializeField] private Transform _enemyArea;
     [SerializeField] private GameObject cardPrefab;
 
@@ -17,21 +20,22 @@ public class BattleBootstrap : MonoBehaviour
         var playerManager = ServiceLocator.Get<PlayerManager>();
         var audioManager = ServiceLocator.Get<IAudioManager>();
 
-        var timelineManager = new TimelineManager();
-        var playerController = new PlayerController(timelineManager);
+        var playerController = new PlayerController(_timelineManager);
         var enemyManager = new EnemyManager();
         var CardPoolManager = new CardPoolManager(cardPrefab, playerController);
         var HandUIManager = new HandUIManager(_battleViewRoot);
-        var CardFactory = new CardFactory(playerController);
         HandUIManager.Setup(CardPoolManager);
+        _battleViewRoot.TimelineView.Initialize(_timelineManager);
         var battleContext = BattleContextFactory.Create(encounter, game, playerController);
-        var battleManager = new BattleManager(game, gameContext, battleContext, _battleSystem, audioManager, enemyManager, playerController, timelineManager, HandUIManager);
-        battleManager.BattleSetUp();
 
-        var battlePresenter = new BattlePresenter(_battleSystem, _battleViewRoot, playerController);
+        HeroUnit hero = new HeroUnit();
+        hero.Setup(gameContext.Hero);
+        _battleSystem.Setup(battleContext, hero, game, enemyManager, playerController, _timelineManager, audioManager);
+
+        _battleManager.Initialize(game, gameContext, hero, battleContext, _battleSystem, audioManager, enemyManager, playerController, _timelineManager, _timelineView, HandUIManager, _battleViewRoot);
 
         EnemyGenerator _enemyGenerator = new EnemyGenerator(enemyManager, _enemyArea);
         _enemyGenerator.SpawnEnemies(encounter);
-        await battleManager.StartBattle();
+        await _battleManager.StartBattle();
     }
 }

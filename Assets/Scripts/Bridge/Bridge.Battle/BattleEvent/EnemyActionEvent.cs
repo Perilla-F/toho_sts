@@ -1,5 +1,5 @@
 using UnityEngine.UI;
-using System.Threading.Tasks;
+using Cysharp.Threading.Tasks;
 
 public class EnemyActionEvent : BattleEvent, IEnemyActionEvent
 {
@@ -15,8 +15,8 @@ public class EnemyActionEvent : BattleEvent, IEnemyActionEvent
         ActionName = action.actionName;
     }
 
-    public override async Task Execute(IBattleContext context)
+    public override async UniTask Execute(IBattleContext context)
     {
-        action.Execute(context, Enemy);
+        await action.Execute(context, Enemy);
     }
 }

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Cysharp.Threading.Tasks;
 
 public class Mana : IResource
 {
@@ -29,7 +30,7 @@ public class Mana : IResource
         return true;
     }
 
-    public void Gain(int amount)
+    public async UniTask Gain(int amount)
     {
         CurrentResource += amount;
         OnChanged?.Invoke();

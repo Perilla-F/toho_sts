@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using UnityEngine;
+using Cysharp.Threading.Tasks;
 
 public class GroupAttackEvent : BattleEvent
 {
@@ -14,7 +14,7 @@ public class GroupAttackEvent : BattleEvent
         Leader = leader;
     }
 
-    public override async Task Execute(IBattleContext context)
+    public override async UniTask Execute(IBattleContext context)
     {
         // 実行前に全員健在かチェック
         bool allActive = Participants.All(e => e.IsAlive() && !e.IsDisabled());
@@ -29,13 +29,13 @@ public class GroupAttackEvent : BattleEvent
         int damagePerUnit = Mathf.RoundToInt(Leader.Strength);
         int totalDamage = Mathf.RoundToInt(damagePerUnit + GroupMultiplier);
 
-        context.Hero.TakeDamage(totalDamage);
+        await context.Hero.TakeDamageAsync(totalDamage);
     }
 
-    private async Task HandleGroupCancel(IHeroUnit player, IBattleContext context)
+    private async UniTask HandleGroupCancel(IHeroUnit player, IBattleContext context)
     {
         // 必ずリワード発生
-        player.GainMana(1);
+        await player.GainMana(1);
         await context.BattleSystem.Draw(1);
         // ここで「協調攻撃を阻止した」演出を入れると分かりやすい
     }

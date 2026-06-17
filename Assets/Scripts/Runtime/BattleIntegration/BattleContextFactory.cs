@@ -13,10 +13,8 @@ public static class BattleContextFactory
 
         foreach (var source in sources)
         {
-            ResourceRegistry registry = new ResourceRegistry();
-
             // 論理データ生成
-            CardObj cardObj = new NomalCardObj(source, registry, player);
+            CardObj cardObj = new NomalCardObj(source, source.SourceCost, player);
 
             deck.AddCard(cardObj);
         }

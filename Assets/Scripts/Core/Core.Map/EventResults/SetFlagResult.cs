@@ -1,4 +1,5 @@
 using UnityEngine;
+using Cysharp.Threading.Tasks;
 
 [CreateAssetMenu(menuName = "Events/Results/SetFlagResult")]
 public class SetFlagResult : EventResult
@@ -6,7 +7,7 @@ public class SetFlagResult : EventResult
     public string FlagToSet;
     public string FlagToRemove;
 
-    public override void Apply(IGameContext context, IFlagManager flags, EventOption option)
+    public override async UniTask Apply(IGameContext context, IFlagManager flags, EventOption option)
     {
         if (!string.IsNullOrEmpty(FlagToSet))
             flags.SetFlag(FlagToSet);

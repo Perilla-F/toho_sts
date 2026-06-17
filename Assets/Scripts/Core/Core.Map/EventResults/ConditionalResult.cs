@@ -1,4 +1,5 @@
 using UnityEngine;
+using Cysharp.Threading.Tasks;
 
 [CreateAssetMenu(menuName = "Events/Results/Conditional")]
 public class ConditionalResult : EventResult
@@ -11,17 +12,17 @@ public class ConditionalResult : EventResult
     [Header("条件が FALSE の場合")]
     public EventResult falseResult;
 
-    public override void Apply(IGameContext context, IFlagManager flags, EventOption option)
+    public override async UniTask Apply(IGameContext context, IFlagManager flags, EventOption option)
     {
         if (condition != null && condition.IsMet(context, flags))
         {
             if (trueResult != null)
-                trueResult.Apply(context, flags, option);
+                await trueResult.Apply(context, flags, option);
         }
         else
         {
             if (falseResult != null)
-                falseResult.Apply(context, flags, option);
+                await falseResult.Apply(context, flags, option);
         }
     }
 }

@@ -5,11 +5,13 @@ using UnityEngine.EventSystems;
 
 public class CardStateBase
 {
-    protected BattleCard _behaviour;
+    protected BattleCard _owner;
+    public virtual bool CanDrag => true;
+    public virtual bool Dragging => false;
 
-    public CardStateBase(BattleCard behaviour)
+    public CardStateBase(BattleCard owner)
     {
-        this._behaviour = behaviour;
+        _owner = owner;
     }
 
     public virtual void OnEnter() { }
@@ -18,8 +20,6 @@ public class CardStateBase
 
     public virtual void OnExit() { }
 
-    public virtual void OnClick() { }
-
     public virtual void OnPointerEnter(PointerEventData eventData)
     {
     }
@@ -27,4 +27,7 @@ public class CardStateBase
     public virtual void OnPointerExit(PointerEventData eventData)
     {
     }
+
+    public virtual void OnBeginDrag(PointerEventData eventData) { }
+
 }

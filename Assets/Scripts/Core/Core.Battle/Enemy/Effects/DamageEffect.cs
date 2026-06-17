@@ -1,11 +1,12 @@
 using UnityEngine;
+using Cysharp.Threading.Tasks;
 
 [CreateAssetMenu(menuName = "Effect/Damage")]
 public class DamageEffect : EnemyEffect
 {
-    public override void Apply(IBattleContext context, IEnemyUnit enemy, BattleUnit target)
+    public override async UniTask Apply(IBattleContext context, IEnemyUnit enemy, BattleUnit target)
     {
         int damage = amount + enemy.AttackBonus; // enemy のステータスで補正
-        target.TakeDamage(damage);
+        await target.TakeDamageAsync(damage);
     }
 }

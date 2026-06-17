@@ -7,10 +7,10 @@ using System;
 public class CardObj : ICardObj
 {
     public SourceCard Source { get; private set; }
+    public CardEffectTarget TargetType { get; private set; }
     public readonly ResourceRegistry ResourceRegistry;
     private readonly PlayerController _controller;
-    public int Delay;
-    public ICardView _view;
+    public int Delay { get; private set; }
 
     public CardObj(SourceCard source, ResourceRegistry resourceRegistry, PlayerController controller)
     {
@@ -18,28 +18,7 @@ public class CardObj : ICardObj
         ResourceRegistry = resourceRegistry;
         Delay = source.Data.Delay;
         _controller = controller;
-    }
-
-    public void BindView(ICardView cardView)
-    {
-        _view = cardView;
-    }
-
-    public async UniTask MoveToHand()
-    {
-        if (_view != null)
-            await _view.MoveToHandAsync();
-    }
-
-    public async UniTask MoveToDiscard()
-    {
-        if (_view != null)
-            await _view.MoveToDiscardAsync();
-    }
-
-    public void CardStateChange(CardStateName stateName)
-    {
-        EventBus<CardStateChangeEvent>.Publish(new CardStateChangeEvent(this, stateName));
+        TargetType = Source.Data.CardEffectTarget;
     }
 
     /// <summary>
@@ -51,18 +30,14 @@ public class CardObj : ICardObj
         return Source;
     }
 
-    public virtual async UniTask Use()
+    public virtual async UniTask Use(CardContext context)
     {
         await UniTask.CompletedTask;
     }
 
-    public void SetPreviewDelay()
+    public virtual bool Useable()
     {
-        _controller.SetPreviewDelay(Source.Data.Delay);
+        return false;
     }
 
-    public void ClearPreview()
-    {
-        _controller.ClearPreview();
-    }
 }

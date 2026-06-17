@@ -1,4 +1,5 @@
 using UnityEngine;
+using Cysharp.Threading.Tasks;
 
 [CreateAssetMenu(menuName = "Events/Results/HasFlag")]
 public class HasFlagResult : EventResult
@@ -7,7 +8,7 @@ public class HasFlagResult : EventResult
     public EventResult ifTrue;
     public EventResult ifFalse;
 
-    public override void Apply(IGameContext context, IFlagManager flagManager, EventOption option)
+    public override async UniTask Apply(IGameContext context, IFlagManager flagManager, EventOption option)
     {
         bool has = flagManager.HasFlag(flagName);
         Debug.Log($"Condition: {flagName} = {has}");

@@ -1,22 +1,55 @@
 using System.Collections.Generic;
 using UnityEngine;
+using Cysharp.Threading.Tasks;
+using System.Threading;
+using DG.Tweening;
 
 public class HandView : MonoBehaviour, IHandView
 {
-    private List<Behaviour> _cards = new List<Behaviour>();
+    [SerializeField] private float radius;
+
+    private List<BattleCard> _cards = new List<BattleCard>();
 
     public Transform GetTransform() => transform;
 
-    // 手札を整列させる
-    public void ArrangeCards()
+    /// <summary>
+    /// 手札を整列させる
+    /// </summary>
+    public async UniTask ArrangeCards(CancellationToken ct)
     {
+        ct.ThrowIfCancellationRequested();
+
+        float angleStep = Mathf.Min(5f, 60f / _cards.Count); ; // 1枚あたりの傾き
+
+        float totalAngle = angleStep * (_cards.Count - 1);
+        float startAngle = totalAngle / 2f;
         for (int i = 0; i < _cards.Count; i++)
         {
-            float center = (_cards.Count - 1) / 2.0f;
-            float interval = 100.0f;
-            float x = (i - center) * interval;
-            _cards[i].transform.localPosition = new Vector3(x, 0, 0);
+            float currentAngle = (i * angleStep) - startAngle;
+            // 円周上の位置を計算
+            float x = -Mathf.Sin(currentAngle * Mathf.Deg2Rad) * radius;
+            float y = Mathf.Cos(currentAngle * Mathf.Deg2Rad) * radius - radius;
+
+            Vector3 pos = new Vector3(x, y, 0);
+            int sibling = _cards.Count - i - 1;
+
+            _cards[i].SetLayoutPosition(pos, currentAngle, sibling);
         }
+        BattleEventBus.RestoreAllCards?.Invoke();
     }
 
+    public void AddCard(BattleCard card)
+    {
+        _cards.Add(card);
+    }
+
+    public void Discard(BattleCard card)
+    {
+        _cards.Remove(card);
+    }
+
+    public List<BattleCard> GetCards()
+    {
+        return _cards;
+    }
 }

@@ -3,30 +3,25 @@ using System.Collections.Generic;
 
 public class Hand : IHand
 {
-    public List<CardObj> Cards = new List<CardObj>();
-
-    public event Action OnChangedHand;
+    public List<ICardObj> Cards = new List<ICardObj>();
 
     public Hand()
     {
     }
 
-    public void AddCard(CardObj card)
+    public void AddCard(ICardObj card)
     {
         Cards.Add(card);
-        OnChangedHand?.Invoke();
     }
 
-    public void RemoveCard(CardObj card)
+    public void RemoveCard(ICardObj card)
     {
         Cards.Remove(card);
-        OnChangedHand?.Invoke();
     }
 
     public void Clear()
     {
         Cards.Clear();
-        OnChangedHand?.Invoke();
     }
 
 }

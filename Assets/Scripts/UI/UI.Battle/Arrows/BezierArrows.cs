@@ -31,7 +31,6 @@ public class BezierArrows : MonoBehaviour
     private void Awake()
     {
         Instance = this;
-        // origin = GetComponent<RectTransform>();
         for (int i = 0; i < arrowNodeNum; i++)
         {
             // Nodeを生成して、リストに追加
@@ -52,12 +51,15 @@ public class BezierArrows : MonoBehaviour
         }
 
         SetColor(new Color32(100, 100, 100, 255));
+        Hide();
     }
 
     public void Show()
     {
         gameObject.SetActive(true);
+        transform.SetAsLastSibling();
     }
+
     public void Hide()
     {
         gameObject.SetActive(false);
@@ -65,45 +67,55 @@ public class BezierArrows : MonoBehaviour
 
     private void Update()
     {
-        controlPoints[0] = origin;// new Vector2(origin.x, origin.position.y);
-        controlPoints[3] = top;// new Vector2(top.x, top.position.y);
+        controlPoints[0] = origin;
+        controlPoints[3] = top;
 
+        // 制御点の計算
         controlPoints[1] = controlPoints[0] + (controlPoints[3] - controlPoints[0]) * controlPointFactors[0];
         controlPoints[2] = controlPoints[0] + (controlPoints[3] - controlPoints[0]) * controlPointFactors[1];
 
         for (int i = 0; i < arrowNodes.Count; i++)
         {
-            float t = Mathf.Log(1f * i / (this.arrowNodes.Count - 1) + 1f, 2f);
+            float t = (float)i / (this.arrowNodes.Count - 1);
 
-            this.arrowNodes[i].position =
+            // 1. 位置の計算 (localPosition)
+            this.arrowNodes[i].localPosition =
                 Mathf.Pow(1 - t, 3) * controlPoints[0] +
                 3 * Mathf.Pow(1 - t, 2) * t * controlPoints[1] +
                 3 * (1 - t) * Mathf.Pow(t, 2) * controlPoints[2] +
                 Mathf.Pow(t, 3) * controlPoints[3];
 
+            // 2. 回転の計算 (localPositionベース)
             if (i > 0)
             {
-                var euler = new Vector3(0, 0, Vector2.SignedAngle(Vector2.up, arrowNodes[i].position - arrowNodes[i - 1].position));
-                arrowNodes[i].rotation = Quaternion.Euler(euler);
+                var diff = arrowNodes[i].localPosition - arrowNodes[i - 1].localPosition;
+                if (diff != Vector3.zero) // ゼロ除算防止
+                {
+                    var angle = Vector2.SignedAngle(Vector2.up, diff);
+                    arrowNodes[i].localRotation = Quaternion.Euler(0, 0, angle);
+                }
             }
 
+            // 3. スケールの計算
             var scale = scaleFactor * (1f - 0.03f * (arrowNodes.Count - 1 - i));
             arrowNodes[i].localScale = new Vector3(scale, scale, 1);
         }
 
-        this.arrowNodes[0].transform.rotation = arrowNodes[1].transform.rotation;
+        // 4. 根元の向きを2番目のノードに合わせる
+        if (arrowNodes.Count > 1)
+        {
+            arrowNodes[0].localRotation = arrowNodes[1].localRotation;
+        }
     }
 
     public void SetOriginPos(Vector3 pos)
     {
         origin = pos;
     }
+
     public void SetTopPos(Vector3 pos)
     {
-        // 少し左にずらす
-        // top = pos + new Vector3(-50, 0, 0);
         top = pos;
-        // Input.mousePosition.y
     }
 
     // 色を変える

@@ -1,14 +1,16 @@
+using Cysharp.Threading.Tasks;
+
 public class PoisonEffect : StatusEffect
 {
     public PoisonEffect(StatusEffectData data, int stacks, BattleUnit owner)
         : base(data, stacks, owner) { }
 
-    public override void OnTurnStart() { }
+    public override async UniTask OnTurnStart() { }
 
-    public override void OnTurnEnd()
+    public override async UniTask OnTurnEnd()
     {
         int damage = Stacks;
-        Owner.TakeDamage(damage);
+        await Owner.TakeDamageAsync(damage);
         RemoveStacks(1);
     }
 }

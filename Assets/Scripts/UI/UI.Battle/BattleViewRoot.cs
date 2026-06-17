@@ -1,4 +1,5 @@
 using UnityEngine;
+using Cysharp.Threading.Tasks;
 
 public class BattleViewRoot : MonoBehaviour
 {
@@ -10,12 +11,12 @@ public class BattleViewRoot : MonoBehaviour
     [SerializeField] public TurnMessagePanel TurnMessagePanel;
     [SerializeField] public TurnEndButton TurnEndButton;
 
-    public async void BattleStart()
+    public async UniTask BattleStart()
     {
         await TurnMessagePanel.ShowMessage("戦闘開始");
     }
 
-    public async void TurnStart(int turn)
+    public async UniTask TurnStart(int turn)
     {
         await TurnMessagePanel.ShowMessage("第" + turn + "巡目");
     }

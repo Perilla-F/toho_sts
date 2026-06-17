@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Cysharp.Threading.Tasks;
 
 public class NomalCardObj : CardObj
 {
@@ -11,15 +12,8 @@ public class NomalCardObj : CardObj
     {
     }
 
-    public bool Use(CardContext context)
+    public override async UniTask Use(CardContext context)
     {
-        foreach (var cost in Source.Data.Costs)
-        {
-            var res = ResourceRegistry.Get(cost.Type);
-            if (res == null || res.CurrentResource < cost.Amount)
-                return false; // どれか足りなければ中断
-        }
-
         foreach (var cost in Source.Data.Costs)
         {
             ResourceRegistry.Get(cost.Type)?.TryConsume(cost.Amount);
@@ -36,6 +30,21 @@ public class NomalCardObj : CardObj
                 target.Hit();   // 敵アニメーション
             }
         }
+        context.User.Attack();
+    }
+
+    public override bool Useable()
+    {
+        foreach (var cost in Source.Data.Costs)
+        {
+            var res = ResourceRegistry.Get(cost.Type);
+            if (res == null || res.CurrentResource < cost.Amount)
+            {
+                Debug.Log("Miss Using");
+                return false; // どれか足りなければ中断
+            }
+        }
+
         return true;
     }
 }

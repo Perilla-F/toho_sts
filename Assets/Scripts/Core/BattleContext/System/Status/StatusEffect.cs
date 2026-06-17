@@ -1,4 +1,5 @@
 using UnityEngine;
+using Cysharp.Threading.Tasks;
 
 public abstract class StatusEffect
 {
@@ -16,6 +17,6 @@ public abstract class StatusEffect
     public void AddStacks(int amount) => Stacks += amount;
     public void RemoveStacks(int amount) => Stacks = Mathf.Max(0, Stacks - amount);
 
-    public abstract void OnTurnStart();
-    public abstract void OnTurnEnd();
+    public abstract UniTask OnTurnStart();
+    public abstract UniTask OnTurnEnd();
 }

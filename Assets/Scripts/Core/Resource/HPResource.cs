@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using Cysharp.Threading.Tasks;
 
 public class HPResource : IResource
 {
@@ -33,7 +34,7 @@ public class HPResource : IResource
         return CurrentResource > 0;
     }
 
-    public void TakeDamage(int amount)
+    public async UniTask TakeDamage(int amount)
     {
         int remainedDamage = 0;
         remainedDamage = ReceiveSimpleBlock(amount);
@@ -83,25 +84,25 @@ public class HPResource : IResource
         return true;
     }
 
-    public void Gain(int amount)
+    public async UniTask Gain(int amount)
     {
         Mathf.Min(MaxHP, CurrentResource + amount);
         OnChanged?.Invoke();
     }
 
-    public void LoseHP(int amount)
+    public async UniTask LoseHP(int amount)
     {
         CurrentResource = Mathf.Max(0, CurrentResource - amount);
         OnChanged?.Invoke();
     }
 
-    public void ApplySimpleBlock(int amount)
+    public async UniTask ApplySimpleBlock(int amount)
     {
         SimpleBlock += amount;
         OnChanged?.Invoke();
     }
 
-    public void ApplyBlock(int amount)
+    public async UniTask ApplyBlock(int amount)
     {
         Block += amount;
         OnChanged?.Invoke();

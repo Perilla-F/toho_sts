@@ -49,8 +49,11 @@ public class EnemyUI : MonoBehaviour, IBattleUI
 
     public void Highlight(bool active, int number)
     {
-        var actionIcon = actionList.FirstOrDefault(l => l.number == number);
-        actionIcon.HighlightIcon(active);
+        if (actionList.Count() > 0)
+        {
+            var actionIcon = actionList.FirstOrDefault(l => l.number == number);
+            actionIcon.HighlightIcon(active);
+        }
     }
 
     public void ShowDamageEffect(float duration)

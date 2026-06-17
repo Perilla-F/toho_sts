@@ -13,8 +13,12 @@ MonoBehaviour:
   m_Name: FearEffect
   m_EditorClassIdentifier: 
   effectId: Fear
-  className: Fear
+  className: FearEffect
   displayName: "\u6050\u6016"
-  icon: {fileID: 0}
-  description: 
+  iconRef:
+    m_AssetGUID: 0b5b507ca61d2a54daf97fae4c18fc8d
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_EditorAssetChanged: 0
+  description: "\u4E0E\u30C0\u30E1\u30FC\u30B8\u304C75%\u306B\u306A\u308B"
   isBuff: 0

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
+using Cysharp.Threading.Tasks;
 
 public class EnemyUnit : IEnemyUnit
 {
@@ -25,27 +26,29 @@ public class EnemyUnit : IEnemyUnit
         IdleClip = data.IdleClip;
         AttackClip = data.AttackClip;
         HitClip = data.HitClip;
+
+        Effects = new List<StatusEffect>();
     }
 
 
-    public override void TakeDamage(int amount)
+    public override async UniTask TakeDamageAsync(int amount)
     {
-        HPResource.TakeDamage(amount);
+        await HPResource.TakeDamage(amount);
     }
 
-    public override void Heal(int amount)
+    public override async UniTask Heal(int amount)
     {
-        HPResource.Gain(amount);
+        await HPResource.Gain(amount);
     }
 
-    public override void ApplyBlock(int amount)
+    public override async UniTask ApplyBlock(int amount)
     {
-        HPResource.ApplyBlock(amount);
+        await HPResource.ApplyBlock(amount);
     }
 
-    public override void ApplySimpleBlock(int amount)
+    public override async UniTask ApplySimpleBlock(int amount)
     {
-        HPResource.ApplySimpleBlock(amount);
+        await HPResource.ApplySimpleBlock(amount);
     }
 
     public override int GetAttackBonus()

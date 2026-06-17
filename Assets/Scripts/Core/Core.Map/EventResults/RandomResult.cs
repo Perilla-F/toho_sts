@@ -1,4 +1,5 @@
 using UnityEngine;
+using Cysharp.Threading.Tasks;
 
 [CreateAssetMenu(menuName = "Events/Results/Random")]
 public class RandomResult : EventResult
@@ -12,10 +13,10 @@ public class RandomResult : EventResult
 
     public RandomEntry[] entries;
 
-    public override void Apply(IGameContext context, IFlagManager flags, EventOption option)
+    public override async UniTask Apply(IGameContext context, IFlagManager flags, EventOption option)
     {
         EventResult chosen = ChooseRandomResult();
-        chosen.Apply(context, flags, option); // 選ばれた結果を実行
+        await chosen.Apply(context, flags, option); // 選ばれた結果を実行
     }
 
     private EventResult ChooseRandomResult()

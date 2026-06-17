@@ -1,19 +1,21 @@
-using System.Threading.Tasks;
+using Cysharp.Threading.Tasks;
 
 public class PlayerActionEvent : BattleEvent
 {
-    private ICardObj Card;
+    public readonly ICardObj Card;
+    private readonly CardContext cardContext;
 
-    public PlayerActionEvent(IHeroUnit hero, ICardObj card, int scheduledTime)
+    public PlayerActionEvent(IHeroUnit hero, ICardObj card, CardContext cardContext, int scheduledTime)
         : base(scheduledTime, priority: 0)
     {
         Hero = hero;
         Card = card;
+        this.cardContext = cardContext;
         Type = EventType.Player;
     }
 
-    public async override Task Execute(IBattleContext context)
+    public async override UniTask Execute(IBattleContext context)
     {
-        await Card.Use();
+        await Card.Use(cardContext);
     }
 }

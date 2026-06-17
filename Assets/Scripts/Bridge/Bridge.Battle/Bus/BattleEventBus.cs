@@ -8,27 +8,35 @@ using UnityEngine;
 /// </summary>
 public static class BattleEventBus
 {
-    // ----------------------------------------------------
-    // 1. 行動決定に関するイベント（System -> UI）
-    // ----------------------------------------------------
-
     /// <summary>
     /// 敵・味方全ての次ターンの行動が決定し、タイムラインが構築された時に発行されるイベント。
     /// </summary>
     public static Action<List<BattleEvent>> OnActionsDecided;
 
-    // ----------------------------------------------------
-    // 2. 行動実行に関するイベント（System -> UI）
-    // ----------------------------------------------------
+    /// <summary>
+    /// UI上のカードがホバーされた時に発行されるイベント
+    /// </summary>
+    public static Action<ICardObj> OnCardHovered;
+
+    /// <summary>
+    /// UI上のカードがホバー解除された時に発行されるイベント
+    /// </summary>
+    public static Action OnCardExited;
+
+    /// <summary>
+    /// UI上のカードがアクティブ化した時に発行されるイベント
+    /// </summary>
+    public static Action<ICardObj> OnCardActive;
+
+    /// <summary>
+    /// 全カードを待機状態にする時に発行されるイベント
+    /// </summary>
+    public static Action RestoreAllCards;
 
     /// <summary>
     /// タイムライン上の行動が実行された時に発行されるイベント。
     /// </summary>
     public static Action<BattleEvent> OnActionExecuted;
-
-    // ----------------------------------------------------
-    // 3. バトル終了に関するイベント（System -> UI）
-    // ----------------------------------------------------
 
     /// <summary>
     /// バトルが終了した時に発行されるイベント。

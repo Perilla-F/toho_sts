@@ -13,8 +13,12 @@ MonoBehaviour:
   m_Name: PoisonEffectData
   m_EditorClassIdentifier: 
   effectId: Poison
-  className: Poison
+  className: PoisonEffect
   displayName: "\u6BD2"
-  icon: {fileID: 0}
-  description: 
+  iconRef:
+    m_AssetGUID: 8711099639a831d4bb8587cae11c67a5
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_EditorAssetChanged: 0
+  description: "\u30BF\u30FC\u30F3\u7D42\u4E86\u6642\u306B\u30B9\u30BF\u30C3\u30AF\u6570\u5206\u306E\u30C0\u30E1\u30FC\u30B8\u3092\u53D7\u3051\u308B"
   isBuff: 0

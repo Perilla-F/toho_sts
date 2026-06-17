@@ -4,7 +4,9 @@ using UnityEngine;
 
 public class CardDraggingState : CardStateBase
 {
-    public CardDraggingState(BattleCard behaviour) : base(behaviour)
+    public override bool Dragging => true;
+
+    public CardDraggingState(BattleCard owner) : base(owner)
     {
     }
 
@@ -15,16 +17,15 @@ public class CardDraggingState : CardStateBase
 
     public override void OnUpdate()
     {
-        _behaviour.transform.position = Input.mousePosition;
+        Vector2 mousePos = _owner.GetMouseCanvasPos();
+        _owner.transform.localPosition = Vector2.Lerp(_owner.transform.localPosition, mousePos, 0.3f);
+        if (mousePos.y > _owner.thresholdY)
+        {
+            _owner.ChangeState(new CardTargetingState(_owner, true));
+        }
         if (Input.GetMouseButtonDown(1))
         {
-            _behaviour.ResetPos();
-            _behaviour.ChangeState(_behaviour.WaitState);
-        }
-
-        if (_behaviour.transform.localPosition.y > 100)
-        {
-            _behaviour.ChangeState(_behaviour.SelectedState);
+            _owner.ResetPos();
         }
     }
 }

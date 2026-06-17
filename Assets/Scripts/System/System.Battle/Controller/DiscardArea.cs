@@ -4,16 +4,18 @@ using System.Collections.Generic;
 
 public class DiscardArea : IDiscardArea
 {
-    private List<CardObj> _discardedCards;
+    private List<ICardObj> _discardedCards;
 
     public event Action<int> OnChangedDiscardCount;
 
+    public int Count => _discardedCards.Count;
+
     public DiscardArea()
     {
-        _discardedCards = new List<CardObj>();
+        _discardedCards = new List<ICardObj>();
     }
 
-    public void AddCard(CardObj cardObj)
+    public void AddCard(ICardObj cardObj)
     {
         _discardedCards.Add(cardObj);
         OnChangedDiscardCount?.Invoke(_discardedCards.Count);
@@ -25,7 +27,7 @@ public class DiscardArea : IDiscardArea
         OnChangedDiscardCount?.Invoke(_discardedCards.Count);
     }
 
-    public List<CardObj> GetDiscardPile()
+    public List<ICardObj> GetDiscardPile()
     {
         return _discardedCards;
     }

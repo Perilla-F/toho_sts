@@ -7,10 +7,7 @@ public class DiscardAreaView : MonoBehaviour, IDiscardAreaView
 {
     [SerializeField] private TextMeshProUGUI _discordCountText;
 
-    public Transform GetTransform()
-    {
-        return transform;
-    }
+    public Transform GetTransform() => transform;
 
     public void UpdateDiscardCount(int count)
     {

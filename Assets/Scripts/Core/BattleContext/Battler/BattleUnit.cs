@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using Cysharp.Threading.Tasks;
 
 public abstract class BattleUnit
 {
@@ -13,7 +14,7 @@ public abstract class BattleUnit
     public int AttackBonus = 0;
     public int DefenceBonus = 0;
     public List<string> Status = new List<string>();
-    public List<StatusEffect> Effects { get; }
+    public List<StatusEffect> Effects { get; set; }
 
     public GameObject UIPrefab;    // HPバーなどのUIPrefab
     public GameObject ModelPrefab;  // Live2DモデルPrefab
@@ -34,10 +35,10 @@ public abstract class BattleUnit
     // public delegate void HpChanged(int newHp);
     // public event HpChanged OnHpChanged;
 
-    public abstract void TakeDamage(int amount);
-    public abstract void Heal(int amount);
-    public abstract void ApplyBlock(int amount);
-    public abstract void ApplySimpleBlock(int amount);
+    public abstract UniTask TakeDamageAsync(int amount);
+    public abstract UniTask Heal(int amount);
+    public abstract UniTask ApplyBlock(int amount);
+    public abstract UniTask ApplySimpleBlock(int amount);
     public abstract int GetAttackBonus();
     public abstract int GetDefenceBonus();
     public abstract void AddEffect(StatusEffectData effect, int stacks);

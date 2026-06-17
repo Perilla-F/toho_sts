@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using Cysharp.Threading.Tasks;
 
 public abstract class EnemyAction : ScriptableObject
 {
@@ -9,5 +10,5 @@ public abstract class EnemyAction : ScriptableObject
     public int ScheduledTime;
     public bool IsCanceled;
 
-    public abstract void Execute(IBattleContext context, IEnemyUnit enemy);
+    public abstract UniTask Execute(IBattleContext context, IEnemyUnit enemy);
 }

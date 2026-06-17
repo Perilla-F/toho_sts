@@ -3,7 +3,7 @@ using Cysharp.Threading.Tasks;
 using System.Threading;
 using DG.Tweening;
 
-public class HandUIManager : ICardUIHandler
+public class HandUIManager
 {
     private BattleViewRoot view;
 
@@ -12,6 +12,8 @@ public class HandUIManager : ICardUIHandler
     public HandUIManager(BattleViewRoot view)
     {
         this.view = view;
+
+        BattleEventBus.RestoreAllCards += RestoreAllCards;
     }
 
     public void Setup(ICardPoolProvider pool)
@@ -19,31 +21,63 @@ public class HandUIManager : ICardUIHandler
         this.pool = pool;
     }
 
-    public async UniTask PlayDrawAnimationAsync(DrawEventData data, CancellationToken ct)
+    public BattleCard CreateCardUI(ICardObj cardData)
     {
-        var card = pool.GetCard();
-
-        card.BindCard(data.cardObj);
-
-        // card(IPoolableCard)をBattleCardにキャスト
-        if (card is MonoBehaviour mono)
+        var card = pool.GetCard();// card(IPoolableCard)をBattleCardにキャスト
+        if (card is BattleCard mono)
         {
-            mono.transform.position = view.DeckView.GetTransform().position;
-
-            // 手札の目標座標を計算
-            Vector3 zero = Vector3.zero;
-            // Vector3 targetPos = CalculatePos(data.drawIndex);
-
-            // DOTweenをUniTaskに変換して、移動が終わるまでここで待機する
-            await mono.transform.DOMove(zero, 0.5f)
-                .SetEase(Ease.OutCubic)
-                .ToUniTask(cancellationToken: ct);
-
+            mono.transform.SetParent(view.HandView.transform, false);
+            mono.transform.localScale = Vector3.one;
+            card.BindCard(cardData);
+            return mono;
         }
-
-        // 移動が終わった後にさらに何か演出を入れることも可能
-        Debug.Log($"{data.cardObj.Source.Data.CardName} の移動完了！");
+        return null;
     }
 
-    public async UniTask PlayDiscardAnimationAsync(DiscardEventData data, CancellationToken ct) { }
+    public async UniTask PlayDrawAnimationAsync(BattleCard card, CancellationToken ct)
+    {
+        card.transform.SetParent(view.HandView.transform, false);
+        card.transform.localScale = Vector3.zero;
+
+        card.transform.position = view.DeckView.GetTransform().position;
+
+        view.HandView.AddCard(card);
+        card.ChangeState(new CardBusyState(card));
+        await view.HandView.ArrangeCards(ct);
+    }
+
+    public async UniTask PlayDiscardAnimationAsync(BattleCard card, CancellationToken ct)
+    {
+        view.HandView.Discard(card);
+
+        var arrangeTask = view.HandView.ArrangeCards(ct);
+
+        var moveTask = card.transform
+            .DOMove(view.DiscardAreaView.GetTransform().position, 0.3f)
+            .SetEase(Ease.OutCubic)
+            .WithCancellation(ct);
+
+        var scaleTask = card.transform
+            .DOScale(Vector3.zero, 0.3f)
+            .WithCancellation(ct);
+
+        await UniTask.WhenAll(moveTask, scaleTask);
+
+        pool.ReturnCard(card);
+
+        await arrangeTask;
+    }
+
+    public void RestoreAllCards()
+    {
+        foreach (var card in view.HandView.GetCards())
+        {
+            card.ChangeState(new CardRestState(card));
+        }
+    }
+
+    private void OnDestroy()
+    {
+        BattleEventBus.RestoreAllCards -= RestoreAllCards;
+    }
 }

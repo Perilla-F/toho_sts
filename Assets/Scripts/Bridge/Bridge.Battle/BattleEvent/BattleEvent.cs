@@ -2,6 +2,7 @@ using System.Collections;
 using System.Threading.Tasks;
 using System;
 using UnityEngine;
+using Cysharp.Threading.Tasks;
 
 public abstract class BattleEvent : IBattleEvent
 {
@@ -22,6 +23,6 @@ public abstract class BattleEvent : IBattleEvent
         IsFinished = false;
     }
 
-    public abstract Task Execute(IBattleContext context);
+    public abstract UniTask Execute(IBattleContext context);
 
 }

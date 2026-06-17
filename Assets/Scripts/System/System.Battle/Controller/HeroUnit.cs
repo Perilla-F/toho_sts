@@ -1,7 +1,9 @@
 using System;
+using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Cysharp.Threading.Tasks;
 
 public class HeroUnit : IHeroUnit
 {
@@ -26,26 +28,28 @@ public class HeroUnit : IHeroUnit
         IdleClip = heroBattler.BaseData.IdleClip;
         AttackClip = heroBattler.BaseData.AttackClip;
         HitClip = heroBattler.BaseData.HitClip;
+
+        Effects = new List<StatusEffect>();
     }
 
-    public override void TakeDamage(int amount)
+    public override async UniTask TakeDamageAsync(int amount)
     {
-        HPResource.TakeDamage(amount);
+        await HPResource.TakeDamage(amount);
     }
 
-    public override void Heal(int amount)
+    public override async UniTask Heal(int amount)
     {
-        HPResource.Gain(amount);
+        await HPResource.Gain(amount);
     }
 
-    public override void ApplyBlock(int amount)
+    public override async UniTask ApplyBlock(int amount)
     {
-        HPResource.ApplyBlock(amount);
+        await HPResource.ApplyBlock(amount);
     }
 
-    public override void ApplySimpleBlock(int amount)
+    public override async UniTask ApplySimpleBlock(int amount)
     {
-        HPResource.ApplySimpleBlock(amount);
+        await HPResource.ApplySimpleBlock(amount);
     }
 
     public override int GetAttackBonus()
@@ -65,7 +69,7 @@ public class HeroUnit : IHeroUnit
 
     public override void AddEffect(StatusEffectData data, int stacks)
     {
-        var existing = Effects.Find(e => e.Data.effectId == data.effectId);
+        var existing = Effects.FirstOrDefault(e => e.Data.effectId == data.effectId);
         if (existing != null)
         {
             existing.AddStacks(stacks);
@@ -82,9 +86,9 @@ public class HeroUnit : IHeroUnit
         return Effects.Find(e => e.Data.effectId == data.effectId) != null;
     }
 
-    public override void GainMana(int amount)
+    public override async UniTask GainMana(int amount)
     {
-        Mana.Gain(amount);
+        await Mana.Gain(amount);
     }
 
     public override bool IsAlive()

@@ -1,15 +1,17 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
+using Cysharp.Threading.Tasks;
 
 [CreateAssetMenu(menuName = "CardEffect/Damage")]
 public class CardDamageEffect : CardEffectDefinition
 {
-    public override void Apply(int amount, CardContext context)
+    public override async UniTask Apply(int amount, CardContext context)
     {
-        List<BattleUnit> Targets = context.Targets;
-        foreach (var target in Targets)
+        foreach (var target in context.Targets)
         {
-            target.TakeDamage(amount);
+            int finalDamage = context.BattleSystem.CalculateDamage(context.User, target, amount);
+            await target.TakeDamageAsync(finalDamage);
         }
     }
 }
