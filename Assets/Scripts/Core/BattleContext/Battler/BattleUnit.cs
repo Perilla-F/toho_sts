@@ -41,8 +41,8 @@ public abstract class BattleUnit
     public abstract UniTask ApplySimpleBlock(int amount);
     public abstract int GetAttackBonus();
     public abstract int GetDefenceBonus();
-    public abstract void AddEffect(StatusEffectData effect, int stacks);
-    public abstract bool HasStatus(StatusEffectData data);
+    public abstract UniTask AddEffect(EffectData effect, int stacks);
+    public abstract bool HasStatus(EffectData data);
     public abstract bool IsAlive();
     public abstract bool IsDisabled();
     public abstract void ProcessTurnStart();

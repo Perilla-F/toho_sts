@@ -67,9 +67,9 @@ public class HeroUnit : IHeroUnit
         AttackBonus += amount;
     }
 
-    public override void AddEffect(StatusEffectData data, int stacks)
+    public override async UniTask AddEffect(EffectData data, int stacks)
     {
-        var existing = Effects.FirstOrDefault(e => e.Data.effectId == data.effectId);
+        var existing = Effects.FirstOrDefault(e => e.Data.EffectId == data.EffectId);
         if (existing != null)
         {
             existing.AddStacks(stacks);
@@ -81,9 +81,9 @@ public class HeroUnit : IHeroUnit
         }
     }
 
-    public override bool HasStatus(StatusEffectData data)
+    public override bool HasStatus(EffectData data)
     {
-        return Effects.Find(e => e.Data.effectId == data.effectId) != null;
+        return Effects.Find(e => e.Data.EffectId == data.EffectId) != null;
     }
 
     public override async UniTask GainMana(int amount)

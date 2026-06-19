@@ -1,8 +1,9 @@
 using Cysharp.Threading.Tasks;
+using UnityEngine;
 
 public class PoisonEffect : StatusEffect
 {
-    public PoisonEffect(StatusEffectData data, int stacks, BattleUnit owner)
+    public PoisonEffect(EffectData data, int stacks, BattleUnit owner)
         : base(data, stacks, owner) { }
 
     public override async UniTask OnTurnStart() { }

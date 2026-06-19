@@ -9,16 +9,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 62713a0a0a8b7b74a9486de62f02c741, type: 3}
+  m_Script: {fileID: 11500000, guid: f4701d68016728b40b31e3397153a5fe, type: 3}
   m_Name: PoisonEffectData
   m_EditorClassIdentifier: 
-  effectId: Poison
-  className: PoisonEffect
-  displayName: "\u6BD2"
-  iconRef:
+  EffectId: poison
+  ClassName: PoisonEffect
+  DisplayName: "\u6BD2"
+  IconRef:
     m_AssetGUID: 8711099639a831d4bb8587cae11c67a5
     m_SubObjectName: 
     m_SubObjectType: 
     m_EditorAssetChanged: 0
-  description: "\u30BF\u30FC\u30F3\u7D42\u4E86\u6642\u306B\u30B9\u30BF\u30C3\u30AF\u6570\u5206\u306E\u30C0\u30E1\u30FC\u30B8\u3092\u53D7\u3051\u308B"
+  Description: "\u30BF\u30FC\u30F3\u7D42\u4E86\u6642\u306B\u30B9\u30BF\u30C3\u30AF\u5206\u306E\u30C0\u30E1\u30FC\u30B8\u3001\u30B9\u30BF\u30C3\u30AF1\u6E1B\u5C11"
   isBuff: 0

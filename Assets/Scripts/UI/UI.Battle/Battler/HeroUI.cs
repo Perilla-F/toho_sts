@@ -32,7 +32,7 @@ public class HeroUI : MonoBehaviour, IBattleUI
 
     public void UpdateBuffIcon(StatusEffect data)
     {
-        var buffIcon = buffList.FirstOrDefault(l => l.effect.Data.effectId == data.Data.effectId);
+        var buffIcon = buffList.FirstOrDefault(l => l.effect.Data.EffectId == data.Data.EffectId);
         buffIcon.UpdateIcon(data);
     }
 

@@ -16,7 +16,7 @@ public class PlayerController
 
     public Action<CancellationToken> ActionTurnEnd;
     private UniTaskCompletionSource _actionChoiceSource;
-    private UniTaskCompletionSource _turnEndSource;
+    private UniTaskCompletionSource<bool> _turnEndSource;
 
     public PlayerController(TimelineManager timeline)
     {
@@ -38,14 +38,6 @@ public class PlayerController
         await _actionChoiceSource.Task;
     }
 
-    // BattleManagerがカード使用を検知したとき
-    public void SetChosenAction(ICardObj card, CardContext context)
-    {
-        ChosenCard = card;
-        CardContext = context;
-        _actionChoiceSource?.TrySetResult();
-    }
-
     /// <summary>
     /// 行動確定時処理
     /// </summary>
@@ -55,18 +47,10 @@ public class PlayerController
         ChosenCard = null;
     }
 
-    /// <summary>
-    /// ターン終了ボタン押下状態
-    /// </summary>
-    public void TurnEndButton()
-    {
-        TurnEndRequested = true;
-    }
-
     public async UniTask WaitForTurnEndAsync(CancellationToken ct)
     {
         // 新しい待ち受け箱を作る
-        _turnEndSource = new UniTaskCompletionSource();
+        _turnEndSource = new UniTaskCompletionSource<bool>();
 
         // 箱に結果が入るまで、ここで非同期に待機する
         await _turnEndSource.Task;
@@ -76,7 +60,8 @@ public class PlayerController
     {
         // 「ターン終了ボタンが押された」という結果を箱に入れる
         // これにより、WaitForTurnEndAsync の await が解除される
-        _turnEndSource?.TrySetResult();
+        TurnEndRequested = true;
+        _turnEndSource?.TrySetResult(true);
     }
 
     public void EndSelection()

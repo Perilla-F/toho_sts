@@ -3,11 +3,11 @@ using Cysharp.Threading.Tasks;
 
 public abstract class StatusEffect
 {
-    public StatusEffectData Data { get; private set; }
+    public EffectData Data { get; private set; }
     public int Stacks { get; private set; }
     protected BattleUnit Owner { get; private set; }
 
-    protected StatusEffect(StatusEffectData data, int initialStacks, BattleUnit owner)
+    protected StatusEffect(EffectData data, int initialStacks, BattleUnit owner)
     {
         Data = data;
         Stacks = initialStacks;

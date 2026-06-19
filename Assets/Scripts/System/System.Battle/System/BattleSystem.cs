@@ -22,10 +22,12 @@ public class BattleSystem : MonoBehaviour, IBattleSystem
 
     private CancellationToken _ct;
 
-    public event Action BattleStart;
-    public event Action<int> OnTurnStart;
+    public event Action<int, CancellationToken> OnTurnStart;
+    public event Action<CancellationToken> OnCompleteTurnStartFlow;
+    public event Action<CancellationToken> OnTurnEnd;
     public event Action<ICardObj, CancellationToken> OnCardDrawn;
     public event Action<ICardObj, CancellationToken> OnDiscard;
+    public event Action<CancellationToken> OnDiscardHand;
     public event Action<PlayerActionEvent, CancellationToken> OnConfirmCardEvent;
 
     public void Setup(BattleContext context, HeroUnit heroUnit, GameManager gameManager, EnemyManager enemy, PlayerController player, TimelineManager timelineManager, IAudioManager audioService)
@@ -48,13 +50,13 @@ public class BattleSystem : MonoBehaviour, IBattleSystem
     /// バトル開始処理
     /// </summary>
     /// <returns></returns>
-    public async UniTask StartBattle()
+    public void StartBattle()
     {
         try
         {
-            BattleStart?.Invoke();
+            UnityEngine.Debug.Log("Battle Start!");
             BattleContext.Deck.Shuffle();
-            await BattleLoop(_ct);
+            TurnStart(_ct);
         }
         catch (OperationCanceledException)
         {
@@ -83,41 +85,27 @@ public class BattleSystem : MonoBehaviour, IBattleSystem
     }
 
     /// <summary>
-    /// バトルプロセス
-    /// </summary>
-    /// <returns></returns>
-    private async UniTask BattleLoop(CancellationToken ct)
-    {
-        UnityEngine.Debug.Log("Battle Start!");
-        while (true)
-        {
-            await TurnStart(ct);
-            await PlayerSelectPhase(ct);
-            await TurnEnd();
-        }
-    }
-
-    /// <summary>
     /// ターン開始処理
     /// </summary>
     /// <returns></returns>
-    private async UniTask TurnStart(CancellationToken ct)
+    public async void TurnStart(CancellationToken ct)
     {
         phase = BattlePhase.TurnStart;
         Debug.Log("=== Turn Start ===");
 
-        OnTurnStart?.Invoke(TurnCount);
+        OnTurnStart?.Invoke(TurnCount, ct);
         Hero.Mana.RefleshMana();
 
         AddActionToTimeline();
         await Draw(Hero.DrawCount);
+        OnCompleteTurnStartFlow?.Invoke(ct);
     }
 
     /// <summary>
     /// プレイヤー行動選択中
     /// </summary>
     /// <returns></returns>
-    private async UniTask PlayerSelectPhase(CancellationToken ct)
+    public async UniTask PlayerSelectPhase(CancellationToken ct)
     {
         phase = BattlePhase.PlayerSelect;
         Debug.Log("=== Player Select Phase ===");
@@ -160,8 +148,6 @@ public class BattleSystem : MonoBehaviour, IBattleSystem
         }
 
         // ターン終了ボタン押下後
-        _player.EndSelection(); // UIを閉じる
-
         // タイムラインに残ったすべてのイベント（主に敵の行動など）を消化
         while (_timelineManager.HasEvents())
         {
@@ -170,7 +156,7 @@ public class BattleSystem : MonoBehaviour, IBattleSystem
         }
 
         // ターン終了処理へ
-        await TurnEnd();
+        OnTurnEnd?.Invoke(ct);
     }
 
     /// <summary>
@@ -195,18 +181,12 @@ public class BattleSystem : MonoBehaviour, IBattleSystem
     /// ターン終了処理
     /// </summary>
     /// <returns></returns>
-    private async UniTask TurnEnd()
+    public async void TurnEnd()
     {
         phase = BattlePhase.TurnEnd;
         Debug.Log("=== Turn End ===");
 
-        await DiscardHandAsync();
         TurnCount++;
-    }
-
-    public async UniTask Draw(int count)
-    {
-        await DrawMultipleAsync(count, _ct);
     }
 
     /// <summary>
@@ -219,14 +199,23 @@ public class BattleSystem : MonoBehaviour, IBattleSystem
     public int CalculateDamage(BattleUnit user, BattleUnit target, int value)
     {
         var damage = user.AttackBonus + value;
-        if (target.Effects.Exists(e => e.Data.effectId == "broken")) damage += damage / 2;
+        if (target.Effects.Exists(e => e.Data.EffectId == "broken")) damage += damage / 2;
         return damage;
+    }
+
+    public async UniTask Draw(int count)
+    {
+        await DrawMultipleAsync(count, _ct);
     }
 
     private async UniTask DrawMultipleAsync(int count, CancellationToken ct)
     {
         for (int i = 0; i < count; i++)
         {
+            if (BattleContext.Deck.IsEmpty())
+            {
+                BattleContext.Discard.ShuffleBackInto(BattleContext.Deck);
+            }
             var card = BattleContext.Deck.Draw();
             BattleContext.Hand.AddCard(card);
 
@@ -243,19 +232,9 @@ public class BattleSystem : MonoBehaviour, IBattleSystem
         OnDiscard?.Invoke(card, ct);
     }
 
-    /// <summary>
-    /// 手札を全て捨て札へ送る
-    /// </summary>
-    /// <returns></returns>
-    public async UniTask DiscardHandAsync()
+    public void DiscardHand()
     {
-        var cardsToDiscard = BattleContext.Hand.Cards.ToList();
-
-        foreach (var card in cardsToDiscard)
-        {
-            await DiscardAsync(card, _ct);
-            await UniTask.Delay(TimeSpan.FromSeconds(0.05f), cancellationToken: _ct);
-        }
+        OnDiscardHand(_ct);
     }
 
     /// <summary>

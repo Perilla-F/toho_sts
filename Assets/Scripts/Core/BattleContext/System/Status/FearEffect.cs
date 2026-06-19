@@ -1,8 +1,10 @@
 using Cysharp.Threading.Tasks;
+using UnityEngine;
 
+[CreateAssetMenu(menuName = "StatusEffect/Fear")]
 public class FearEffect : StatusEffect
 {
-    public FearEffect(StatusEffectData data, int stacks, BattleUnit owner)
+    public FearEffect(EffectData data, int stacks, BattleUnit owner)
         : base(data, stacks, owner) { }
 
     public override async UniTask OnTurnStart() { }

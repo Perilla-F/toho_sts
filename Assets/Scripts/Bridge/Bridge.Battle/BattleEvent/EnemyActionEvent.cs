@@ -3,7 +3,7 @@ using Cysharp.Threading.Tasks;
 
 public class EnemyActionEvent : BattleEvent, IEnemyActionEvent
 {
-    private EnemyAction action;
+    public EnemyAction action;
 
     public EnemyActionEvent(IEnemyUnit enemy, EnemyAction action, int scheduledTime, int priority)
         : base(scheduledTime, priority)

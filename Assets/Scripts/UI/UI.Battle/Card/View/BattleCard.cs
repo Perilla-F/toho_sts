@@ -78,14 +78,6 @@ public class BattleCard : MonoBehaviour, IPoolableCard, IPointerEnterHandler, IP
 
     public void ResetPos()
     {
-        if (EventSystem.current.currentSelectedGameObject == this.gameObject ||
-        EventSystem.current.IsPointerOverGameObject())
-        {
-            EventSystem.current.SetSelectedGameObject(null);
-        }
-
-        ChangeState(new CardBusyState(this));
-        BattleEventBus.OnCardExited?.Invoke();
         transform.DOKill();
         transform.localRotation = Quaternion.Euler(0, 0, _layoutRotation);
         transform.DOLocalMove(_layoutPosition, 0.1f).SetEase(Ease.OutCubic);
@@ -94,6 +86,12 @@ public class BattleCard : MonoBehaviour, IPoolableCard, IPointerEnterHandler, IP
         transform.DOScale(Vector3.one, 0.1f);
         BezierArrows.Instance.Hide();
         BattleEventBus.RestoreAllCards?.Invoke();
+        if (EventSystem.current.currentSelectedGameObject == this.gameObject ||
+        EventSystem.current.IsPointerOverGameObject())
+        {
+            EventSystem.current.SetSelectedGameObject(null);
+            CardHover();
+        }
     }
 
     /// <summary>

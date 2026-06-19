@@ -76,20 +76,12 @@ public class EnemyUnit : IEnemyUnit
         }
 
         EnemyAction[] actions = _enemyAI.DecideActionPattern(context, this, turnCounter);
-        switch (actions)
-        {
-            case NormalAction[] ns:
-                EnemyUIEventChannel.OnEventPlaned(ns);
-                break;
-            default:
-                break;
-        }
         return actions;
     }
 
-    public override void AddEffect(StatusEffectData data, int stacks)
+    public override async UniTask AddEffect(EffectData data, int stacks)
     {
-        var existing = Effects.Find(e => e.Data.effectId == data.effectId);
+        var existing = Effects.Find(e => e.Data.EffectId == data.EffectId);
         if (existing != null)
         {
             existing.AddStacks(stacks);
@@ -103,9 +95,9 @@ public class EnemyUnit : IEnemyUnit
         }
     }
 
-    public override bool HasStatus(StatusEffectData data)
+    public override bool HasStatus(EffectData data)
     {
-        return Effects.Find(e => e.Data.effectId == data.effectId) != null;
+        return Effects.Find(e => e.Data.EffectId == data.EffectId) != null;
     }
 
     public override bool IsAlive()

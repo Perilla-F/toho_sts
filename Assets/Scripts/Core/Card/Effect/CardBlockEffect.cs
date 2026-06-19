@@ -6,6 +6,6 @@ public class CardBlockEffect : CardEffectDefinition
 {
     public override async UniTask Apply(int amount, CardContext context)
     {
-        context.User.ApplyBlock(amount);
+        await context.User.ApplyBlock(amount);
     }
 }

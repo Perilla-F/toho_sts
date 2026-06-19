@@ -17,6 +17,6 @@ MonoBehaviour:
   ScheduledTime: 10
   IsCanceled: 0
   effects:
-  - {fileID: 11400000, guid: 02d3b6412637a04419a6f9a94204bdbe, type: 2}
-  description: 
+  - Data: {fileID: 11400000, guid: 875cbdcd7bff62b4babed5fecce107d2, type: 2}
+    Amount: 12
   actionType: 0

@@ -3,7 +3,7 @@ using System.Linq;
 [System.Serializable]
 public class ActionPattern
 {
-    public TurnActions[] entries;  // AttackActionなど
+    public TurnActions[] Pattern;  // AttackActionなど
     public int[] weights;
 
     /// <summary>
@@ -16,29 +16,14 @@ public class ActionPattern
         foreach (var w in weights) total += w;
         int roll = UnityEngine.Random.Range(0, total);
         int cumulative = 0;
-        for (int i = 0; i < entries.Length; i++)
+        for (int i = 0; i < Pattern.Length; i++)
         {
             cumulative += weights[i];
             if (roll < cumulative)
             {
-                return CollectActionsFromEntries(entries[i]);
+                return Pattern[i].Actions;
             }
         }
-        return CollectActionsFromEntries(entries[0]);
-    }
-
-    /// <summary>
-    /// ActionEntry[]からEnemyAction[]を抽出
-    /// </summary>
-    /// <param name="entries"></param>
-    /// <returns></returns>
-    public EnemyAction[] CollectActionsFromEntries(TurnActions entries)
-    {
-        EnemyAction[] actions = new EnemyAction[entries.actions.Length];
-        for (var i = 0; i < entries.actions.Length; i++)
-        {
-            actions[i] = entries.actions[i].action;
-        }
-        return actions;
+        return Pattern[0].Actions;
     }
 }

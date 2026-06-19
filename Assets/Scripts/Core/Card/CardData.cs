@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 
@@ -17,11 +18,11 @@ public class CardData : ScriptableObject
     public List<CardEffectInstance> CardEffects;
     public CardEffectTarget CardEffectTarget;
 
-    public void ApplyEffects(CardContext context)
+    public async UniTask ApplyEffects(CardContext context)
     {
         foreach (var effect in CardEffects)
         {
-            effect.Apply(context);
+            await effect.Apply(context);
         }
     }
 }

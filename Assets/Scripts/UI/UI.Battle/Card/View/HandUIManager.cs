@@ -2,12 +2,15 @@ using UnityEngine;
 using Cysharp.Threading.Tasks;
 using System.Threading;
 using DG.Tweening;
+using System;
 
 public class HandUIManager
 {
     private BattleViewRoot view;
 
     private ICardPoolProvider pool;
+
+    public event Action OnCompleteDiscardAnimation;
 
     public HandUIManager(BattleViewRoot view)
     {
@@ -64,6 +67,7 @@ public class HandUIManager
         await UniTask.WhenAll(moveTask, scaleTask);
 
         pool.ReturnCard(card);
+        OnCompleteDiscardAnimation?.Invoke();
 
         await arrangeTask;
     }

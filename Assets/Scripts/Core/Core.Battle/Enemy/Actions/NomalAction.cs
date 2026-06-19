@@ -1,11 +1,11 @@
 using UnityEngine;
 using Cysharp.Threading.Tasks;
+using System.Collections.Generic;
 
 [CreateAssetMenu(menuName = "EnemyAction/NormalAction")]
 public class NormalAction : EnemyAction
 {
-    public EnemyEffect[] effects;
-    public string description;
+    public List<EnemyEffect> effects;
     public EnemyActionType actionType;
 
     public override async UniTask Execute(IBattleContext context, IEnemyUnit enemy)
@@ -14,7 +14,7 @@ public class NormalAction : EnemyAction
         BattleUnit target = context.SelectTarget(enemy);
         foreach (var effect in effects)
         {
-            await effect.Apply(context, enemy, target);
+            await EffectResolver.ResolveEffect(effect, target);
         }
     }
 }

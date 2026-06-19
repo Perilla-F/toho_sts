@@ -15,7 +15,6 @@ public class EnemyUI : MonoBehaviour, IBattleUI
     [SerializeField] private GameObject buffIconPrefab;
 
     private Vector3 _baseScale;
-    private List<ActionIcon> actionList;
     private List<BuffIcon> buffList;
 
     private void Start()
@@ -27,13 +26,6 @@ public class EnemyUI : MonoBehaviour, IBattleUI
         hpBar.Bind(resource);
     }
 
-    public void SetActionIcon(EnemyActionType type, int time, int number)
-    {
-        ActionIcon actionIcon = Instantiate(actionIconPrefab, actionContainer).GetComponent<ActionIcon>();
-        actionIcon.SetIcon(type, time, number);
-        actionList.Add(actionIcon);
-    }
-
     public void SetBuffIcon(StatusEffect data)
     {
         BuffIcon buffIcon = Instantiate(buffIconPrefab, buffContainer).GetComponent<BuffIcon>();
@@ -43,17 +35,8 @@ public class EnemyUI : MonoBehaviour, IBattleUI
 
     public void UpdateBuffIcon(StatusEffect data)
     {
-        var buffIcon = buffList.FirstOrDefault(l => l.effect.Data.effectId == data.Data.effectId);
+        var buffIcon = buffList.FirstOrDefault(l => l.effect.Data.EffectId == data.Data.EffectId);
         buffIcon.UpdateIcon(data);
-    }
-
-    public void Highlight(bool active, int number)
-    {
-        if (actionList.Count() > 0)
-        {
-            var actionIcon = actionList.FirstOrDefault(l => l.number == number);
-            actionIcon.HighlightIcon(active);
-        }
     }
 
     public void ShowDamageEffect(float duration)

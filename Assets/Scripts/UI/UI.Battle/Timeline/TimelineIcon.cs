@@ -1,10 +1,11 @@
+using System.Linq;
+using System.Threading;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using TMPro;
 using DG.Tweening;
-using System.Threading;
 using Cysharp.Threading.Tasks;
 
 public class TimelineIcon : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
@@ -12,6 +13,8 @@ public class TimelineIcon : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
     [SerializeField] private Image iconImage;
     [SerializeField] private TextMeshProUGUI actionName;
     [SerializeField] private GameObject highlightEffect;
+
+    private IBattleEvent _battleEvent;
 
     private int _enemyId;
     private RectTransform _rect;
@@ -25,6 +28,7 @@ public class TimelineIcon : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
 
     public void Setup(IBattleEvent battleEvent)
     {
+        _battleEvent = battleEvent;
         switch (battleEvent)
         {
             case PlayerActionEvent pe:
@@ -117,19 +121,29 @@ public class TimelineIcon : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        // EnemyUIEventChannel.OnEventRaised.Invoke(new EnemyUIEventData
-        // {
-        //     EnemyId = _enemyId,
-        //     Type = EnemyUIEventType.Highlight
-        // });
+        if (_battleEvent is EnemyActionEvent ee)
+        {
+            var actionData = ee.action;
+            if (actionData is NormalAction na)
+            {
+                var tooltipData = na.effects.Select(e => new EffectDescription
+                {
+                    Name = e.Data.DisplayName,
+                    Value = e.Amount.ToString(),
+                    Description = e.Data.Description
+                }).ToList();
+
+                BattleTooltipManager.Instance.Show(tooltipData);
+            }
+        }
+        else
+        {
+            return;
+        }
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        // EnemyUIEventChannel.OnEventRaised.Invoke(new EnemyUIEventData
-        // {
-        //     EnemyId = _enemyId,
-        //     Type = EnemyUIEventType.Unhighlight
-        // });
+        BattleTooltipManager.Instance.Hide();
     }
 }

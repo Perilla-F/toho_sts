@@ -62,13 +62,19 @@ public class TimelineView : MonoBehaviour
     {
         if (_previewInstance != null)
         {
+            // 即座にイベントを停止
             _previewInstance.transform.DOKill();
 
             var cg = _previewInstance.GetComponent<CanvasGroup>();
-            if (cg != null) cg.DOKill();
+            if (cg != null)
+            {
+                cg.DOKill();
+            }
 
-            Destroy(_previewInstance);
+            // オブジェクトの破棄
+            DestroyImmediate(_previewInstance);
 
+            // 参照を即座にクリア
             _previewInstance = null;
         }
     }

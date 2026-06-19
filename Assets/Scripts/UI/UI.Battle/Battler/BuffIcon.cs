@@ -26,7 +26,7 @@ public class BuffIcon : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         }
 
         // 非同期でロード開始
-        _handle = Addressables.LoadAssetAsync<Sprite>(effect.Data.iconRef);
+        _handle = Addressables.LoadAssetAsync<Sprite>(effect.Data.IconRef);
         _handle.Completed += (op) =>
         {
             if (op.Status == AsyncOperationStatus.Succeeded)
@@ -52,14 +52,11 @@ public class BuffIcon : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        string title = effect.Data.className;
-        string desc = effect.Data.description;
-
-        TooltipManager.Instance.Show(title, desc);
+        string title = effect.Data.DisplayName;
+        string desc = effect.Data.Description;
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        TooltipManager.Instance.Hide();
     }
 }

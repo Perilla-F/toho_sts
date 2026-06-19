@@ -18,7 +18,7 @@ public class DiscardArea : IDiscardArea
     public void AddCard(ICardObj cardObj)
     {
         _discardedCards.Add(cardObj);
-        OnChangedDiscardCount?.Invoke(_discardedCards.Count);
+        //        OnChangedDiscardCount?.Invoke(_discardedCards.Count);
     }
 
     public void ResetDiscardPile()

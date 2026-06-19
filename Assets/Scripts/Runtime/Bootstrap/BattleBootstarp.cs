@@ -11,7 +11,7 @@ public class BattleBootstrap : MonoBehaviour
     [SerializeField] private Transform _enemyArea;
     [SerializeField] private GameObject cardPrefab;
 
-    private async void Start()
+    private void Start()
     {
         var encounter = ServiceLocator.Get<ISceneLoader>().GetTransitionData<BattleTransitionData>().EncounterData;
         UnityEngine.Debug.Log("The encounter is " + encounter.EncounterID);
@@ -36,6 +36,6 @@ public class BattleBootstrap : MonoBehaviour
 
         EnemyGenerator _enemyGenerator = new EnemyGenerator(enemyManager, _enemyArea);
         _enemyGenerator.SpawnEnemies(encounter);
-        await _battleManager.StartBattle();
+        _battleManager.StartBattle();
     }
 }

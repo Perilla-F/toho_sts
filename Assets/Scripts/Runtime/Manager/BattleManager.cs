@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
@@ -26,6 +27,8 @@ public class BattleManager : MonoBehaviour
 
     private Dictionary<ICardObj, BattleCard> _cardMap = new Dictionary<ICardObj, BattleCard>();
 
+    private UniTaskCompletionSource<bool> _discardTaskSource;
+
     #endregion
 
     #region 初期化処理
@@ -50,14 +53,17 @@ public class BattleManager : MonoBehaviour
         _view = view;
         _hero = hero;
 
-        _battleSystem.BattleStart += BattleStart;
         _battleSystem.OnTurnStart += TurnStart;
+        _battleSystem.OnCompleteTurnStartFlow += SelectPhaseStart;
+        _battleSystem.OnTurnEnd += TurnEndFlow;
         _battleSystem.OnCardDrawn += HandleCardDrawn;
         _battleSystem.OnDiscard += HandleDiscard;
+        _battleSystem.OnDiscardHand += HandleDiscardHandRequest;
         _battleSystem.OnConfirmCardEvent += ConfirmCardEvent;
-        _battleSystem.BattleContext.Deck.OnChangedDeckCount += OnChangedDeckCount;
-        _battleSystem.BattleContext.Discard.OnChangedDiscardCount += OnChangedDiscardCount;
-        _battleSystem.Hero.Mana.OnChanged += OnManaChanged;
+        _context.Deck.OnChangedDeckCount += OnChangedDeckCount;
+        _hand.OnCompleteDiscardAnimation += OnDiscardAnimationFinished;
+        _context.Discard.OnChangedDiscardCount += OnChangedDiscardCount;
+        _hero.Mana.OnChanged += OnManaChanged;
 
         _view.DeckView.UpdateDeckCount(battleContext.Deck.Count);
         _view.DiscardAreaView.UpdateDiscardCount(battleContext.Discard.Count);
@@ -71,11 +77,26 @@ public class BattleManager : MonoBehaviour
 
     #region Systemへの命令
 
-    public async UniTask StartBattle()
+    public async void StartBattle()
     {
-        await _battleSystem.StartBattle();
+        _battleSystem.StartBattle();
+        await _view.BattleStart();
         //_audio.PlayBGM("battle", true);
     }
+
+    private async void TurnEndFlow(CancellationToken ct)
+    {
+        await DiscardHandAsync(ct);
+        _battleSystem.TurnEnd();
+        _battleSystem.TurnStart(ct);
+        TurnStart(_battleSystem.TurnCount, ct);
+    }
+
+    private async void SelectPhaseStart(CancellationToken ct)
+    {
+        await _battleSystem.PlayerSelectPhase(ct);
+    }
+
 
     private async void HandleCardUsed(BattleCard card, BattleUnit target, CancellationToken ct)
     {
@@ -84,6 +105,8 @@ public class BattleManager : MonoBehaviour
             card.ResetPos();
             return;
         }
+
+        card.ChangeState(new CardBusyState(card));
 
         // カードが使用されたら、購読を解除する（二重発火防止）
         card.OnCardUsed -= HandleCardUsed;
@@ -166,7 +189,7 @@ public class BattleManager : MonoBehaviour
     private void OnChangedDiscardCount(int count) => _view.DiscardAreaView.UpdateDiscardCount(count);
     private void OnManaChanged() => _view.ManaView.UpdateUI(_battleSystem.Hero.Mana.GetMana());
 
-    private async void TurnStart(int turn)
+    private async void TurnStart(int turn, CancellationToken ct)
     {
         _turnEndButton.interactable = true;
         await _view.TurnStart(turn);
@@ -202,11 +225,50 @@ public class BattleManager : MonoBehaviour
     {
         if (_cardMap.TryGetValue(card, out var cardUI))
         {
+            _discardTaskSource = new UniTaskCompletionSource<bool>();
             cardUI.OnCardUsed -= HandleCardUsed;
             _cardMap.Remove(card);
-            await _hand.PlayDiscardAnimationAsync(cardUI, ct);
             _context.Discard.AddCard(card);
+            await _hand.PlayDiscardAnimationAsync(cardUI, ct);
+            // 完了通知が来るまで待機
+            await _discardTaskSource.Task;
         }
+    }
+
+    private void HandleDiscardHandRequest(CancellationToken ct)
+    {
+        // ここで非同期処理を呼ぶ
+        _ = DiscardHandAsync(ct);
+    }
+
+    /// <summary>
+    /// 手札を全て捨て札へ送る
+    /// </summary>
+    /// <returns></returns>
+    public async UniTask DiscardHandAsync(CancellationToken ct)
+    {
+        // 各カードのアニメーション完了タスクをリストに貯める
+        List<UniTask> animationTasks = new List<UniTask>();
+
+        foreach (var card in _context.Hand.Cards.ToList())
+        {
+            // 1. 命令を出す（アニメーション終了を待つためのUniTaskをもらう）
+            // 0.05fの遅延をここに持たせる
+            await UniTask.Delay(TimeSpan.FromSeconds(0.05f));
+            _context.Hand.RemoveCard(card);
+
+            // アニメーションを開始し、完了までを待つタスクを追加
+            animationTasks.Add(PlayDiscardSequence(card, ct));
+        }
+
+        // 2. すべてのアニメーションが完了するのを待つ
+        await UniTask.WhenAll(animationTasks);
+    }
+
+    public void OnDiscardAnimationFinished()
+    {
+        _discardTaskSource?.TrySetResult(true);
+        _view.DiscardAreaView.UpdateDiscardCount(_context.Discard.Count);
     }
 
     public void SetAllCardsBusyExcept(ICardObj cardData)
@@ -235,13 +297,18 @@ public class BattleManager : MonoBehaviour
 
     private void OnDestroy()
     {
-        _battleSystem.BattleStart -= BattleStart;
         _battleSystem.OnTurnStart -= TurnStart;
-        _battleSystem.BattleContext.Deck.OnChangedDeckCount -= OnChangedDeckCount;
-        _battleSystem.BattleContext.Discard.OnChangedDiscardCount -= OnChangedDiscardCount;
-        _battleSystem.OnConfirmCardEvent -= ConfirmCardEvent;
-        _battleSystem.Hero.Mana.OnChanged -= OnManaChanged;
+        _battleSystem.OnCompleteTurnStartFlow -= SelectPhaseStart;
+        _battleSystem.OnTurnEnd -= TurnEndFlow;
         _battleSystem.OnCardDrawn -= HandleCardDrawn;
+        _battleSystem.OnDiscard -= HandleDiscard;
+        _battleSystem.OnDiscardHand -= HandleDiscardHandRequest;
+        _battleSystem.OnConfirmCardEvent -= ConfirmCardEvent;
+        _context.Deck.OnChangedDeckCount -= OnChangedDeckCount;
+        _hand.OnCompleteDiscardAnimation -= OnDiscardAnimationFinished;
+        _context.Discard.OnChangedDiscardCount -= OnChangedDiscardCount;
+        _hero.Mana.OnChanged -= OnManaChanged;
+        _hand.OnCompleteDiscardAnimation -= OnDiscardAnimationFinished;
         BattleEventBus.OnCardHovered -= PreviewTimelineIcon;
         BattleEventBus.OnCardActive -= SetAllCardsBusyExcept;
     }
