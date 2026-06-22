@@ -7,8 +7,16 @@ public class ManaView : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI _manaText;
 
-    public void UpdateUI(int count)
+    private IReadOnlyMana _mana;
+
+    public void Setup(IReadOnlyMana mana)
     {
-        _manaText.text = count.ToString();
+        _mana = mana;
+        UpdateUI();
+    }
+
+    public void UpdateUI()
+    {
+        _manaText.text = _mana.CurrentResource.ToString();
     }
 }

@@ -13,12 +13,12 @@ MonoBehaviour:
   m_Name: OdorokiFlash
   m_EditorClassIdentifier: 
   actionName: "\u5F8C\u5149\u300C\u304B\u3089\u304B\u3055\u9A5A\u304D\u30D5\u30E9\u30C3\u30B7\u30E5\u300D"
-  target: 1
   ScheduledTime: 3
   IsCanceled: 0
   effects:
   - Data: {fileID: 11400000, guid: 875cbdcd7bff62b4babed5fecce107d2, type: 2}
+    Target: 1
     Amount: 5
   - Data: {fileID: 11400000, guid: 5efe85128b5c2004d955f84eb31dd92e, type: 2}
+    Target: 1
     Amount: 3
-  actionType: 0

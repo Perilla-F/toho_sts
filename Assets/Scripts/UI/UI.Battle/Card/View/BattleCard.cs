@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using System.Threading;
 using UnityEngine.EventSystems;
@@ -14,6 +15,7 @@ public class BattleCard : MonoBehaviour, IPoolableCard, IPointerEnterHandler, IP
 
     public GameObject GameObject => this.gameObject;
     public ICardObj Card;
+    private IReadOnlyBattleContext _context;
 
     private CardData data;
 
@@ -31,9 +33,6 @@ public class BattleCard : MonoBehaviour, IPoolableCard, IPointerEnterHandler, IP
 
     private CancellationToken _ct;
 
-    public event Action<BattleCard, BattleUnit, CancellationToken> OnCardUsed;
-    public event Action<BattleCard> OnCardDestroyed;
-
     private void Awake()
     {
         _stateMachine = new CardStateMachine(this);
@@ -41,12 +40,15 @@ public class BattleCard : MonoBehaviour, IPoolableCard, IPointerEnterHandler, IP
         _stateMachine.ChangeState(new CardBusyState(this));
 
         _ct = this.GetCancellationTokenOnDestroy();
+        BattleEventBus.Card.OnCardActive += CheckActive;
     }
 
-    public void BindCard(ICardObj card)
+    public void BindCard(ICardObj card, IReadOnlyBattleContext context)
     {
         Card = card;
         data = card.Source.Data;
+
+        _context = context;
 
         _canvas = GetComponentInParent<Canvas>();
 
@@ -64,16 +66,17 @@ public class BattleCard : MonoBehaviour, IPoolableCard, IPointerEnterHandler, IP
     /// <param name="pos"></param>
     /// <param name="rot"></param>
     /// <param name="sibling"></param>
-    public void SetLayoutPosition(Vector2 pos, float rot, int sibling)
+    public async UniTask SetLayoutPosition(Vector2 pos, float rot, int sibling)
     {
         _layoutPosition = pos;
         _layoutRotation = rot;
         _defaultSiblingIndex = sibling;
 
-        transform.DOScale(1f, 0.3f).SetEase(Ease.OutCubic);
-        transform.DOLocalMove(pos, 0.3f).SetEase(Ease.OutCubic);
-        transform.DOLocalRotate(new Vector3(0, 0, rot), 0.3f).SetEase(Ease.OutCubic);
+        var scaleTask = transform.DOScale(1f, 0.3f).SetEase(Ease.OutCubic).ToUniTask(cancellationToken: _ct);
+        var MoveTask = transform.DOLocalMove(pos, 0.3f).SetEase(Ease.OutCubic).ToUniTask(cancellationToken: _ct);
+        var RotateTask = transform.DOLocalRotate(new Vector3(0, 0, rot), 0.3f).SetEase(Ease.OutCubic).ToUniTask(cancellationToken: _ct);
         transform.SetSiblingIndex(sibling);
+        await UniTask.WhenAll(scaleTask, MoveTask, RotateTask);
     }
 
     public void ResetPos()
@@ -85,7 +88,7 @@ public class BattleCard : MonoBehaviour, IPoolableCard, IPointerEnterHandler, IP
         transform.SetSiblingIndex(_defaultSiblingIndex);
         transform.DOScale(Vector3.one, 0.1f);
         BezierArrows.Instance.Hide();
-        BattleEventBus.RestoreAllCards?.Invoke();
+        BattleEventBus.Card.RestoreAllCards?.Invoke();
         if (EventSystem.current.currentSelectedGameObject == this.gameObject ||
         EventSystem.current.IsPointerOverGameObject())
         {
@@ -103,20 +106,26 @@ public class BattleCard : MonoBehaviour, IPoolableCard, IPointerEnterHandler, IP
         _stateMachine.ChangeState(newState);
     }
 
+    public void CheckActive(IReadOnlyCardObj cardObj)
+    {
+        if (Card != cardObj) ChangeState(new CardBusyState(this));
+    }
+
     public void OnTryUseCard()
     {
         Debug.Log("Try Use!");
+        if (!Card.Useable()) ResetPos();
         if (CheckEnemyUnderMouse(out var enemy))
         {
             // 敵単体ターゲットの場合
             ChangeState(new CardBusyState(this));
-            OnCardUsed?.Invoke(this, enemy, _ct);
+            BattleEventBus.Card.OnCardUsed?.Invoke(Card, enemy, _ct);
         }
         else if (Card.TargetType != CardEffectTarget.Enemy)
         {
             // 全体・自身ターゲットで、カードが中央（Targeting領域）にある場合
             ChangeState(new CardBusyState(this));
-            OnCardUsed?.Invoke(this, null, _ct);
+            BattleEventBus.Card.OnCardUsed?.Invoke(Card, null, _ct);
         }
         else
         {
@@ -125,7 +134,7 @@ public class BattleCard : MonoBehaviour, IPoolableCard, IPointerEnterHandler, IP
         }
     }
 
-    private bool CheckEnemyUnderMouse(out BattleUnit enemy)
+    private bool CheckEnemyUnderMouse(out IBattleUnit enemy)
     {
         enemy = null;
 
@@ -138,7 +147,7 @@ public class BattleCard : MonoBehaviour, IPoolableCard, IPointerEnterHandler, IP
         if (hit.collider != null)
         {
             // 3. 検知したオブジェクトに敵コンポーネントがついているか確認
-            if (hit.collider.TryGetComponent<BattleUnit>(out var targetEnemy))
+            if (hit.collider.TryGetComponent<IBattleUnit>(out var targetEnemy))
             {
                 enemy = targetEnemy;
                 Debug.Log($"Target is {enemy.BattlerName}");
@@ -208,7 +217,7 @@ public class BattleCard : MonoBehaviour, IPoolableCard, IPointerEnterHandler, IP
         _dragStartPos = eventData.position;
 
         // 他のカードを非アクティブ化
-        BattleEventBus.OnCardActive?.Invoke(Card);
+        BattleEventBus.Card.OnCardActive?.Invoke(Card);
 
         // ドラッグ開始時のステートへ
         _stateMachine.ChangeState(new CardDraggingState(this));
@@ -276,7 +285,7 @@ public class BattleCard : MonoBehaviour, IPoolableCard, IPointerEnterHandler, IP
         transform.DOScale(1.1f, 0.15f); // 少し大きくするとさらに良い
 
         // タイムライン上にアイコンを載せる
-        BattleEventBus.OnCardHovered?.Invoke(Card);
+        BattleEventBus.Card.OnCardHovered?.Invoke(Card, _context.Hero);
     }
 
     public void HoverCancel()
@@ -287,7 +296,7 @@ public class BattleCard : MonoBehaviour, IPoolableCard, IPointerEnterHandler, IP
         transform.DOScale(1f, 0.15f);
         transform.SetSiblingIndex(_defaultSiblingIndex); // 順番を戻す
 
-        BattleEventBus.OnCardExited?.Invoke();
+        BattleEventBus.Card.OnCardExited?.Invoke();
     }
 
     /// <summary>
@@ -318,8 +327,6 @@ public class BattleCard : MonoBehaviour, IPoolableCard, IPointerEnterHandler, IP
 
     private void OnDestroy()
     {
-        OnCardDestroyed?.Invoke(this);
-        // 自身のイベントをクリアして参照を断ち切る
-        OnCardUsed = null;
+        BattleEventBus.Card.OnCardActive -= CheckActive;
     }
 }

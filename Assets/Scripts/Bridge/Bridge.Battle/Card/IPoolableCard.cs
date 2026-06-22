@@ -4,7 +4,7 @@ public interface IPoolableCard
 {
     GameObject GameObject { get; }
 
-    void BindCard(ICardObj obj);
+    void BindCard(ICardObj obj, IReadOnlyBattleContext context);
 
     // プールから取り出された時の初期化（データの注入）
     void SetupCardData(CardData data);

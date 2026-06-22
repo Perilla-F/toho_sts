@@ -8,11 +8,11 @@ public class NomalCardObj : CardObj
     public int ChangedManaCost = 0;
     public int ChangedDelay = 0;
 
-    public NomalCardObj(SourceCard source, ResourceRegistry resourceRegistry, PlayerController controller) : base(source, resourceRegistry, controller)
+    public NomalCardObj(SourceCard source, ResourceRegistry resourceRegistry) : base(source, resourceRegistry)
     {
     }
 
-    public override async UniTask Use(CardContext context)
+    public async override UniTask Use(CardContext context)
     {
         foreach (var cost in Source.Data.Costs)
         {
@@ -30,7 +30,15 @@ public class NomalCardObj : CardObj
                 target.Hit();   // 敵アニメーション
             }
         }
-        context.User.Attack();
+
+        // 演出の開始を待機する準備
+        var tcs = new UniTaskCompletionSource();
+
+        // 演出発火（通知）
+        BattleEventBus.BattleEventAsync.OnCardUsed?.Invoke(context, tcs);
+
+        // 演出が終わるまで待つ
+        await tcs.Task;
     }
 
     public override bool Useable()

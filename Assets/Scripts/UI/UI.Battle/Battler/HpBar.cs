@@ -11,20 +11,15 @@ public class HpBar : MonoBehaviour
     [SerializeField] private Image simpleBlockOverlay;
 
     [SerializeField] private float smoothSpeed = 10f;
-    private float currentValue;
 
     private HPResource _resource;
 
     public void Bind(HPResource resource)
     {
-        // 古いイベント購読を解除（再バインド対策）
-        if (_resource != null)
-            _resource.OnChanged -= UpdateUI;
-
         _resource = resource;
 
         // 新しいHPResourceにイベント登録
-        _resource.OnChanged += UpdateUI;
+        BattleEventBus.View.OnChangedHPCount += UpdateUI;
 
         // 初回反映
         _slider.maxValue = _resource.MaxHP;
@@ -33,9 +28,7 @@ public class HpBar : MonoBehaviour
 
     private void OnDestroy()
     {
-        // メモリリーク防止
-        if (_resource != null)
-            _resource.OnChanged -= UpdateUI;
+        BattleEventBus.View.OnChangedHPCount -= UpdateUI;
     }
 
     private void UpdateUI()

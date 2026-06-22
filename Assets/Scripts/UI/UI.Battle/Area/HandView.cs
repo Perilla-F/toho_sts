@@ -19,23 +19,27 @@ public class HandView : MonoBehaviour, IHandView
     {
         ct.ThrowIfCancellationRequested();
 
-        float angleStep = Mathf.Min(5f, 60f / _cards.Count); ; // 1枚あたりの傾き
-
+        float angleStep = Mathf.Min(5f, 60f / _cards.Count);
         float totalAngle = angleStep * (_cards.Count - 1);
         float startAngle = totalAngle / 2f;
+
+        var tasks = new List<UniTask>();
+
         for (int i = 0; i < _cards.Count; i++)
         {
             float currentAngle = (i * angleStep) - startAngle;
-            // 円周上の位置を計算
             float x = -Mathf.Sin(currentAngle * Mathf.Deg2Rad) * radius;
             float y = Mathf.Cos(currentAngle * Mathf.Deg2Rad) * radius - radius;
 
             Vector3 pos = new Vector3(x, y, 0);
             int sibling = _cards.Count - i - 1;
 
-            _cards[i].SetLayoutPosition(pos, currentAngle, sibling);
+            tasks.Add(_cards[i].SetLayoutPosition(pos, currentAngle, sibling));
         }
-        BattleEventBus.RestoreAllCards?.Invoke();
+
+        await UniTask.WhenAll(tasks);
+
+        BattleEventBus.Card.RestoreAllCards?.Invoke();
     }
 
     public void AddCard(BattleCard card)

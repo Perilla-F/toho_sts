@@ -22,7 +22,7 @@ MonoBehaviour:
   Costs:
   - Type: 0
     Amount: 1
-  Delay: 2
+  Delay: 0
   UpgradedLevel: 0
   IsUpgraded: 0
   CardType: 1

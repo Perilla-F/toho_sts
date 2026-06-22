@@ -13,19 +13,19 @@ public class TimelineView : MonoBehaviour
     [SerializeField] private Transform _iconContainer; // VerticalLayoutGroupがついた親
     [SerializeField] private GameObject _iconPrefab;
     private GameObject _previewInstance;
-    private ITimelineManager _timelineManager;
+    private IReadOnlyTimelineManager _timelineManager;
 
     private List<TimelineIcon> _activeIcons = new List<TimelineIcon>();
 
     private void OnEnable()
     {
         // Managerからの通知を購読
-        BattleEventBus.OnActionsDecided += RefreshTimeline;
-        BattleEventBus.OnActionExecuted += RemoveTopEvent;
-        BattleEventBus.OnCardExited += HidePreview;
+        BattleEventBus.BattleEventAsync.OnActionsDecided += RefreshTimeline;
+        BattleEventBus.BattleEventAsync.OnActionExecuted += RemoveTopEvent;
+        BattleEventBus.Card.OnCardExited += HidePreview;
     }
 
-    public void Initialize(ITimelineManager timelineManager)
+    public void Initialize(IReadOnlyTimelineManager timelineManager)
     {
         _timelineManager = timelineManager;
     }
@@ -34,7 +34,7 @@ public class TimelineView : MonoBehaviour
     /// タイムライン初期化
     /// </summary>
     /// <param name="events"></param>
-    public void RefreshTimeline(List<BattleEvent> events)
+    public void RefreshTimeline(List<BattleEvent> events, bool playAnimation = true)
     {
         // 既存のアイコンをクリア（プール化するとより軽量）
         foreach (var icon in _activeIcons) Destroy(icon.gameObject);
@@ -48,8 +48,15 @@ public class TimelineView : MonoBehaviour
             // データをセット
             iconScript.Setup(events[i]);
 
-            // アニメーション再生
-            iconScript.PlaySpawnAnimation(i);
+            if (playAnimation)
+            {
+                iconScript.PlaySpawnAnimation(i);
+            }
+            else
+            {
+                // アニメーションなしの場合は「表示状態」でセットするなどの処理
+                iconScript.SetStaticState();
+            }
 
             _activeIcons.Add(iconScript);
         }
@@ -108,21 +115,17 @@ public class TimelineView : MonoBehaviour
     /// <param name="insertIndex"></param>
     public async UniTask ConfirmAction(BattleEvent confirmedEvent, CancellationToken ct)
     {
-        // 1. プレビューを即座に破棄
         HidePreview();
 
-        // 2. 確定アイコンを生成
-        var currentEvents = _timelineManager.GetUpcomingEvents();
-        int insertIndex = CalculateInsertIndex(confirmedEvent, currentEvents);
-        var obj = Instantiate(_iconPrefab, _iconContainer);
-        obj.transform.SetSiblingIndex(insertIndex);
-        var icon = obj.GetComponent<TimelineIcon>();
-        icon.Setup(confirmedEvent);
+        // 1. まずアニメーションなしでリスト全体を並べ替える
+        RefreshTimeline(_timelineManager.GetUpcomingEvents(), playAnimation: false);
 
-        // 3. 挿入されたアイコンのみアニメーションさせる
-        // 他のアイコンはLayoutGroupが自動的に押し出してくれるので、
-        // 挿入されたアイコン自体をフェードやスケールで強調する
-        await icon.PlayConfirmAnimation(ct);
+        // 2. 挿入されたアイコン（confirmedEvent）だけを探してアニメーションさせる
+        var targetIcon = _activeIcons.FirstOrDefault(i => i.BattleEvent == confirmedEvent);
+        if (targetIcon != null)
+        {
+            await targetIcon.PlayConfirmAnimation(ct);
+        }
     }
 
     private int CalculateInsertIndex(BattleEvent playerEvent, List<BattleEvent> currentEvents)
@@ -147,12 +150,23 @@ public class TimelineView : MonoBehaviour
         return a.Order.CompareTo(b.Order);
     }
 
+    private void UpdateIconCount()
+    {
+        foreach (var icon in _activeIcons)
+        {
+            icon.UpdateCountDown(icon.Count - _timelineManager.CurrentTime);
+        }
+    }
+
     // 3. アイコンの削除と詰め
     private void RemoveTopEvent(BattleEvent executedEvent)
     {
         if (_activeIcons.Count == 0) return;
 
-        Debug.Log($"EnemyUI: エネミーID{executedEvent.EnemyId} の行動実行通知を受け取りました。");
+        if (executedEvent is EnemyActionEvent ee)
+        {
+            Debug.Log($"EnemyUI: エネミーID{ee.EnemyId} の行動実行通知を受け取りました。");
+        }
         var topIcon = _activeIcons[0];
         _activeIcons.RemoveAt(0);
 
@@ -163,8 +177,8 @@ public class TimelineView : MonoBehaviour
 
     void OnDestroy()
     {
-        BattleEventBus.OnActionsDecided -= RefreshTimeline;
-        BattleEventBus.OnActionExecuted -= RemoveTopEvent;
-        BattleEventBus.OnCardExited -= HidePreview;
+        BattleEventBus.BattleEventAsync.OnActionsDecided -= RefreshTimeline;
+        BattleEventBus.BattleEventAsync.OnActionExecuted -= RemoveTopEvent;
+        BattleEventBus.Card.OnCardExited -= HidePreview;
     }
 }

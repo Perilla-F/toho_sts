@@ -3,11 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class BattleDeck
+public class BattleDeck : IBattleDeck
 {
     private Queue<ICardObj> _deckCards = new Queue<ICardObj>();
-
-    public event Action<int> OnChangedDeckCount;
 
     /// <summary>
     /// 山札Queue<CardObj>→Queue<CardObj>のシャッフル
@@ -47,7 +45,6 @@ public class BattleDeck
     public void AddCard(ICardObj card)
     {
         _deckCards.Enqueue(card);
-        OnChangedDeckCount?.Invoke(_deckCards.Count);
     }
 
     /// <summary>
@@ -56,13 +53,8 @@ public class BattleDeck
     public ICardObj Draw()
     {
         var card = _deckCards.Dequeue();
-        OnChangedDeckCount?.Invoke(_deckCards.Count);
+        BattleEventBus.View.OnChangedDeckCount?.Invoke();
         return card;
-    }
-
-    public List<SourceCard> GetDeckAsSourceCards()
-    {
-        return _deckCards.Select(card => card.GetSource()).ToList();
     }
 
     public bool IsEmpty()

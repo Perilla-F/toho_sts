@@ -2,6 +2,7 @@ using Cysharp.Threading.Tasks;
 
 public class PlayerActionEvent : BattleEvent
 {
+    public IHeroUnit Hero { get; set; }
     public readonly ICardObj Card;
     private readonly CardContext cardContext;
 

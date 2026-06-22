@@ -1,3 +1,4 @@
+using System.Threading;
 using UnityEngine;
 using Cysharp.Threading.Tasks;
 
@@ -6,36 +7,40 @@ public class BattleBootstrap : MonoBehaviour
     [SerializeField] private BattleViewRoot _battleViewRoot; // View全体のまとめ
     [SerializeField] private BattleSystem _battleSystem;
     [SerializeField] private BattleManager _battleManager;
-    [SerializeField] private TimelineManager _timelineManager;
-    [SerializeField] private TimelineView _timelineView;
-    [SerializeField] private Transform _enemyArea;
+    [SerializeField] private BattleCommandExecutor _commander;
+    [SerializeField] private EnemyGenerator _enemyGenerator;
     [SerializeField] private GameObject cardPrefab;
+
+    private CancellationToken _ct;
 
     private void Start()
     {
+        _ct = this.GetCancellationTokenOnDestroy();
+
         var encounter = ServiceLocator.Get<ISceneLoader>().GetTransitionData<BattleTransitionData>().EncounterData;
         UnityEngine.Debug.Log("The encounter is " + encounter.EncounterID);
         var game = ServiceLocator.Get<GameManager>();
         var gameContext = ServiceLocator.Get<GameContext>();
-        var playerManager = ServiceLocator.Get<PlayerManager>();
         var audioManager = ServiceLocator.Get<IAudioManager>();
 
-        var playerController = new PlayerController(_timelineManager);
+        var _timelineManager = new TimelineManager();
         var enemyManager = new EnemyManager();
-        var CardPoolManager = new CardPoolManager(cardPrefab, playerController);
-        var HandUIManager = new HandUIManager(_battleViewRoot);
-        HandUIManager.Setup(CardPoolManager);
+        var CardPoolManager = new CardPoolManager(cardPrefab);
         _battleViewRoot.TimelineView.Initialize(_timelineManager);
-        var battleContext = BattleContextFactory.Create(encounter, game, playerController);
 
         HeroUnit hero = new HeroUnit();
         hero.Setup(gameContext.Hero);
-        _battleSystem.Setup(battleContext, hero, game, enemyManager, playerController, _timelineManager, audioManager);
+        var battleContext = BattleContextFactory.Create(_battleSystem, hero, game, enemyManager, _timelineManager);
+        _battleSystem.Setup(battleContext, hero, enemyManager, _timelineManager, audioManager);
 
-        _battleManager.Initialize(game, gameContext, hero, battleContext, _battleSystem, audioManager, enemyManager, playerController, _timelineManager, _timelineView, HandUIManager, _battleViewRoot);
+        var HandUIManager = new HandUIManager(_battleViewRoot, battleContext);
+        HandUIManager.Setup(CardPoolManager);
 
-        EnemyGenerator _enemyGenerator = new EnemyGenerator(enemyManager, _enemyArea);
+        _battleManager.Initialize(_battleSystem, hero, enemyManager, _timelineManager, battleContext);
+        _commander.Initialize(hero, battleContext, _battleSystem, enemyManager, _timelineManager, HandUIManager);
+
+        _enemyGenerator.Init(enemyManager);
         _enemyGenerator.SpawnEnemies(encounter);
-        _battleManager.StartBattle();
+        _battleManager.BattleStart(_ct);
     }
 }

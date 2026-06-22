@@ -7,10 +7,27 @@ using Cysharp.Threading.Tasks;
 
 public class EnemyUnit : IEnemyUnit
 {
-    private EnemyAIData _enemyAI;
+    public string BattlerName { get; private set; }
+    public HPResource HPResource { get; private set; }
+    public List<StatusEffect> Effects { get; private set; }
+    public GameObject UIPrefab { get; private set; }
+    public GameObject ModelPrefab { get; private set; }
+    public float ModelYOffset { get; private set; }
+    public AnimationClip IdleClip { get; private set; }
+    public AnimationClip AttackClip { get; private set; }
+    public AnimationClip HitClip { get; private set; }
+    public AnimationClip BuffClip { get; private set; }
+    public IBattleModel Model { get; private set; }
+    public IBattleUI UI { get; private set; }
+    public RuntimeAnimatorController AnimatorController { get; }
 
-    public event Action<AnimationClip> OnAttack;
-    public event Action<AnimationClip> OnHit;
+    public EnemyType EnemyType { get; private set; }
+    public ConditionType currentCondition { get; private set; }
+    public ConditionType lastCondition { get; private set; }
+    public int turnCounter { get; private set; }
+    public Sprite EventIcon { get; private set; }
+    public int EnemyID { get; private set; }
+    private EnemyAIData _enemyAI;
 
     public void Setup(EnemyData data)
     {
@@ -26,39 +43,20 @@ public class EnemyUnit : IEnemyUnit
         IdleClip = data.IdleClip;
         AttackClip = data.AttackClip;
         HitClip = data.HitClip;
+        BuffClip = data.BuffClip;
 
         Effects = new List<StatusEffect>();
     }
 
-
-    public override async UniTask TakeDamageAsync(int amount)
+    public void SetID(int id)
     {
-        await HPResource.TakeDamage(amount);
+        EnemyID = id;
     }
 
-    public override async UniTask Heal(int amount)
+    public void BindUI(IBattleModel model, IBattleUI ui)
     {
-        await HPResource.Gain(amount);
-    }
-
-    public override async UniTask ApplyBlock(int amount)
-    {
-        await HPResource.ApplyBlock(amount);
-    }
-
-    public override async UniTask ApplySimpleBlock(int amount)
-    {
-        await HPResource.ApplySimpleBlock(amount);
-    }
-
-    public override int GetAttackBonus()
-    {
-        return AttackBonus;
-    }
-
-    public override int GetDefenceBonus()
-    {
-        return DefenceBonus;
+        Model = model;
+        UI = ui;
     }
 
     /// <summary>
@@ -67,7 +65,7 @@ public class EnemyUnit : IEnemyUnit
     /// <param name="turn"></param>
     /// <param name="context"></param>
     /// <returns></returns>
-    public EnemyAction[] PlanTurn(BattleContext context)
+    public EnemyAction[] PlanTurn(IBattleContext context)
     {
         if (currentCondition != lastCondition)
         {
@@ -79,70 +77,9 @@ public class EnemyUnit : IEnemyUnit
         return actions;
     }
 
-    public override async UniTask AddEffect(EffectData data, int stacks)
-    {
-        var existing = Effects.Find(e => e.Data.EffectId == data.EffectId);
-        if (existing != null)
-        {
-            existing.AddStacks(stacks);
-            BuffUIChannel.OnBuffUpdated(existing);
-        }
-        else
-        {
-            var effect = StatusEffectFactory.Create(data, stacks, this);
-            Effects.Add(effect);
-            BuffUIChannel.OnBuffAdded(effect);
-        }
-    }
-
-    public override bool HasStatus(EffectData data)
+    public bool HasStatus(EffectData data)
     {
         return Effects.Find(e => e.Data.EffectId == data.EffectId) != null;
-    }
-
-    public override bool IsAlive()
-    {
-        return HPResource.GetHP() > 0;
-    }
-    public override bool IsDisabled()
-    {
-        return false;
-    }
-
-    public override int GetCurrentHP()
-    {
-        return HPResource.GetHP();
-    }
-
-    public override int GetMaxHP()
-    {
-        return HPResource.MaxHP;
-    }
-
-    public override void ProcessTurnStart()
-    {
-        foreach (var e in Effects)
-        {
-            e.OnTurnStart();
-        }
-    }
-
-    public override void ProcessTurnEnd()
-    {
-        foreach (var e in Effects)
-        {
-            e.OnTurnEnd();
-        }
-    }
-
-    public override void Attack()
-    {
-        OnAttack?.Invoke(AttackClip);
-    }
-
-    public override void Hit()
-    {
-        OnHit?.Invoke(HitClip);
     }
 
 }

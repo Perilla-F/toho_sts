@@ -1,28 +1,38 @@
-using System;
-using System.Collections.Generic;
-using UnityEngine;
-using Cysharp.Threading.Tasks;
-
-
 public class BattleContext : IBattleContext
 {
-    public IBattleSystem BattleSystem { get; }
-    public IHeroUnit Hero { get; private set; }
-    public Hand Hand { get; private set; }
-    public BattleDeck Deck { get; private set; }
-    public DiscardArea Discard { get; private set; }
+    private BattleSystem _battleSystem;
+    IBattleSystem IBattleContext.BattleSystem => _battleSystem;
+    private EnemyManager _enemies;
+    IEnemyManager IBattleContext.Enemies => _enemies;
+    IReadOnlyEnemyManager IReadOnlyBattleContext.Enemies => _enemies;
+    private HeroUnit _hero;
+    IHeroUnit IBattleContext.Hero => _hero;
+    IReadOnlyHeroUnit IReadOnlyBattleContext.Hero => _hero;
+    private Hand _hand;
+    IHand IBattleContext.Hand => _hand;
+    IReadOnlyHand IReadOnlyBattleContext.Hand => _hand;
+    private BattleDeck _deck;
+    IBattleDeck IBattleContext.Deck => _deck;
+    IReadOnlyBattleDeck IReadOnlyBattleContext.Deck => _deck;
+    private DiscardArea _discard;
+    IDiscardArea IBattleContext.Discard => _discard;
+    IReadOnlyDiscardArea IReadOnlyBattleContext.Discard => _discard;
+    private TimelineManager _timeline;
+    ITimelineManager IBattleContext.Timeline => _timeline;
+    IReadOnlyTimelineManager IReadOnlyBattleContext.Timeline => _timeline;
     public int Turn { get; private set; }
 
-    public BattleContext(IHeroUnit hero, Hand hand, BattleDeck deck, DiscardArea discard)
+    public BattleContext(BattleSystem battleSystem, EnemyManager enemies, HeroUnit hero, Hand hand, BattleDeck deck, DiscardArea discard, TimelineManager timeline)
     {
-        Hero = hero;
-        Hand = hand;
-        Deck = deck;
-        Discard = discard;
+        _battleSystem = battleSystem;
+        _enemies = enemies;
+        _hero = hero;
+        _hand = hand;
+        _deck = deck;
+        _discard = discard;
+        _timeline = timeline;
         Turn = 0;
     }
-
-    public BattleUnit SelectTarget(BattleUnit enemy) => Hero;
 
     public void ProgressTurn()
     {

@@ -13,10 +13,9 @@ MonoBehaviour:
   m_Name: PicherGaeshi
   m_EditorClassIdentifier: 
   actionName: "\u5098\u7B26\u300C\u4E00\u672C\u8DB3\u30D4\u30C3\u30C1\u30E3\u30FC\u8FD4\u3057\u300D"
-  target: 1
   ScheduledTime: 10
   IsCanceled: 0
   effects:
   - Data: {fileID: 11400000, guid: 875cbdcd7bff62b4babed5fecce107d2, type: 2}
+    Target: 1
     Amount: 12
-  actionType: 0

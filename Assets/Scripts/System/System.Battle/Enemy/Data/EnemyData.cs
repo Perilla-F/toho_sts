@@ -19,4 +19,5 @@ public class EnemyData : ScriptableObject
     [SerializeField] public AnimationClip IdleClip;
     [SerializeField] public AnimationClip AttackClip;
     [SerializeField] public AnimationClip HitClip;
+    [SerializeField] public AnimationClip BuffClip;
 }

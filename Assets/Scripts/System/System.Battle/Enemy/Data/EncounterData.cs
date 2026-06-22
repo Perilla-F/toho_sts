@@ -12,4 +12,7 @@ public class EncounterData : ScriptableObject
 
     [Header("UI座標（Canvas上のローカル座標）")]
     public List<Vector2> UIPositions;
+
+    [Header("UI座標（Canvas上の拡大）")]
+    public List<int> ModelScale;
 }

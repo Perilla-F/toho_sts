@@ -4,44 +4,12 @@ using TMPro;
 using System.Collections.Generic;
 using System.Linq;
 
-public class EnemyUI : MonoBehaviour, IBattleUI
+public class EnemyUI : BattleCharacterUI
 {
-    [Header("UI References")]
-    [SerializeField] private HpBar hpBar;
-    [SerializeField] private Transform actionContainer;
-    [SerializeField] private Transform buffContainer;
-
-    [SerializeField] private GameObject actionIconPrefab;
-    [SerializeField] private GameObject buffIconPrefab;
-
     private Vector3 _baseScale;
-    private List<BuffIcon> buffList;
 
     private void Start()
     {
-    }
-
-    public void Bind(HPResource resource)
-    {
-        hpBar.Bind(resource);
-    }
-
-    public void SetBuffIcon(StatusEffect data)
-    {
-        BuffIcon buffIcon = Instantiate(buffIconPrefab, buffContainer).GetComponent<BuffIcon>();
-        buffIcon.SetIcon(data);
-        buffList.Add(buffIcon);
-    }
-
-    public void UpdateBuffIcon(StatusEffect data)
-    {
-        var buffIcon = buffList.FirstOrDefault(l => l.effect.Data.EffectId == data.Data.EffectId);
-        buffIcon.UpdateIcon(data);
-    }
-
-    public void ShowDamageEffect(float duration)
-    {
-        // 被ダメージエフェクト処理など
     }
 
 }

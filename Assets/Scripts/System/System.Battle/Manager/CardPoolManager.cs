@@ -4,13 +4,11 @@ using UnityEngine.Pool;
 public class CardPoolManager : ICardPoolProvider
 {
     private GameObject cardPrefab;
-    private PlayerController _controller;
     private IObjectPool<IPoolableCard> _pool;
 
-    public CardPoolManager(GameObject card, PlayerController controller)
+    public CardPoolManager(GameObject card)
     {
         cardPrefab = card;
-        _controller = controller;
 
         Setup();
     }

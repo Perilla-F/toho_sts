@@ -5,10 +5,10 @@ using Cysharp.Threading.Tasks;
 
 public class GroupAttackEvent : BattleEvent
 {
-    public List<BattleUnit> Participants;
-    public BattleUnit Leader;
+    public List<IBattleUnit> Participants;
+    public IBattleUnit Leader;
     public float GroupMultiplier = 1.0f;
-    public GroupAttackEvent(List<BattleUnit> participants, BattleUnit leader, int scheduledTime, int priority) : base(scheduledTime, priority)
+    public GroupAttackEvent(List<IBattleUnit> participants, IBattleUnit leader, int scheduledTime, int priority) : base(scheduledTime, priority)
     {
         Participants = participants;
         Leader = leader;
@@ -26,17 +26,17 @@ public class GroupAttackEvent : BattleEvent
         }
 
         // 代表者の攻撃力ベース
-        int damagePerUnit = Mathf.RoundToInt(Leader.Strength);
+        int damagePerUnit = Mathf.RoundToInt(Leader.StatusCount("strength"));
         int totalDamage = Mathf.RoundToInt(damagePerUnit + GroupMultiplier);
 
-        await context.Hero.TakeDamageAsync(totalDamage);
+        context.Hero.TakeDamageAsync(totalDamage);
     }
 
     private async UniTask HandleGroupCancel(IHeroUnit player, IBattleContext context)
     {
         // 必ずリワード発生
-        await player.GainMana(1);
-        await context.BattleSystem.Draw(1);
+        player.GainMana(1);
+        await context.BattleSystem.DrawMultipleAsync(1);
         // ここで「協調攻撃を阻止した」演出を入れると分かりやすい
     }
 }

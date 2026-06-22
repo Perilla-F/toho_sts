@@ -12,13 +12,14 @@ public class TimelineIcon : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
 {
     [SerializeField] private Image iconImage;
     [SerializeField] private TextMeshProUGUI actionName;
-    [SerializeField] private GameObject highlightEffect;
+    [SerializeField] private TextMeshProUGUI countDown;
 
-    private IBattleEvent _battleEvent;
+    public BattleEvent BattleEvent;
 
     private int _enemyId;
     private RectTransform _rect;
     private CanvasGroup _canvasGroup;
+    public int Count;
 
     private void Awake()
     {
@@ -26,28 +27,38 @@ public class TimelineIcon : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
         _canvasGroup = GetComponent<CanvasGroup>() ?? gameObject.AddComponent<CanvasGroup>();
     }
 
-    public void Setup(IBattleEvent battleEvent)
+    public void Setup(BattleEvent battleEvent)
     {
-        _battleEvent = battleEvent;
+        BattleEvent = battleEvent;
         switch (battleEvent)
         {
             case PlayerActionEvent pe:
-                iconImage.sprite = pe.Hero.playerEventIcon;
+                iconImage.sprite = pe.Hero.PlayerEventIcon;
                 actionName.text = pe.Card.Source.Data.CardName;
-                ChangeHighlight(false);
+                countDown.text = pe.Card.Delay.ToString();
+                Count = pe.Card.Delay;
                 break;
             case EnemyActionEvent ee:
                 _enemyId = ee.EnemyId;
                 iconImage.sprite = ee.Enemy.EventIcon;
                 actionName.text = ee.ActionName;
-                ChangeHighlight(false);
+                countDown.text = ee.action.ScheduledTime.ToString();
+                Count = ee.action.ScheduledTime;
                 break;
             case PreviewActionEvent pre:
-                iconImage.sprite = pre.Hero.playerEventIcon;
+                iconImage.sprite = pre.Hero.PlayerEventIcon;
                 actionName.text = pre.Card.Source.Data.CardName;
-                ChangeHighlight(false);
+                countDown.text = pre.Card.Delay.ToString();
+                Count = pre.Card.Delay;
                 break;
         }
+    }
+
+    public void SetStaticState()
+    {
+        var le = GetComponent<LayoutElement>();
+        le.ignoreLayout = false;
+        LayoutRebuilder.ForceRebuildLayoutImmediate(transform.parent as RectTransform);
     }
 
     /// <summary>
@@ -114,14 +125,14 @@ public class TimelineIcon : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
         await UniTask.WhenAll(fadeTask, heightTask);
     }
 
-    public void ChangeHighlight(bool active)
+    public void UpdateCountDown(int count)
     {
-        highlightEffect.SetActive(active);
+        countDown.text = count.ToString();
     }
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        if (_battleEvent is EnemyActionEvent ee)
+        if (BattleEvent is EnemyActionEvent ee)
         {
             var actionData = ee.action;
             if (actionData is NormalAction na)

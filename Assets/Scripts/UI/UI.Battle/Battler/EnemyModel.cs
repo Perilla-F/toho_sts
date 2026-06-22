@@ -1,12 +1,17 @@
+using System.Threading;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using Cysharp.Threading.Tasks;
+using DG.Tweening;
 using Live2D.Cubism.Framework.Motion;
 
 public class EnemyModel : MonoBehaviour, IBattleModel, IDropHandler
 {
-    public BattleUnit Self;
-
+    public IBattleUnit Self;
     private AnimationClip idle;
+
+
+    private CancellationToken _ct;
 
     private CubismMotionController MotionController
     {
@@ -23,11 +28,13 @@ public class EnemyModel : MonoBehaviour, IBattleModel, IDropHandler
 
     private void Start() { }
 
-    public void Init(BattleUnit enemy, AnimationClip idle)
+    public void Init(IBattleUnit enemy, AnimationClip idle)
     {
         Self = enemy;
         this.idle = idle;
         PlayIdle();
+
+        _ct = this.GetCancellationTokenOnDestroy();
     }
 
 
@@ -46,6 +53,19 @@ public class EnemyModel : MonoBehaviour, IBattleModel, IDropHandler
         // Coroutineでモーション終了後にIdleへ戻す
         float duration = attack.length;
         StartCoroutine(ReturnToIdleAfter(duration));
+    }
+
+    public async UniTask PlayAttackAnimation()
+    {
+        // 前に飛び出す -> 戻る
+        var originalPos = transform.localPosition;
+        await transform.DOLocalMove(originalPos + Vector3.left * 50, 0.2f)
+            .SetEase(Ease.OutQuad)
+            .WithCancellation(_ct);
+
+        await transform.DOLocalMove(originalPos, 0.1f)
+            .SetEase(Ease.InQuad)
+            .WithCancellation(_ct);
     }
 
     public void PlayHit(AnimationClip hit)

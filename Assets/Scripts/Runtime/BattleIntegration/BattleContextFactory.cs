@@ -1,9 +1,8 @@
 public static class BattleContextFactory
 {
-    public static BattleContext Create(EncounterData encounter, GameManager game, PlayerController player)
+    public static BattleContext Create(BattleSystem battleSystem, HeroUnit hero, GameManager game, EnemyManager enemyManager, TimelineManager timelineManager)
     {
-        var heroUnit = new HeroUnit();
-        heroUnit.Setup(game.GetHeroBattler());
+        var heroUnit = hero;
 
         var hand = new Hand();
         var deck = new BattleDeck();
@@ -14,12 +13,12 @@ public static class BattleContextFactory
         foreach (var source in sources)
         {
             // 論理データ生成
-            CardObj cardObj = new NomalCardObj(source, source.SourceCost, player);
+            CardObj cardObj = new NomalCardObj(source, source.SourceCost);
 
             deck.AddCard(cardObj);
         }
 
-        return new BattleContext(heroUnit, hand, deck, discard);
+        return new BattleContext(battleSystem, enemyManager, heroUnit, hand, deck, discard, timelineManager);
     }
 
 }

@@ -7,19 +7,36 @@ using Cysharp.Threading.Tasks;
 
 public class HeroUnit : IHeroUnit
 {
-    public event Action<AnimationClip> OnAttack;
-    public event Action<AnimationClip> OnHit;
-    public event Action<int> OnManaChanged;
+    public string BattlerName { get; private set; }
+    public HPResource HPResource { get; private set; }
+    public List<StatusEffect> Effects { get; private set; }
+    public GameObject UIPrefab { get; private set; }
+    public GameObject ModelPrefab { get; private set; }
+    public float ModelYOffset { get; private set; }
+    public AnimationClip IdleClip { get; private set; }
+    public AnimationClip AttackClip { get; private set; }
+    public AnimationClip HitClip { get; private set; }
+    public AnimationClip BuffClip { get; private set; }
+    public IBattleModel Model { get; private set; }
+    public IBattleUI UI { get; private set; }
+    public RuntimeAnimatorController AnimatorController { get; private set; }
+
+    public Sprite PlayerEventIcon { get; private set; }
+    private Mana _mana;
+    IMana IHeroUnit.Mana => _mana;
+    IReadOnlyMana IReadOnlyHeroUnit.Mana => _mana;
+    public int DrawCount { get; private set; }
+
 
     public void Setup(HeroBattler heroBattler)
     {
         HPResource = heroBattler.HPResource;
         BattlerName = heroBattler.BaseData.BattlerName;
         AnimatorController = heroBattler.BaseData.AnimatorController;
-        Mana = heroBattler.Mana;
+        _mana = heroBattler.Mana;
         DrawCount = heroBattler.DrawCount;
 
-        playerEventIcon = heroBattler.BaseData.playerEventIcon;
+        PlayerEventIcon = heroBattler.BaseData.playerEventIcon;
 
         UIPrefab = heroBattler.BaseData.UIPrefab;
         ModelPrefab = heroBattler.BaseData.ModelPrefab;
@@ -32,42 +49,27 @@ public class HeroUnit : IHeroUnit
         Effects = new List<StatusEffect>();
     }
 
-    public override async UniTask TakeDamageAsync(int amount)
+    public void TakeDamageAsync(int amount)
     {
-        await HPResource.TakeDamage(amount);
+        HPResource.TakeDamage(amount);
     }
 
-    public override async UniTask Heal(int amount)
+    public void Heal(int amount)
     {
-        await HPResource.Gain(amount);
+        HPResource.Gain(amount);
     }
 
-    public override async UniTask ApplyBlock(int amount)
+    public void ApplyBlock(int amount)
     {
-        await HPResource.ApplyBlock(amount);
+        HPResource.ApplyBlock(amount);
     }
 
-    public override async UniTask ApplySimpleBlock(int amount)
+    public void ApplySimpleBlock(int amount)
     {
-        await HPResource.ApplySimpleBlock(amount);
+        HPResource.ApplySimpleBlock(amount);
     }
 
-    public override int GetAttackBonus()
-    {
-        return AttackBonus;
-    }
-
-    public override int GetDefenceBonus()
-    {
-        return DefenceBonus;
-    }
-
-    public void ApplyAttackBuff(int amount)
-    {
-        AttackBonus += amount;
-    }
-
-    public override async UniTask AddEffect(EffectData data, int stacks)
+    public void AddEffect(EffectData data, int stacks)
     {
         var existing = Effects.FirstOrDefault(e => e.Data.EffectId == data.EffectId);
         if (existing != null)
@@ -81,35 +83,35 @@ public class HeroUnit : IHeroUnit
         }
     }
 
-    public override bool HasStatus(EffectData data)
+    public bool HasStatus(EffectData data)
     {
         return Effects.Find(e => e.Data.EffectId == data.EffectId) != null;
     }
 
-    public override async UniTask GainMana(int amount)
+    public void GainMana(int amount)
     {
-        await Mana.Gain(amount);
+        _mana.Gain(amount);
     }
 
-    public override bool IsAlive()
+    public bool IsAlive()
     {
         return HPResource.GetHP() > 0;
     }
-    public override bool IsDisabled()
+    public bool IsDisabled()
     {
         return false;
     }
-    public override int GetCurrentHP()
+    public int GetCurrentHP()
     {
         return HPResource.GetHP();
     }
 
-    public override int GetMaxHP()
+    public int GetMaxHP()
     {
         return HPResource.MaxHP;
     }
 
-    public override void ProcessTurnStart()
+    public void ProcessTurnStart()
     {
         foreach (var e in Effects)
         {
@@ -117,7 +119,7 @@ public class HeroUnit : IHeroUnit
         }
     }
 
-    public override void ProcessTurnEnd()
+    public void ProcessTurnEnd()
     {
         foreach (var e in Effects)
         {
@@ -125,13 +127,16 @@ public class HeroUnit : IHeroUnit
         }
     }
 
-    public override void Attack()
+    public void Attack()
     {
-        OnAttack?.Invoke(AttackClip);
     }
 
-    public override void Hit()
+    public void Buff()
     {
-        OnHit?.Invoke(HitClip);
+
+    }
+
+    public void Hit()
+    {
     }
 }

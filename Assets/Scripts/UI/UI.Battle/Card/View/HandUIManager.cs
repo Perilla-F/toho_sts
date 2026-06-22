@@ -1,22 +1,29 @@
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 using Cysharp.Threading.Tasks;
 using System.Threading;
 using DG.Tweening;
-using System;
 
 public class HandUIManager
 {
     private BattleViewRoot view;
+    private IReadOnlyBattleContext _context;
 
     private ICardPoolProvider pool;
 
+    private Dictionary<ICardObj, BattleCard> _cardDictionary = new();
+
     public event Action OnCompleteDiscardAnimation;
 
-    public HandUIManager(BattleViewRoot view)
+    public HandUIManager(BattleViewRoot view, IReadOnlyBattleContext context)
     {
         this.view = view;
+        _context = context;
 
-        BattleEventBus.RestoreAllCards += RestoreAllCards;
+        BattleEventBus.Card.OnCardDrawn += (cardData, context, ct) => OnCardDraw(cardData, context, ct).Forget();
+        BattleEventBus.Card.RestoreAllCards += RestoreAllCards;
     }
 
     public void Setup(ICardPoolProvider pool)
@@ -24,17 +31,31 @@ public class HandUIManager
         this.pool = pool;
     }
 
-    public BattleCard CreateCardUI(ICardObj cardData)
+    public void CreateCardUI(ICardObj cardData, IReadOnlyBattleContext context, CancellationToken ct)
     {
         var card = pool.GetCard();// card(IPoolableCard)をBattleCardにキャスト
         if (card is BattleCard mono)
         {
             mono.transform.SetParent(view.HandView.transform, false);
             mono.transform.localScale = Vector3.one;
-            card.BindCard(cardData);
-            return mono;
+            card.BindCard(cardData, context);
+            RegisterCard(cardData, mono);
         }
-        return null;
+    }
+
+    public BattleCard GetCardUI(ICardObj cardObj)
+    {
+        return _cardDictionary.TryGetValue(cardObj, out var card) ? card : null;
+    }
+
+    public void RegisterCard(ICardObj cardObj, BattleCard card) => _cardDictionary[cardObj] = card;
+    public void UnregisterCard(ICardObj cardObj) => _cardDictionary.Remove(cardObj);
+
+    public async UniTaskVoid OnCardDraw(ICardObj cardData, IReadOnlyBattleContext context, CancellationToken ct)
+    {
+        CreateCardUI(cardData, context, ct);
+        var card = GetCardUI(cardData);
+        await PlayDrawAnimationAsync(card, ct);
     }
 
     public async UniTask PlayDrawAnimationAsync(BattleCard card, CancellationToken ct)
@@ -49,27 +70,41 @@ public class HandUIManager
         await view.HandView.ArrangeCards(ct);
     }
 
+    public async UniTask DiscardCardAsync(ICardObj card, CancellationToken ct)
+    {
+        var cardUI = GetCardUI(card);
+        if (cardUI == null) return; // UIが存在しないなら何もしない
+
+        // 1. UIの管理リストから除外 (これが確実に呼ばれる必要がある)
+        view.HandView.Discard(cardUI);
+
+        // 2. アニメーションを確実に待機
+        await PlayDiscardAnimationAsync(cardUI, ct);
+
+        // 3. 辞書から消す
+        UnregisterCard(card);
+
+        // 4. プールに返す
+        pool.ReturnCard(cardUI);
+
+        view.UpdateDiscardCount();
+
+        await view.HandView.ArrangeCards(ct);
+    }
+
     public async UniTask PlayDiscardAnimationAsync(BattleCard card, CancellationToken ct)
     {
-        view.HandView.Discard(card);
+        var discardView = view.DiscardView?.GetTransform();
+        var targetPos = discardView != null ? discardView.position : Vector3.zero;
 
-        var arrangeTask = view.HandView.ArrangeCards(ct);
-
-        var moveTask = card.transform
-            .DOMove(view.DiscardAreaView.GetTransform().position, 0.3f)
+        var moveTask = card.transform.DOMove(targetPos, 0.3f)
             .SetEase(Ease.OutCubic)
             .WithCancellation(ct);
 
-        var scaleTask = card.transform
-            .DOScale(Vector3.zero, 0.3f)
+        var scaleTask = card.transform.DOScale(Vector3.zero, 0.3f)
             .WithCancellation(ct);
 
         await UniTask.WhenAll(moveTask, scaleTask);
-
-        pool.ReturnCard(card);
-        OnCompleteDiscardAnimation?.Invoke();
-
-        await arrangeTask;
     }
 
     public void RestoreAllCards()
@@ -82,6 +117,7 @@ public class HandUIManager
 
     private void OnDestroy()
     {
-        BattleEventBus.RestoreAllCards -= RestoreAllCards;
+        BattleEventBus.Card.OnCardDrawn -= (cardData, context, ct) => OnCardDraw(cardData, context, ct).Forget();
+        BattleEventBus.Card.RestoreAllCards -= RestoreAllCards;
     }
 }

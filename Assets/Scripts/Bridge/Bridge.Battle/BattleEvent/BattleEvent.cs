@@ -4,7 +4,7 @@ using System;
 using UnityEngine;
 using Cysharp.Threading.Tasks;
 
-public abstract class BattleEvent : IBattleEvent
+public abstract class BattleEvent
 {
     public int Time { get; private set; }
     public EventType Type { get; set; }
@@ -12,7 +12,6 @@ public abstract class BattleEvent : IBattleEvent
     public int Priority { get; private set; } // 同時刻処理用（例: プレイヤー>ボス>雑魚）
     public int Order { get; set; }  // 雑魚の順番
     public bool IsFinished { get; protected set; }
-    public IHeroUnit Hero { get; set; }
     public int EnemyId { get; set; }
     public IEnemyUnit Enemy { get; set; }
 
@@ -23,6 +22,6 @@ public abstract class BattleEvent : IBattleEvent
         IsFinished = false;
     }
 
-    public abstract UniTask Execute(IBattleContext context);
+    public virtual UniTask Execute(IBattleContext context) => UniTask.CompletedTask;
 
 }

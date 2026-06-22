@@ -6,7 +6,6 @@ public class DiscardArea : IDiscardArea
 {
     private List<ICardObj> _discardedCards;
 
-    public event Action<int> OnChangedDiscardCount;
 
     public int Count => _discardedCards.Count;
 
@@ -18,13 +17,12 @@ public class DiscardArea : IDiscardArea
     public void AddCard(ICardObj cardObj)
     {
         _discardedCards.Add(cardObj);
-        //        OnChangedDiscardCount?.Invoke(_discardedCards.Count);
     }
 
     public void ResetDiscardPile()
     {
         _discardedCards.Clear();
-        OnChangedDiscardCount?.Invoke(_discardedCards.Count);
+        BattleEventBus.View.OnChangedDiscardCount?.Invoke();
     }
 
     public List<ICardObj> GetDiscardPile()
@@ -32,7 +30,11 @@ public class DiscardArea : IDiscardArea
         return _discardedCards;
     }
 
-    public void ShuffleBackInto(BattleDeck deck)
+    /// <summary>
+    /// 捨て札をデッキに戻してシャッフル
+    /// </summary>
+    /// <param name="deck"></param>
+    public void ShuffleBackInto(IBattleDeck deck)
     {
         foreach (var card in _discardedCards)
         {
