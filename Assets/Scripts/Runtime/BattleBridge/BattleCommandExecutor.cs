@@ -9,12 +9,13 @@ public class BattleCommandExecutor : MonoBehaviour
 {
 
     #region フィールド
+    [SerializeField] private BattleManager _battleManager;
     [SerializeField] private TimelineView _timelineView;
 
     private BattleSystem _battleSystem;
     private IBattleContext _context;
     private HeroUnit _hero;
-    private EnemyManager _enemy;
+    private IEnemyManager _enemy;
     private TimelineManager _timeline;
     private HandUIManager _hand;
 
@@ -25,7 +26,7 @@ public class BattleCommandExecutor : MonoBehaviour
 
     #region 初期化処理
 
-    public void Initialize(HeroUnit hero, IBattleContext battleContext, BattleSystem system, EnemyManager enemy, TimelineManager timelineManager, HandUIManager handUIManager)
+    public void Initialize(HeroUnit hero, IBattleContext battleContext, BattleSystem system, IEnemyManager enemy, TimelineManager timelineManager, HandUIManager handUIManager)
     {
         _hero = hero;
         _context = battleContext;
@@ -34,14 +35,13 @@ public class BattleCommandExecutor : MonoBehaviour
         _timeline = timelineManager;
         _hand = handUIManager;
 
-        BattleEventBus.Card.OnCardUsed += (card, target, ct) => HandleCardUsed(card, target, ct).Forget();
         BattleEventBus.Card.OnDiscard += (card, ct) => RequestDiscardAsync(card, ct).Forget();
     }
 
     #endregion
     #region 命令
 
-    private async UniTaskVoid HandleCardUsed(ICardObj card, IBattleUnit target, CancellationToken ct)
+    public async UniTask HandleCardUsedFlow(ICardObj card, IBattleUnit target, CancellationToken ct)
     {
         _context.Discard.AddCard(card);
         _context.Hand.RemoveCard(card);
@@ -57,15 +57,16 @@ public class BattleCommandExecutor : MonoBehaviour
         _timeline.AddEvent(cardAction);
 
         // 非同期で使用処理を開始
-        await HandleCardUsedAsync(_hand.GetCardUI(card), cardAction, ct);
-        _battleSystem.ProcessUntilTime(executionTime);
+        await HandleCardUsedAsync(card, cardAction, ct);
+
+        await _battleSystem.ProcessUntilTime(executionTime);
     }
 
-    public async UniTask HandleCardUsedAsync(BattleCard card, PlayerActionEvent cardAction, CancellationToken ct)
+    private async UniTask HandleCardUsedAsync(ICardObj card, PlayerActionEvent cardAction, CancellationToken ct)
     {
-        await card.MoveToCenterAsync(ct);
+        await _hand.GetCardUI(card).MoveToCenterAsync(ct);
         await _timelineView.ConfirmAction(cardAction, ct);
-        await _hand.PlayDiscardAnimationAsync(card, ct);
+        await _hand.DiscardCardAsync(card, ct);
     }
 
     private List<IBattleUnit> DetermineTargets(CardEffectTarget targetType, IBattleUnit selectedEnemy)
@@ -107,7 +108,7 @@ public class BattleCommandExecutor : MonoBehaviour
         {
             var target = _discardQueue.Dequeue();
             await _hand.DiscardCardAsync(target, ct);
-            await UniTask.Delay(5, cancellationToken: ct); // 演出の間隔
+            await UniTask.Delay(100, cancellationToken: ct); // 演出の間隔
         }
         _isDiscarding = false;
     }
@@ -148,7 +149,6 @@ public class BattleCommandExecutor : MonoBehaviour
 
     private void OnDestroy()
     {
-        BattleEventBus.Card.OnCardUsed -= (card, target, ct) => HandleCardUsed(card, target, ct).Forget();
         BattleEventBus.Card.OnDiscard -= (card, ct) => RequestDiscardAsync(card, ct).Forget();
     }
 

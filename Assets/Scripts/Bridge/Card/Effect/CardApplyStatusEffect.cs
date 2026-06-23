@@ -4,13 +4,10 @@ using Cysharp.Threading.Tasks;
 [CreateAssetMenu(menuName = "CardEffect/Status")]
 public class CardApplyStatusEffect : CardEffectDefinition
 {
-    private EffectData _data;
+    public EffectData Effect;
 
-    public override void Apply(int amount, CardContext context)
+    public override void Execute(ICardContext context, IBattleUnit target, int amount)
     {
-        foreach (var target in context.Targets)
-        {
-            target.AddEffect(_data, amount);
-        }
+        target.AddEffect(Effect, amount);
     }
 }

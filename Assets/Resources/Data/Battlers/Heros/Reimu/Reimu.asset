@@ -31,9 +31,11 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 46dcad6cfe080e249b9e20349555493f, type: 2}
   - {fileID: 11400000, guid: 9f6dafda4b1f3fa469e2056a7f08e6f8, type: 2}
   UIPrefab: {fileID: 2858867881816413968, guid: bfb9275c2eb0dfc468e2710ecbabdbd7, type: 3}
-  ModelPrefab: {fileID: 6021527161346520988, guid: 0d162d78ac348c144ab470bfec330990, type: 3}
+  ModelScale: 300
+  ModelPrefab: {fileID: 678265034763052040, guid: 738c8be224ce51d49930f16754e4714d, type: 3}
   ModelYOffset: 0
-  IdleClip: {fileID: 7400000, guid: e0d5e10136f505348843cad4a67fad66, type: 2}
+  IdleClip: {fileID: 7400000, guid: a911a1515e24cf549a9127f1e3987a90, type: 2}
   AttackClip: {fileID: 7400000, guid: 854ed8b9790d00b4d8250aa31d3deafb, type: 2}
   HitClip: {fileID: 7400000, guid: 409106ce558198c4fb4967c2fefa7950, type: 2}
+  BuffClip: {fileID: 7400000, guid: e0d5e10136f505348843cad4a67fad66, type: 2}
   playerEventIcon: {fileID: 21300000, guid: 69fc202b7b852ff48bfb079d075d5bd1, type: 3}

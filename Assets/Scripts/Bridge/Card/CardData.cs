@@ -18,11 +18,11 @@ public class CardData : ScriptableObject
     public List<CardEffectInstance> CardEffects;
     public CardEffectTarget CardEffectTarget;
 
-    public void ApplyEffects(CardContext context)
+    public void ApplyEffects(ITargetSelector selector, ICardContext context)
     {
         foreach (var effect in CardEffects)
         {
-            effect.Apply(context);
+            effect.Apply(selector, context);
         }
     }
 }

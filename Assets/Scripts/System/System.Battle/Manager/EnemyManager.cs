@@ -34,13 +34,19 @@ public class EnemyManager : IEnemyManager
     /// 生存エネミーからランダムに選択
     /// </summary>
     /// <returns></returns>
-    public IEnemyUnit GetRandomAliveEnemy()
+    private IEnemyUnit GetRandomAliveEnemy()
     {
         var aliveEnemies = _enemies.FindAll(e => e != null && e.IsAlive());
         if (aliveEnemies.Count == 0) return null;
         return aliveEnemies[Random.Range(0, aliveEnemies.Count)];
     }
+    IEnemyUnit IEnemyManager.GetRandomAliveEnemy() => GetRandomAliveEnemy();
+    IReadOnlyEnemyUnit IReadOnlyEnemyManager.GetRandomAliveEnemy() => GetRandomAliveEnemy();
 
+    /// <summary>
+    /// 敵の全滅確認
+    /// </summary>
+    /// <returns></returns>
     public bool AreAllEnemiesDefeated()
     {
         return _enemies.TrueForAll(e => !e.IsAlive());
@@ -54,6 +60,8 @@ public class EnemyManager : IEnemyManager
     {
         return _enemies;
     }
+    List<IEnemyUnit> IEnemyManager.GetAllEnemies() => GetAllEnemies();
+    IReadOnlyList<IReadOnlyEnemyUnit> IReadOnlyEnemyManager.GetAllEnemies() => GetAllEnemies();
 
     /// <summary>
     /// 生存エネミーをすべて除去

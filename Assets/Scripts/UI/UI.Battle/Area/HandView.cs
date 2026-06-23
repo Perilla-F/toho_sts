@@ -4,7 +4,7 @@ using Cysharp.Threading.Tasks;
 using System.Threading;
 using DG.Tweening;
 
-public class HandView : MonoBehaviour, IHandView
+public class HandView : MonoBehaviour
 {
     [SerializeField] private float radius;
 

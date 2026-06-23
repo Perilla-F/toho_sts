@@ -9,12 +9,14 @@ public abstract class CardObj : ICardObj
     public SourceCard Source { get; private set; }
     public CardEffectTarget TargetType { get; private set; }
     public readonly ResourceRegistry ResourceRegistry;
+    public readonly EnemyTargetSelector Selector;
     public int Delay { get; private set; }
 
-    public CardObj(SourceCard source, ResourceRegistry resourceRegistry)
+    public CardObj(SourceCard source, ResourceRegistry resourceRegistry, EnemyTargetSelector selector)
     {
         Source = source;
         ResourceRegistry = resourceRegistry;
+        Selector = selector;
         Delay = source.Data.Delay;
         TargetType = Source.Data.CardEffectTarget;
     }
@@ -28,7 +30,7 @@ public abstract class CardObj : ICardObj
         return Source;
     }
 
-    public virtual async UniTask Use(CardContext context)
+    public virtual async UniTask Use(ICardContext context)
     {
         await UniTask.CompletedTask;
     }

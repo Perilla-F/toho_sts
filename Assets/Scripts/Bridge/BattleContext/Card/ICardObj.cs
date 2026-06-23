@@ -3,7 +3,7 @@ using Cysharp.Threading.Tasks;
 
 public interface ICardObj : IReadOnlyCardObj
 {
-    public UniTask Use(CardContext context);
+    public UniTask Use(ICardContext context);
 }
 
 public interface IReadOnlyCardObj

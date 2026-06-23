@@ -27,7 +27,7 @@ public class TimelineIcon : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
         _canvasGroup = GetComponent<CanvasGroup>() ?? gameObject.AddComponent<CanvasGroup>();
     }
 
-    public void Setup(BattleEvent battleEvent)
+    public void Setup(BattleEvent battleEvent, int currentTime)
     {
         BattleEvent = battleEvent;
         switch (battleEvent)
@@ -35,21 +35,21 @@ public class TimelineIcon : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
             case PlayerActionEvent pe:
                 iconImage.sprite = pe.Hero.PlayerEventIcon;
                 actionName.text = pe.Card.Source.Data.CardName;
+                Count = pe.Card.Delay + currentTime;
                 countDown.text = pe.Card.Delay.ToString();
-                Count = pe.Card.Delay;
                 break;
             case EnemyActionEvent ee:
                 _enemyId = ee.EnemyId;
                 iconImage.sprite = ee.Enemy.EventIcon;
                 actionName.text = ee.ActionName;
-                countDown.text = ee.action.ScheduledTime.ToString();
                 Count = ee.action.ScheduledTime;
+                countDown.text = (Count - currentTime).ToString();
                 break;
             case PreviewActionEvent pre:
                 iconImage.sprite = pre.Hero.PlayerEventIcon;
                 actionName.text = pre.Card.Source.Data.CardName;
+                Count = pre.Card.Delay + currentTime;
                 countDown.text = pre.Card.Delay.ToString();
-                Count = pre.Card.Delay;
                 break;
         }
     }

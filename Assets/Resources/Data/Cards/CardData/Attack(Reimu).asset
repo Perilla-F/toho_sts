@@ -30,4 +30,5 @@ MonoBehaviour:
   CardEffects:
   - Definition: {fileID: 11400000, guid: 39d0d4301ceb3b944bdcef00f35ef071, type: 2}
     Amount: 5
+    Target: 2
   CardEffectTarget: 2

@@ -1,31 +1,35 @@
 using System.Threading;
 using UnityEngine;
 using Live2D.Cubism.Framework.Motion;
+using Live2D.Cubism.Framework.MotionFade;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
 
 public class HeroModel : MonoBehaviour, IBattleModel
 {
-    [SerializeField] private CubismMotionController motionController;
+    private CubismMotionController _motionController;
+    private CubismFadeMotionList _motionList;
     private AnimationClip idle;
 
     private CancellationToken _ct;
 
-    public void Init(AnimationClip idle)
+    public void Initialize(HeroData data, CubismMotionController controller, CubismFadeMotionList motionList)
     {
-        this.idle = idle;
+        idle = data.IdleClip;
+        _motionController = controller;
+        _motionList = motionList;
         PlayIdle();
         _ct = this.GetCancellationTokenOnDestroy();
     }
 
     public void PlayIdle()
     {
-        motionController.PlayAnimation(idle, isLoop: true);
+        _motionController.PlayAnimation(idle, isLoop: true);
     }
 
     public void PlayAttack(AnimationClip attack)
     {
-        motionController.PlayAnimation(attack, isLoop: false);
+        _motionController.PlayAnimation(attack, isLoop: false);
 
         // Coroutineでモーション終了後にIdleへ戻す
         float duration = attack.length;
@@ -34,7 +38,7 @@ public class HeroModel : MonoBehaviour, IBattleModel
 
     public void PlayHit(AnimationClip hit)
     {
-        motionController.PlayAnimation(hit, isLoop: false);
+        _motionController.PlayAnimation(hit, isLoop: false);
 
         // 被ダメ後にIdleへ戻す
         float duration = hit.length;

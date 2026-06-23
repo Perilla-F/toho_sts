@@ -1,4 +1,6 @@
 using UnityEngine;
+using Live2D.Cubism.Framework.Motion;
+using Live2D.Cubism.Framework.MotionFade;
 
 public class EnemyGenerator : MonoBehaviour
 {
@@ -6,12 +8,11 @@ public class EnemyGenerator : MonoBehaviour
     [SerializeField] private Transform _modelPosition;
     [SerializeField] private Canvas _canvas;
 
-    private EnemyManager _enemyManager;
-    private float _modelBaseY = 30f;  // モデルのY初期位置
+    private IEnemyManager _enemyManager;
 
     private int _nextEnemyId = 0;
 
-    public void Init(EnemyManager enemyManager)
+    public void Init(IEnemyManager enemyManager)
     {
         _enemyManager = enemyManager;
     }
@@ -37,16 +38,21 @@ public class EnemyGenerator : MonoBehaviour
             enemyUnit.SetID(id);
 
             // 1. UIの生成
-            EnemyUI enemyUI = Instantiate(enemyUnit.UIPrefab, _uiPosition).GetComponent<EnemyUI>();
+            EnemyUI enemyUI = Instantiate(enemyData.UIPrefab, _uiPosition).GetComponent<EnemyUI>();
             enemyUI.transform.localPosition = uiPos;
             enemyUI.Bind(enemyUnit.HPResource);
 
-            // 2. モデルの生成を「WorldRoot」のようなCanvas外のTransformにする
-            Vector3 targetWorldPos = ConvertUiPosToWorldPos(uiPos);
-            EnemyModel enemyModel = Instantiate(enemyUnit.ModelPrefab, _modelPosition).GetComponent<EnemyModel>();
-            enemyModel.transform.position = new Vector3(targetWorldPos.x, targetWorldPos.y + _modelBaseY, targetWorldPos.z);
-            enemyModel.transform.localScale = modelScale;
-            enemyModel.Init(enemyUnit, enemyUnit.IdleClip);
+            var modelObj = Instantiate(enemyData.ModelPrefab, enemyUI.transform);
+            modelObj.transform.localPosition += Vector3.up * enemyData.ModelYOffset;
+            modelObj.transform.localScale = modelScale;
+            var motionController = modelObj.GetComponent<CubismMotionController>();
+            var motionFade = modelObj.GetComponent<CubismFadeController>().CubismFadeMotionList;
+            if (motionController == null)
+            {
+                motionController = modelObj.AddComponent<CubismMotionController>();
+            }
+            var enemyModel = modelObj.GetComponent<EnemyModel>();
+            enemyModel.Initialize(enemyUnit, enemyData, motionController, motionFade);
 
             // バインド
             enemyUnit.BindUI(enemyModel, enemyUI);

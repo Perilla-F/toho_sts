@@ -10,9 +10,6 @@ public class EnemyUnit : IEnemyUnit
     public string BattlerName { get; private set; }
     public HPResource HPResource { get; private set; }
     public List<StatusEffect> Effects { get; private set; }
-    public GameObject UIPrefab { get; private set; }
-    public GameObject ModelPrefab { get; private set; }
-    public float ModelYOffset { get; private set; }
     public AnimationClip IdleClip { get; private set; }
     public AnimationClip AttackClip { get; private set; }
     public AnimationClip HitClip { get; private set; }
@@ -37,9 +34,6 @@ public class EnemyUnit : IEnemyUnit
         HPResource = new HPResource(data.MaxHP);
         lastCondition = currentCondition;
         EnemyType = data.EnemyType;
-        UIPrefab = data.UIPrefab;
-        ModelPrefab = data.ModelPrefab;
-        ModelYOffset = data.ModelYOffset;
         IdleClip = data.IdleClip;
         AttackClip = data.AttackClip;
         HitClip = data.HitClip;

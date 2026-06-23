@@ -1,11 +1,10 @@
 using UnityEngine;
-using Cysharp.Threading.Tasks;
 
 [CreateAssetMenu(menuName = "CardEffect/Draw")]
 public class CardDrawEffect : CardEffectDefinition
 {
-    public override async void Apply(int amount, CardContext context)
+    public override void Execute(ICardContext context, IBattleUnit target, int amount)
     {
-        await context.BattleSystem.DrawMultipleAsync(amount);
+        context.BattleSystem.DrawMultipleAsync(amount);
     }
 }

@@ -88,13 +88,17 @@ public class BattleCard : MonoBehaviour, IPoolableCard, IPointerEnterHandler, IP
         transform.SetSiblingIndex(_defaultSiblingIndex);
         transform.DOScale(Vector3.one, 0.1f);
         BezierArrows.Instance.Hide();
-        BattleEventBus.Card.RestoreAllCards?.Invoke();
         if (EventSystem.current.currentSelectedGameObject == this.gameObject ||
-        EventSystem.current.IsPointerOverGameObject())
+        EventSystem.current.IsPointerOverGameObject() && _stateMachine.CurrentState is not CardTargetingState)
         {
             EventSystem.current.SetSelectedGameObject(null);
             CardHover();
         }
+        else
+        {
+            HoverCancel();
+        }
+        BattleEventBus.Card.RestoreAllCards?.Invoke();
     }
 
     /// <summary>
@@ -114,18 +118,22 @@ public class BattleCard : MonoBehaviour, IPoolableCard, IPointerEnterHandler, IP
     public void OnTryUseCard()
     {
         Debug.Log("Try Use!");
-        if (!Card.Useable()) ResetPos();
-        if (CheckEnemyUnderMouse(out var enemy))
+        if (!Card.Useable())
         {
-            // 敵単体ターゲットの場合
-            ChangeState(new CardBusyState(this));
-            BattleEventBus.Card.OnCardUsed?.Invoke(Card, enemy, _ct);
+            ResetPos();
+            return;
         }
-        else if (Card.TargetType != CardEffectTarget.Enemy)
+        if (Card.TargetType != CardEffectTarget.Enemy)
         {
             // 全体・自身ターゲットで、カードが中央（Targeting領域）にある場合
             ChangeState(new CardBusyState(this));
             BattleEventBus.Card.OnCardUsed?.Invoke(Card, null, _ct);
+        }
+        else if (CheckEnemyUnderMouse(out var enemy))
+        {
+            // 敵単体ターゲットの場合
+            ChangeState(new CardBusyState(this));
+            BattleEventBus.Card.OnCardUsed?.Invoke(Card, enemy, _ct);
         }
         else
         {
@@ -138,26 +146,38 @@ public class BattleCard : MonoBehaviour, IPoolableCard, IPointerEnterHandler, IP
     {
         enemy = null;
 
-        // 1. マウス位置からワールド座標への変換
-        Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-
-        // 2. その位置にあるColliderを検知（2D）
-        RaycastHit2D hit = Physics2D.Raycast(mouseWorldPos, Vector2.zero);
+        Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        RaycastHit2D hit = Physics2D.Raycast(mousePos, Vector2.zero);
 
         if (hit.collider != null)
         {
-            // 3. 検知したオブジェクトに敵コンポーネントがついているか確認
-            if (hit.collider.TryGetComponent<IBattleUnit>(out var targetEnemy))
+            var enemyModel = hit.collider.GetComponentInParent<EnemyModel>();
+            if (enemyModel != null)
             {
-                enemy = targetEnemy;
-                Debug.Log($"Target is {enemy.BattlerName}");
+                enemy = enemyModel.Self;
                 return true;
             }
         }
 
+        PointerEventData pointerData = new PointerEventData(EventSystem.current)
+        {
+            position = Input.mousePosition
+        };
+
+        List<RaycastResult> results = new List<RaycastResult>();
+        EventSystem.current.RaycastAll(pointerData, results);
+
+        foreach (var result in results)
+        {
+            var enemyModel = result.gameObject.GetComponentInParent<EnemyModel>();
+            if (enemyModel != null)
+            {
+                enemy = enemyModel.Self;
+                return true;
+            }
+        }
         return false;
     }
-
 
     private void Update() => _stateMachine.Update();
 
@@ -230,6 +250,7 @@ public class BattleCard : MonoBehaviour, IPoolableCard, IPointerEnterHandler, IP
     public void OnPointerUp(PointerEventData eventData)
     {
         if (_stateMachine.CurrentState is CardBusyState) return;
+        if (_stateMachine.CurrentState is CardRestState) return;
 
         if (eventData.pointerId != -1) return;
         if (_stateMachine.CurrentState is CardTargetingState)

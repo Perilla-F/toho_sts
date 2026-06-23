@@ -26,6 +26,7 @@ public static class BattleEventBus
     public static class Turn
     {
         public static Action<int, CancellationToken> OnTurnStart;
+        public static Action OnProcessEnd;
         public static Action OnTurnEnd;
     }
 
@@ -70,14 +71,19 @@ public static class BattleEventBus
         public static Action<BattleEvent> OnActionExecuted;
 
         /// <summary>
+        /// タイムラインの時間を更新する際に発行されるイベント
+        /// </summary>
+        public static Action OnUpdateTime;
+
+        /// <summary>
         /// カード演出のために発行されるイベント
         /// </summary>
-        public static Action<CardContext, UniTaskCompletionSource> OnCardUsed;
+        public static Action<CardData, IReadOnlyCardContext, UniTaskCompletionSource> OnCardUsed;
 
         /// <summary>
         /// 敵の攻撃演出のために発行されるイベント
         /// </summary>
-        public static Action<IBattleUnit, UniTaskCompletionSource> OnEnemyAttackEffect;
+        public static Action<IReadOnlyBattleUnit, UniTaskCompletionSource> OnEnemyAttackEffect;
 
     }
 

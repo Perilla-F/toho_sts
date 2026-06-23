@@ -8,34 +8,24 @@ public class NomalCardObj : CardObj
     public int ChangedManaCost = 0;
     public int ChangedDelay = 0;
 
-    public NomalCardObj(SourceCard source, ResourceRegistry resourceRegistry) : base(source, resourceRegistry)
+    public NomalCardObj(SourceCard source, ResourceRegistry resourceRegistry, EnemyTargetSelector selector) : base(source, resourceRegistry, selector)
     {
     }
 
-    public async override UniTask Use(CardContext context)
+    public async override UniTask Use(ICardContext context)
     {
         foreach (var cost in Source.Data.Costs)
         {
             ResourceRegistry.Get(cost.Type)?.TryConsume(cost.Amount);
         }
 
-        Source.Data.ApplyEffects(context);
-        if (Source.Data.CardEffectTarget == CardEffectTarget.Enemy ||
-            Source.Data.CardEffectTarget == CardEffectTarget.AllEnemies ||
-            Source.Data.CardEffectTarget == CardEffectTarget.Random)
-        {
-            context.User.Attack();  // プレイヤーアニメーション
-            foreach (var target in context.Targets)
-            {
-                target.Hit();   // 敵アニメーション
-            }
-        }
+        Source.Data.ApplyEffects(Selector, context);
 
         // 演出の開始を待機する準備
         var tcs = new UniTaskCompletionSource();
 
         // 演出発火（通知）
-        BattleEventBus.BattleEventAsync.OnCardUsed?.Invoke(context, tcs);
+        BattleEventBus.BattleEventAsync.OnCardUsed?.Invoke(Source.Data, context, tcs);
 
         // 演出が終わるまで待つ
         await tcs.Task;

@@ -12,8 +12,6 @@ public class TimelineManager : ITimelineManager
 
     public void AddEvent(BattleEvent e)
     {
-        Debug.Log($"追加するイベント: Time={e.Time}");
-        foreach (var item in _events) { Debug.Log($"既存イベント: Time={item.Time}"); }
         _events.Add(e);
         SortEvents();
     }
@@ -28,6 +26,7 @@ public class TimelineManager : ITimelineManager
         CurrentTime = next.Time;
 
         // イベントの実行（計算＋演出）が終わるまで待つ
+        BattleEventBus.BattleEventAsync.OnUpdateTime?.Invoke();
         await next.Execute(context);
 
         // 実行完了をバスで通知（UI更新用など）
@@ -75,9 +74,6 @@ public class TimelineManager : ITimelineManager
                          .ThenBy(e => e.Priority)
                          .ThenBy(e => e.Order)
                          .ToList();
-
-        Debug.Log($"--- ソート完了後の並び ---");
-        foreach (var e in _events) Debug.Log($"Time: {e.Time}");
     }
 
     /// <summary>

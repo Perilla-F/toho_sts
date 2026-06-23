@@ -1,9 +1,48 @@
 using System.Collections.Generic;
 
-public interface IEnemyManager : IReadOnlyEnemyManager { }
+public interface IEnemyManager : IReadOnlyEnemyManager
+{
+    /// <summary>
+    /// 生存エネミーからランダムに選択
+    /// </summary>
+    /// <returns></returns>
+    new IEnemyUnit GetRandomAliveEnemy();
+    /// <summary>
+    /// 生存エネミーのリストを返す
+    /// </summary>
+    /// <returns></returns>
+    new List<IEnemyUnit> GetAllEnemies();
+    /// <summary>
+    /// 生存エネミーのリストに登録
+    /// </summary>
+    /// <param name="enemy"></param>
+    public void RegisterEnemy(IEnemyUnit enemy);
+    /// <summary>
+    ///  生存エネミーのリストから除去
+    /// </summary>
+    /// <param name="enemy"></param>
+    public void RemoveEnemy(IEnemyUnit enemy);
+    /// <summary>
+    /// 生存エネミーをすべて除去
+    /// </summary>
+    public void ClearEnemies();
+}
 
 public interface IReadOnlyEnemyManager
 {
-    public IEnemyUnit GetRandomAliveEnemy();
-    public List<IEnemyUnit> GetAllEnemies();
+    /// <summary>
+    /// 生存エネミーからランダムに選択
+    /// </summary>
+    /// <returns></returns>
+    public IReadOnlyEnemyUnit GetRandomAliveEnemy();
+    /// <summary>
+    /// 生存エネミーのリストを返す
+    /// </summary>
+    /// <returns></returns>
+    public IReadOnlyList<IReadOnlyEnemyUnit> GetAllEnemies();
+    /// <summary>
+    /// 敵の全滅確認
+    /// </summary>
+    /// <returns></returns>
+    public bool AreAllEnemiesDefeated();
 }

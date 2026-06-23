@@ -2,7 +2,7 @@ public class BattleContext : IBattleContext
 {
     private BattleSystem _battleSystem;
     IBattleSystem IBattleContext.BattleSystem => _battleSystem;
-    private EnemyManager _enemies;
+    private IEnemyManager _enemies;
     IEnemyManager IBattleContext.Enemies => _enemies;
     IReadOnlyEnemyManager IReadOnlyBattleContext.Enemies => _enemies;
     private HeroUnit _hero;
@@ -22,7 +22,7 @@ public class BattleContext : IBattleContext
     IReadOnlyTimelineManager IReadOnlyBattleContext.Timeline => _timeline;
     public int Turn { get; private set; }
 
-    public BattleContext(BattleSystem battleSystem, EnemyManager enemies, HeroUnit hero, Hand hand, BattleDeck deck, DiscardArea discard, TimelineManager timeline)
+    public BattleContext(BattleSystem battleSystem, IEnemyManager enemies, HeroUnit hero, Hand hand, BattleDeck deck, DiscardArea discard, TimelineManager timeline)
     {
         _battleSystem = battleSystem;
         _enemies = enemies;

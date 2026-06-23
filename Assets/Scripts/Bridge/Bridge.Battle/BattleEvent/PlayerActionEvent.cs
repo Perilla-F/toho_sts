@@ -4,9 +4,9 @@ public class PlayerActionEvent : BattleEvent
 {
     public IHeroUnit Hero { get; set; }
     public readonly ICardObj Card;
-    private readonly CardContext cardContext;
+    private readonly ICardContext cardContext;
 
-    public PlayerActionEvent(IHeroUnit hero, ICardObj card, CardContext cardContext, int scheduledTime)
+    public PlayerActionEvent(IHeroUnit hero, ICardObj card, ICardContext cardContext, int scheduledTime)
         : base(scheduledTime, priority: 0)
     {
         Hero = hero;

@@ -43,6 +43,10 @@ public class CardTargetingState : CardStateBase
                 _owner.ChangeState(new CardFollowingState(_owner));
             return;
         }
+        if (Input.GetMouseButton(0) && !_isEntryFromDrag)
+        {
+            _owner.OnTryUseCard();
+        }
         if (Input.GetMouseButtonDown(1))
         {
             _owner.ResetPos();

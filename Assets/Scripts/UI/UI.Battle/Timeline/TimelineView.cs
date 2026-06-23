@@ -1,9 +1,6 @@
-using System;
 using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
-using TMPro;
 using DG.Tweening;
 using System.Threading;
 using Cysharp.Threading.Tasks;
@@ -22,6 +19,7 @@ public class TimelineView : MonoBehaviour
         // Managerからの通知を購読
         BattleEventBus.BattleEventAsync.OnActionsDecided += RefreshTimeline;
         BattleEventBus.BattleEventAsync.OnActionExecuted += RemoveTopEvent;
+        BattleEventBus.BattleEventAsync.OnUpdateTime += UpdateIconCount;
         BattleEventBus.Card.OnCardExited += HidePreview;
     }
 
@@ -46,7 +44,7 @@ public class TimelineView : MonoBehaviour
             var iconScript = obj.GetComponent<TimelineIcon>();
 
             // データをセット
-            iconScript.Setup(events[i]);
+            iconScript.Setup(events[i], _timelineManager.CurrentTime);
 
             if (playAnimation)
             {
@@ -102,7 +100,7 @@ public class TimelineView : MonoBehaviour
         _previewInstance.transform.SetSiblingIndex(insertIndex);
 
         var icon = _previewInstance.GetComponent<TimelineIcon>();
-        icon.Setup(previewEvent);
+        icon.Setup(previewEvent, _timelineManager.CurrentTime);
 
         // ここで点滅処理（CanvasGroupのDOTweenなど）を開始
         icon.StartBlinking();
@@ -179,6 +177,7 @@ public class TimelineView : MonoBehaviour
     {
         BattleEventBus.BattleEventAsync.OnActionsDecided -= RefreshTimeline;
         BattleEventBus.BattleEventAsync.OnActionExecuted -= RemoveTopEvent;
+        BattleEventBus.BattleEventAsync.OnUpdateTime -= UpdateIconCount;
         BattleEventBus.Card.OnCardExited -= HidePreview;
     }
 }

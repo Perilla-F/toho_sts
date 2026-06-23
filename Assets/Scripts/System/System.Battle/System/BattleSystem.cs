@@ -9,7 +9,7 @@ using UnityEngine.SceneManagement;
 
 public class BattleSystem : MonoBehaviour, IBattleSystem
 {
-    private EnemyManager _enemyManager;
+    private IEnemyManager _enemyManager;
     private IHeroUnit _hero;
     private TimelineManager _timelineManager;
     private IBattleContext _context;
@@ -18,7 +18,7 @@ public class BattleSystem : MonoBehaviour, IBattleSystem
 
     private CancellationToken _ct;
 
-    public void Setup(IBattleContext context, HeroUnit heroUnit, EnemyManager enemy, TimelineManager timelineManager, IAudioManager audioService)
+    public void Setup(IBattleContext context, HeroUnit heroUnit, IEnemyManager enemy, TimelineManager timelineManager, IAudioManager audioService)
     {
         _context = context;
         _hero = heroUnit;
@@ -55,7 +55,7 @@ public class BattleSystem : MonoBehaviour, IBattleSystem
     /// </summary>
     /// <param name="targetTime"></param>
     /// <returns></returns>
-    public async void ProcessUntilTime(int targetTime)
+    public async UniTask ProcessUntilTime(int targetTime)
     {
         // 目標時刻に達する前のイベントをすべて実行
         while (_timelineManager.HasEventsUntil(targetTime))
@@ -65,6 +65,7 @@ public class BattleSystem : MonoBehaviour, IBattleSystem
 
         // イベントがない「空白の時間」を埋める（タイムラインの針を目標まで進める）
         _timelineManager.CurrentTime = targetTime;
+        BattleEventBus.BattleEventAsync.OnUpdateTime?.Invoke();
         Debug.Log($"Time is {_timelineManager.CurrentTime} Count!!");
     }
 

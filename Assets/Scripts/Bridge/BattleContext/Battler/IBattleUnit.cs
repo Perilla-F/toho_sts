@@ -1,11 +1,8 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
-using Cysharp.Threading.Tasks;
 
 public interface IBattleUnit : IReadOnlyBattleUnit
 {
-
     public virtual void TakeDamageAsync(int amount)
     {
         HPResource.TakeDamage(amount);
@@ -69,9 +66,6 @@ public interface IReadOnlyBattleUnit
     public string BattlerName { get; }
     public HPResource HPResource { get; }
     public List<StatusEffect> Effects { get; }
-    public GameObject UIPrefab { get; }
-    public GameObject ModelPrefab { get; }
-    public float ModelYOffset { get; }
     public AnimationClip IdleClip { get; }
     public AnimationClip AttackClip { get; }
     public AnimationClip HitClip { get; }

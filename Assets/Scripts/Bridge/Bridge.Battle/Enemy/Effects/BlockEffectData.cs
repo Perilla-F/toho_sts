@@ -3,4 +3,8 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "StatusEffect/Block")]
 public class BlockEffectData : EffectData
 {
+    public override void Apply(IBattleUnit self, IBattleContext context, IBattleUnit target, int amount)
+    {
+        target.ApplyBlock(amount);
+    }
 }

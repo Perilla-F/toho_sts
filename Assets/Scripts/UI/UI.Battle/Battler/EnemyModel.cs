@@ -4,51 +4,40 @@ using UnityEngine.EventSystems;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using Live2D.Cubism.Framework.Motion;
+using Live2D.Cubism.Framework.MotionFade;
 
-public class EnemyModel : MonoBehaviour, IBattleModel, IDropHandler
+public class EnemyModel : MonoBehaviour, IBattleModel
 {
     public IBattleUnit Self;
     private AnimationClip idle;
 
 
     private CancellationToken _ct;
-
-    private CubismMotionController MotionController
-    {
-        get
-        {
-            if (_motionController == null)
-            {
-                _motionController = GetComponent<CubismMotionController>();
-            }
-            return _motionController;
-        }
-    }
     private CubismMotionController _motionController;
+    private CubismFadeMotionList _motionList;
 
-    private void Start() { }
-
-    public void Init(IBattleUnit enemy, AnimationClip idle)
+    public void Initialize(IBattleUnit enemy, EnemyData data, CubismMotionController motionController, CubismFadeMotionList motionList)
     {
         Self = enemy;
-        this.idle = idle;
+        idle = data.IdleClip;
+        _motionController = motionController;
+        _motionList = motionList;
         PlayIdle();
 
         _ct = this.GetCancellationTokenOnDestroy();
     }
 
-
     public void PlayIdle()
     {
-        if (MotionController != null)
+        if (_motionController != null)
         {
-            MotionController.PlayAnimation(idle, isLoop: true);
+            _motionController.PlayAnimation(idle, isLoop: true);
         }
     }
 
     public void PlayAttack(AnimationClip attack)
     {
-        MotionController.PlayAnimation(attack, isLoop: false);
+        _motionController.PlayAnimation(attack, isLoop: false);
 
         // Coroutineでモーション終了後にIdleへ戻す
         float duration = attack.length;
@@ -70,7 +59,7 @@ public class EnemyModel : MonoBehaviour, IBattleModel, IDropHandler
 
     public void PlayHit(AnimationClip hit)
     {
-        MotionController.PlayAnimation(hit, isLoop: false);
+        _motionController.PlayAnimation(hit, isLoop: false);
 
         // 被ダメ後にIdleへ戻す
         float duration = hit.length;

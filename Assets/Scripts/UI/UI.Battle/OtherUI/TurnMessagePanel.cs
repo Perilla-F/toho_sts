@@ -8,7 +8,7 @@ using DG.Tweening;
 using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
 
-public class TurnMessagePanel : MonoBehaviour, ITurnMessagePanel
+public class TurnMessagePanel : MonoBehaviour
 {
     [SerializeField] GameObject _panel;
     [SerializeField] TextMeshProUGUI _messageText;

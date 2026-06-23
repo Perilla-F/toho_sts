@@ -8,6 +8,7 @@ public class BattleBootstrap : MonoBehaviour
     [SerializeField] private BattleSystem _battleSystem;
     [SerializeField] private BattleManager _battleManager;
     [SerializeField] private BattleCommandExecutor _commander;
+    [SerializeField] private HeroGenerator _heroGenerator;
     [SerializeField] private EnemyGenerator _enemyGenerator;
     [SerializeField] private GameObject cardPrefab;
 
@@ -28,8 +29,7 @@ public class BattleBootstrap : MonoBehaviour
         var CardPoolManager = new CardPoolManager(cardPrefab);
         _battleViewRoot.TimelineView.Initialize(_timelineManager);
 
-        HeroUnit hero = new HeroUnit();
-        hero.Setup(gameContext.Hero);
+        var hero = _heroGenerator.GenerateHero(gameContext.Hero);
         var battleContext = BattleContextFactory.Create(_battleSystem, hero, game, enemyManager, _timelineManager);
         _battleSystem.Setup(battleContext, hero, enemyManager, _timelineManager, audioManager);
 

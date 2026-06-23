@@ -15,8 +15,6 @@ public class HandUIManager
 
     private Dictionary<ICardObj, BattleCard> _cardDictionary = new();
 
-    public event Action OnCompleteDiscardAnimation;
-
     public HandUIManager(BattleViewRoot view, IReadOnlyBattleContext context)
     {
         this.view = view;

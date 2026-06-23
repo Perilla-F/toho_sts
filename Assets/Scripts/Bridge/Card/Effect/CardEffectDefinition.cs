@@ -3,5 +3,5 @@ using Cysharp.Threading.Tasks;
 
 public abstract class CardEffectDefinition : ScriptableObject
 {
-    public abstract void Apply(int amount, CardContext context);
+    public abstract void Execute(ICardContext context, IBattleUnit target, int amount);
 }

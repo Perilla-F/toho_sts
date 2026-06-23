@@ -1,3 +1,4 @@
+using Live2D.Cubism.Framework.MotionFade;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -20,4 +21,5 @@ public class EnemyData : ScriptableObject
     [SerializeField] public AnimationClip AttackClip;
     [SerializeField] public AnimationClip HitClip;
     [SerializeField] public AnimationClip BuffClip;
+
 }

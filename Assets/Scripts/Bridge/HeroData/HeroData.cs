@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Live2D.Cubism.Framework.MotionFade;
 
 [CreateAssetMenu(menuName = "Hero/HeroData")]
 public class HeroData : ScriptableObject
@@ -16,6 +17,7 @@ public class HeroData : ScriptableObject
     [SerializeField] private Sprite _portrait;
     [SerializeField] public List<CardData> StartingDeck;
     [SerializeField] public GameObject UIPrefab;    // HPバーなどのUIPrefab
+    [SerializeField] public int ModelScale;
     [SerializeField] public GameObject ModelPrefab;
     public float ModelYOffset;
     [SerializeField] public AnimationClip IdleClip;

@@ -6,9 +6,10 @@ public class CardEffectInstance
 {
     public CardEffectDefinition Definition;
     public int Amount;
+    public CardEffectTarget Target;
 
-    public void Apply(CardContext context)
+    public void Apply(ITargetSelector selector, ICardContext context)
     {
-        Definition.Apply(Amount, context);
+        CardEffectResolver.ResolveEffect(selector, Definition, Amount, context);
     }
 }

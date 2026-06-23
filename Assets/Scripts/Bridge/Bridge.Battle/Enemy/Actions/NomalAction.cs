@@ -14,7 +14,7 @@ public class NormalAction : EnemyAction
             var targets = SelectTarget(context, effect);
             foreach (var target in targets)
             {
-                EffectResolver.ResolveEffect(effect, target);
+                EnemyEffectResolver.ResolveEffect(Self, context, effect, target);
             }
         }
         // 演出の開始を待機する準備

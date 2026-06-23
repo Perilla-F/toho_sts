@@ -10,7 +10,7 @@ public class BattleManager : MonoBehaviour
     [SerializeField] private Button _turnEndButton;
     private BattleSystem _system;
     private IHeroUnit _hero;
-    private EnemyManager _enemies;
+    private IEnemyManager _enemies;
     private TimelineManager _timelineManager;
     private IBattleContext _context;
 
@@ -20,13 +20,15 @@ public class BattleManager : MonoBehaviour
 
     private UniTaskCompletionSource<bool> _turnEndSource;
 
-    public void Initialize(BattleSystem system, HeroUnit hero, EnemyManager enemy, TimelineManager timelineManager, BattleContext context)
+    public void Initialize(BattleSystem system, HeroUnit hero, IEnemyManager enemy, TimelineManager timelineManager, BattleContext context)
     {
         _system = system;
         _hero = hero;
         _enemies = enemy;
         _timelineManager = timelineManager;
         _context = context;
+
+        BattleEventBus.Card.OnCardUsed += (card, target, ct) => HandleCardUsed(card, target, ct).Forget();
     }
 
     public void BattleStart(CancellationToken ct)
@@ -108,6 +110,32 @@ public class BattleManager : MonoBehaviour
         }
     }
 
+    private async UniTaskVoid HandleCardUsed(ICardObj card, IBattleUnit target, CancellationToken ct)
+    {
+        await PlayCardActionAsync(card, target, ct);
+    }
+
+    public async UniTask PlayCardActionAsync(ICardObj card, IBattleUnit target, CancellationToken ct)
+    {
+        _phase = BattlePhase.TimelineRunning;
+        // ロック開始
+        SetInteraction(false);
+
+        try
+        {
+            // Executorに命令
+            await _executor.HandleCardUsedFlow(card, target, ct);
+        }
+        finally
+        {
+            _turnEndButton.interactable = true; // 例外が起きても必ずボタンを戻す
+        }
+
+        // ロック解除
+        SetInteraction(true);
+        _phase = BattlePhase.PlayerSelect;
+    }
+
     /// <summary>
     /// ターン終了処理
     /// </summary>
@@ -127,12 +155,19 @@ public class BattleManager : MonoBehaviour
         await _executor.DiscardAllHandAsync(ct);
     }
 
+    public void SetInteraction(bool isProcessing) { }
+
     public void OnPushTurnEndButton()
     {
         if (_phase != BattlePhase.PlayerSelect) return;
 
         _turnEndButton.interactable = false;
         _turnEndSource?.TrySetResult(true);
+    }
+
+    private void OnDestroy()
+    {
+        BattleEventBus.Card.OnCardUsed -= (card, target, ct) => HandleCardUsed(card, target, ct).Forget();
     }
 
 }
