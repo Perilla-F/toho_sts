@@ -31,7 +31,7 @@ public class HpBar : MonoBehaviour
         BattleEventBus.View.OnChangedHPCount -= UpdateUI;
     }
 
-    private void UpdateUI()
+    public void UpdateUI()
     {
         if (_resource == null) return;
 

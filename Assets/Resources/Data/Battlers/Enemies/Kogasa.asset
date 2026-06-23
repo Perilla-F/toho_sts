@@ -13,7 +13,9 @@ MonoBehaviour:
   m_Name: Kogasa
   m_EditorClassIdentifier: 
   EnemyId: Kogasa
+  BattlerName: "\u591A\u3005\u826F\u5C0F\u5098"
   EventIcon: {fileID: 21300000, guid: f80ad9784200a1843b2ebbd2893cc949, type: 3}
+  MaxHP: 30
   RewardGold: 20
   EnemyAI: {fileID: 11400000, guid: f8abb0d3a8e4ae14baa581bcf9a0e7d7, type: 2}
   EnemyType: 0

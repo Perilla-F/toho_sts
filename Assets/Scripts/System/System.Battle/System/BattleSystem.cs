@@ -83,6 +83,23 @@ public class BattleSystem : MonoBehaviour, IBattleSystem
         return damage;
     }
 
+    public void ExecuteAttack(IBattleUnit attacker, IBattleUnit defender, int baseDamage)
+    {
+        // 1. 計算：ダメージ量を確定させる
+        int damageToDeal = DamageCalculator.CalculateDamage(attacker, defender, baseDamage);
+
+        // 2. 防御：防御コンポーネントに消費させる
+        int finalDamage = defender.DefenseComponent.Consume(damageToDeal);
+
+        // 3. HP適用：残ったダメージだけHPに与える
+        if (finalDamage > 0)
+        {
+            defender.HPResource.LoseHP(finalDamage);
+        }
+
+        Debug.Log($"最終ダメージ: {damageToDeal}, 防御後の被ダメージ: {finalDamage}");
+    }
+
     public async UniTask DrawMultipleAsync(int count)
     {
         for (int i = 0; i < count; i++)

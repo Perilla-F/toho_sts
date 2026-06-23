@@ -23,6 +23,11 @@ public static class BattleEventBus
         public static Action<bool> OnBattleFinished; // true: 勝利, false: 敗北
     }
 
+    public static class Unit
+    {
+        public static Action<IBattleUnit> OnUnitDied;
+    }
+
     public static class Turn
     {
         public static Action<int, CancellationToken> OnTurnStart;

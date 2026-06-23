@@ -2356,7 +2356,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   heroPosition: {fileID: 1674296920}
-  heroUI: {fileID: 0}
+  heroUI: {fileID: 8560182500731130704}
 --- !u!1 &1862690279
 GameObject:
   m_ObjectHideFlags: 0
@@ -4339,6 +4339,17 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 45879675536134821, guid: 395a97abf7fea224bb1a0c7fcac8f849, type: 3}
   m_PrefabInstance: {fileID: 8560182500731130702}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &8560182500731130704 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7471079932801554358, guid: 395a97abf7fea224bb1a0c7fcac8f849, type: 3}
+  m_PrefabInstance: {fileID: 8560182500731130702}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0499b9c754ab69f47b29a63e03659d6c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!222 &8613215860910981421
 CanvasRenderer:
   m_ObjectHideFlags: 0

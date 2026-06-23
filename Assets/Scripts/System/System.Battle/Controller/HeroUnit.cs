@@ -9,6 +9,7 @@ public class HeroUnit : IHeroUnit
 {
     public string BattlerName { get; private set; }
     public HPResource HPResource { get; private set; }
+    int IDamageable.CurrentHP => HPResource.GetHP();
     public List<StatusEffect> Effects { get; private set; }
     public IBattleModel HeroModel { get; private set; }
     public AnimationClip IdleClip { get; private set; }
@@ -18,6 +19,7 @@ public class HeroUnit : IHeroUnit
     public IBattleModel Model { get; private set; }
     public IBattleUI UI { get; private set; }
     public RuntimeAnimatorController AnimatorController { get; private set; }
+    public DefenseComponent DefenseComponent { get; } = new DefenseComponent();
 
     public Sprite PlayerEventIcon { get; private set; }
     private Mana _mana;
@@ -83,9 +85,15 @@ public class HeroUnit : IHeroUnit
         }
     }
 
-    public bool HasStatus(EffectData data)
+    public bool HasStatus(string effectId)
     {
-        return Effects.Find(e => e.Data.EffectId == data.EffectId) != null;
+        return Effects.Find(e => e.Data.EffectId == effectId) != null;
+    }
+
+    public int StatusCount(string effectId)
+    {
+        if (Effects.Find(e => e.Data.EffectId == effectId) == null) return 0;
+        return Effects.Find(e => e.Data.EffectId == effectId).Stacks;
     }
 
     public void GainMana(int amount)

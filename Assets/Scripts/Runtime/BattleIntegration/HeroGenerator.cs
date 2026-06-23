@@ -12,7 +12,7 @@ public class HeroGenerator : MonoBehaviour
     {
         var hero = new HeroUnit();
         hero.Setup(data);
-        // 1. 生成
+        heroUI.Bind(hero.HPResource);
         var modelScale = new Vector3(data.BaseData.ModelScale, data.BaseData.ModelScale, data.BaseData.ModelScale);
         var modelObj = Instantiate(data.BaseData.ModelPrefab, heroPosition);
         modelObj.transform.localScale = modelScale;

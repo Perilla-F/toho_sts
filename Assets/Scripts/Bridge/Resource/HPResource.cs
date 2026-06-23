@@ -85,7 +85,7 @@ public class HPResource : IResource
 
     public void Gain(int amount)
     {
-        Mathf.Min(MaxHP, CurrentResource + amount);
+        CurrentResource = Mathf.Min(MaxHP, CurrentResource + amount);
         BattleEventBus.View.OnChangedHPCount();
     }
 
