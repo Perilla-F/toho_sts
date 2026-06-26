@@ -7,5 +7,6 @@ public class CardSimpleBlockEffect : CardEffectDefinition
     public override void Execute(ICardContext context, IBattleUnit target, int amount)
     {
         target.ApplySimpleBlock(amount);
+        BattleEventBus.View.OnUpdateHp(target);
     }
 }

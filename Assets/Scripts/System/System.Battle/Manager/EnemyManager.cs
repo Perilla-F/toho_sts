@@ -1,33 +1,34 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class EnemyManager : IEnemyManager
 {
-    private List<IEnemyUnit> _enemies;
+    private Dictionary<int, IEnemyUnit> _enemyDatabase = new();
 
-    public EnemyManager()
+    public IEnemyUnit GetEnemy(int id)
     {
-        _enemies = new List<IEnemyUnit>();
+        return _enemyDatabase.TryGetValue(id, out var enemy) ? enemy : null;
     }
 
     /// <summary>
     /// 生存エネミーのリストに登録
     /// </summary>
     /// <param name="enemy"></param>
-    public void RegisterEnemy(IEnemyUnit enemy)
+    public void RegisterEnemy(int id, IEnemyUnit enemy)
     {
-        _enemies.Add(enemy);
+        _enemyDatabase[id] = enemy;
     }
 
     /// <summary>
     /// 生存エネミーのリストから除去
     /// </summary>
     /// <param name="enemy"></param>
-    public void RemoveEnemy(IEnemyUnit enemy)
+    public void RemoveEnemy(int id)
     {
-        _enemies.Remove(enemy);
+        _enemyDatabase.Remove(id);
     }
 
     /// <summary>
@@ -36,7 +37,7 @@ public class EnemyManager : IEnemyManager
     /// <returns></returns>
     private IEnemyUnit GetRandomAliveEnemy()
     {
-        var aliveEnemies = _enemies.FindAll(e => e != null && e.IsAlive());
+        var aliveEnemies = GetAllEnemies().FindAll(e => e != null && e.IsAlive());
         if (aliveEnemies.Count == 0) return null;
         return aliveEnemies[Random.Range(0, aliveEnemies.Count)];
     }
@@ -49,7 +50,7 @@ public class EnemyManager : IEnemyManager
     /// <returns></returns>
     public bool AreAllEnemiesDefeated()
     {
-        return _enemies.TrueForAll(e => !e.IsAlive());
+        return GetAllEnemies().TrueForAll(e => !e.IsAlive());
     }
 
     /// <summary>
@@ -58,7 +59,7 @@ public class EnemyManager : IEnemyManager
     /// <returns></returns>
     public List<IEnemyUnit> GetAllEnemies()
     {
-        return _enemies;
+        return _enemyDatabase.Values.ToList();
     }
     List<IEnemyUnit> IEnemyManager.GetAllEnemies() => GetAllEnemies();
     IReadOnlyList<IReadOnlyEnemyUnit> IReadOnlyEnemyManager.GetAllEnemies() => GetAllEnemies();
@@ -68,7 +69,7 @@ public class EnemyManager : IEnemyManager
     /// </summary>
     public void ClearEnemies()
     {
-        _enemies.Clear();
+        _enemyDatabase.Clear();
     }
 
 }

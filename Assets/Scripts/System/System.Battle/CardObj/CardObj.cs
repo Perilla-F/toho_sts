@@ -10,11 +10,13 @@ public abstract class CardObj : ICardObj
     public CardEffectTarget TargetType { get; private set; }
     public readonly ResourceRegistry ResourceRegistry;
     public readonly EnemyTargetSelector Selector;
+    public int SimpleBlock { get; private set; }
     public int Delay { get; private set; }
 
     public CardObj(SourceCard source, ResourceRegistry resourceRegistry, EnemyTargetSelector selector)
     {
         Source = source;
+        SimpleBlock = source.Data.SimpleBlock;
         ResourceRegistry = resourceRegistry;
         Selector = selector;
         Delay = source.Data.Delay;

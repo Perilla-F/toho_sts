@@ -142,7 +142,7 @@ public class BattleCard : MonoBehaviour, IPoolableCard, IPointerEnterHandler, IP
         }
     }
 
-    private bool CheckEnemyUnderMouse(out IBattleUnit enemy)
+    private bool CheckEnemyUnderMouse(out IReadOnlyEnemyUnit enemy)
     {
         enemy = null;
 

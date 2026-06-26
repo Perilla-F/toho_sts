@@ -35,16 +35,18 @@ public class BattleCommandExecutor : MonoBehaviour
         _timeline = timelineManager;
         _hand = handUIManager;
 
-        BattleEventBus.Card.OnDiscard += (card, ct) => RequestDiscardAsync(card, ct).Forget();
+        BattleEventBus.Card.OnDiscard += HandleDiscard;
     }
 
     #endregion
     #region 命令
 
-    public async UniTask HandleCardUsedFlow(ICardObj card, IBattleUnit target, CancellationToken ct)
+    public async UniTask HandleCardUsedFlow(ICardObj card, IReadOnlyEnemyUnit iTarget, CancellationToken ct)
     {
         _context.Discard.AddCard(card);
         _context.Hand.RemoveCard(card);
+        IEnemyUnit target = null;
+        if (iTarget != null) target = _enemy.GetEnemy(iTarget.EnemyID);
         // 1. ターゲットの確定 (CardDataのTargetTypeに基づいてリストを作成)
         List<IBattleUnit> finalTargets = DetermineTargets(card.Source.Data.CardEffectTarget, target);
 
@@ -53,7 +55,7 @@ public class BattleCommandExecutor : MonoBehaviour
 
         // 3. Actionの作成
         int executionTime = _timeline.CurrentTime + card.Delay;
-        var cardAction = new PlayerActionEvent(_hero, card, context, executionTime);
+        var cardAction = new PlayerActionEvent(_hero, card, context, _hero.PlayerEventIcon, executionTime);
         _timeline.AddEvent(cardAction);
 
         // 非同期で使用処理を開始
@@ -69,7 +71,7 @@ public class BattleCommandExecutor : MonoBehaviour
         await _hand.DiscardCardAsync(card, ct);
     }
 
-    private List<IBattleUnit> DetermineTargets(CardEffectTarget targetType, IBattleUnit selectedEnemy)
+    private List<IBattleUnit> DetermineTargets(CardEffectTarget targetType, IEnemyUnit selectedEnemy)
     {
         List<IBattleUnit> targets = new List<IBattleUnit>();
         switch (targetType)
@@ -98,7 +100,12 @@ public class BattleCommandExecutor : MonoBehaviour
         return targets;
     }
 
-    public async UniTask RequestDiscardAsync(ICardObj card, CancellationToken ct)
+    private void HandleDiscard(ICardObj card, CancellationToken ct)
+    {
+        RequestDiscardAsync(card, ct).Forget();
+    }
+
+    private async UniTask RequestDiscardAsync(ICardObj card, CancellationToken ct)
     {
         _discardQueue.Enqueue(card);
         if (_isDiscarding) return; // 既に実行中ならそのまま待機
@@ -149,7 +156,7 @@ public class BattleCommandExecutor : MonoBehaviour
 
     private void OnDestroy()
     {
-        BattleEventBus.Card.OnDiscard -= (card, ct) => RequestDiscardAsync(card, ct).Forget();
+        BattleEventBus.Card.OnDiscard -= HandleDiscard;
     }
 
     #endregion

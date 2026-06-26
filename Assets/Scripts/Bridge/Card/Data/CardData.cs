@@ -15,6 +15,7 @@ public class CardData : ScriptableObject
     public bool IsUpgraded;
     public CardType CardType;
     public string Description;
+    public int SimpleBlock = 0;
     public List<CardEffectInstance> CardEffects;
     public CardEffectTarget CardEffectTarget;
 

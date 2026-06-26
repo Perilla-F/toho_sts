@@ -1,7 +1,7 @@
 using UnityEngine;
 
-[CreateAssetMenu(menuName = "StatusEffect/Fear")]
-public class FearEffectData : EffectData
+[CreateAssetMenu(menuName = "StatusEffect/Defence")]
+public class DefenseEffectData : EffectData
 {
     public override void Apply(int id, IBattleContext context, IBattleUnit target, int amount)
     {

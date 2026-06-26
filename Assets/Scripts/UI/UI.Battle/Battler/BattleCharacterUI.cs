@@ -10,24 +10,61 @@ public abstract class BattleCharacterUI : MonoBehaviour, IBattleUI
 
     [SerializeField] protected GameObject buffIconPrefab;
 
+    private IReadOnlyBattleUnit _boundUnit;
     protected List<BuffIcon> buffList = new List<BuffIcon>();
 
-    public virtual void Bind(HPResource resource)
+    public void Awake()
     {
-        hpBar.Bind(resource);
+        BattleEventBus.View.OnUpdateHp += HandleHpChanged;
+        BattleEventBus.View.OnUpdateBuffIcon += UpdateBuffIcon;
     }
 
-    public virtual void SetBuffIcon(StatusEffect data)
+    public virtual void Bind(IReadOnlyBattleUnit unit)
     {
-        BuffIcon buffIcon = Instantiate(buffIconPrefab, buffContainer).GetComponent<BuffIcon>();
-        buffIcon.SetIcon(data);
-        buffList.Add(buffIcon);
+        _boundUnit = unit;
+        hpBar.ApplyVisuals(unit);
     }
 
-    public virtual void UpdateBuffIcon(StatusEffect data)
+    private void HandleHpChanged(IReadOnlyBattleUnit unit)
     {
-        var buffIcon = buffList.FirstOrDefault(l => l.effect.Data.EffectId == data.Data.EffectId);
-        buffIcon.UpdateIcon(data);
+        // 「イベントで流れてきたユニット」と「自分が表示しているユニット」が同じなら更新
+        if (unit == _boundUnit)
+        {
+            hpBar.ApplyVisuals(unit);
+        }
+    }
+
+    public virtual void SetBuffIcon(IReadOnlyBattleUnit unit, StatusEffect data)
+    {
+        if (unit == _boundUnit)
+        {
+            if (data == null) return;
+            BuffIcon buffIcon = Instantiate(buffIconPrefab, buffContainer).GetComponent<BuffIcon>();
+            buffIcon.SetIcon(data);
+            buffList.Add(buffIcon);
+        }
+    }
+
+    public virtual void UpdateBuffIcon(IReadOnlyBattleUnit unit, StatusEffect data)
+    {
+        if (unit == _boundUnit)
+        {
+            var buffIcon = buffList.FirstOrDefault(l => l.effect.Data.EffectId == data.Data.EffectId);
+            if (buffIcon == null)
+            {
+                SetBuffIcon(unit, data);
+            }
+            else
+            {
+                buffIcon.UpdateIcon(data);
+            }
+        }
+    }
+
+    public virtual void OnDestroy()
+    {
+        BattleEventBus.View.OnUpdateHp -= HandleHpChanged;
+        BattleEventBus.View.OnUpdateBuffIcon -= UpdateBuffIcon;
     }
 
 }

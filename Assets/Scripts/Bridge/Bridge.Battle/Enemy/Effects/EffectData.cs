@@ -11,5 +11,5 @@ public abstract class EffectData : ScriptableObject
 
     public bool isBuff;
 
-    public abstract void Apply(IBattleUnit self, IBattleContext context, IBattleUnit target, int amount);
+    public abstract void Apply(int id, IBattleContext context, IBattleUnit target, int amount);
 }

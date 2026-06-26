@@ -6,7 +6,6 @@ using System.Linq;
 
 public class EnemyUI : BattleCharacterUI
 {
-    private Vector3 _baseScale;
 
     private void Start()
     {

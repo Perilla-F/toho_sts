@@ -20,7 +20,7 @@ public class HandUIManager
         this.view = view;
         _context = context;
 
-        BattleEventBus.Card.OnCardDrawn += (cardData, context, ct) => OnCardDraw(cardData, context, ct).Forget();
+        BattleEventBus.Card.OnCardDrawn += HandleCardDraw;
         BattleEventBus.Card.RestoreAllCards += RestoreAllCards;
     }
 
@@ -46,17 +46,22 @@ public class HandUIManager
         return _cardDictionary.TryGetValue(cardObj, out var card) ? card : null;
     }
 
-    public void RegisterCard(ICardObj cardObj, BattleCard card) => _cardDictionary[cardObj] = card;
-    public void UnregisterCard(ICardObj cardObj) => _cardDictionary.Remove(cardObj);
+    private void RegisterCard(ICardObj cardObj, BattleCard card) => _cardDictionary[cardObj] = card;
+    private void UnregisterCard(ICardObj cardObj) => _cardDictionary.Remove(cardObj);
 
-    public async UniTaskVoid OnCardDraw(ICardObj cardData, IReadOnlyBattleContext context, CancellationToken ct)
+    private void HandleCardDraw(ICardObj cardData, IReadOnlyBattleContext context, CancellationToken ct)
+    {
+        OnCardDraw(cardData, context, ct).Forget();
+    }
+
+    private async UniTaskVoid OnCardDraw(ICardObj cardData, IReadOnlyBattleContext context, CancellationToken ct)
     {
         CreateCardUI(cardData, context, ct);
         var card = GetCardUI(cardData);
         await PlayDrawAnimationAsync(card, ct);
     }
 
-    public async UniTask PlayDrawAnimationAsync(BattleCard card, CancellationToken ct)
+    private async UniTask PlayDrawAnimationAsync(BattleCard card, CancellationToken ct)
     {
         card.transform.SetParent(view.HandView.transform, false);
         card.transform.localScale = Vector3.zero;
@@ -85,12 +90,12 @@ public class HandUIManager
         // 4. プールに返す
         pool.ReturnCard(cardUI);
 
-        view.UpdateDiscardCount();
+        BattleEventBus.View.OnChangedDiscardCount?.Invoke();
 
         await view.HandView.ArrangeCards(ct);
     }
 
-    public async UniTask PlayDiscardAnimationAsync(BattleCard card, CancellationToken ct)
+    private async UniTask PlayDiscardAnimationAsync(BattleCard card, CancellationToken ct)
     {
         var discardView = view.DiscardView?.GetTransform();
         var targetPos = discardView != null ? discardView.position : Vector3.zero;
@@ -105,7 +110,7 @@ public class HandUIManager
         await UniTask.WhenAll(moveTask, scaleTask);
     }
 
-    public void RestoreAllCards()
+    private void RestoreAllCards()
     {
         foreach (var card in view.HandView.GetCards())
         {
@@ -115,7 +120,7 @@ public class HandUIManager
 
     private void OnDestroy()
     {
-        BattleEventBus.Card.OnCardDrawn -= (cardData, context, ct) => OnCardDraw(cardData, context, ct).Forget();
+        BattleEventBus.Card.OnCardDrawn -= HandleCardDraw;
         BattleEventBus.Card.RestoreAllCards -= RestoreAllCards;
     }
 }

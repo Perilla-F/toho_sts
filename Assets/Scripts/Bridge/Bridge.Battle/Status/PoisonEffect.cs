@@ -11,7 +11,7 @@ public class PoisonEffect : StatusEffect
     public override void OnTurnEnd()
     {
         int damage = Stacks;
-        Owner.TakeDamageAsync(damage);
+        Owner.HPResource.LoseHP(damage);
         RemoveStacks(1);
     }
 }

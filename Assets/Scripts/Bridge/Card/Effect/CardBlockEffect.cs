@@ -7,5 +7,6 @@ public class CardBlockEffect : CardEffectDefinition
     {
         Debug.Log($"Get {amount}Block !");
         target.ApplyBlock(amount);
+        BattleEventBus.View.OnUpdateHp(target);
     }
 }

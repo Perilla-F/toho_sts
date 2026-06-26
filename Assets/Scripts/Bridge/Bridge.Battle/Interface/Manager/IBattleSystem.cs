@@ -4,6 +4,6 @@ using System.Threading;
 
 public interface IBattleSystem
 {
-    int CalculateDamage(IBattleUnit user, IBattleUnit target, int value);
+    public void ExecuteAttack(IBattleUnit user, IBattleUnit target, int baseDamage);
     UniTask DrawMultipleAsync(int count);
 }

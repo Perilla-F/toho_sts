@@ -28,7 +28,7 @@ public class BattleManager : MonoBehaviour
         _timelineManager = timelineManager;
         _context = context;
 
-        BattleEventBus.Card.OnCardUsed += (card, target, ct) => HandleCardUsed(card, target, ct).Forget();
+        BattleEventBus.Card.OnCardUsed += HandleCardUsed;
     }
 
     public void BattleStart(CancellationToken ct)
@@ -49,7 +49,7 @@ public class BattleManager : MonoBehaviour
         }
     }
 
-    public async UniTaskVoid BattleFlowAsync(CancellationToken ct)
+    private async UniTaskVoid BattleFlowAsync(CancellationToken ct)
     {
         while (!BattleFinished)
         {
@@ -69,7 +69,7 @@ public class BattleManager : MonoBehaviour
     /// </summary>
     /// <param name="ct"></param>
     /// <returns></returns>
-    public async UniTask ExecuteTurnStartFlowAsync(CancellationToken ct)
+    private async UniTask ExecuteTurnStartFlowAsync(CancellationToken ct)
     {
         Debug.Log("=== Turn Start Phase ===");
         _phase = BattlePhase.TurnStart;
@@ -91,7 +91,7 @@ public class BattleManager : MonoBehaviour
     /// プレイヤー行動選択中
     /// </summary>
     /// <returns></returns>
-    public async UniTask ExecutePlayerSelectFlowAsync(CancellationToken ct)
+    private async UniTask ExecutePlayerSelectFlowAsync(CancellationToken ct)
     {
         Debug.Log("=== Player Select Phase ===");
         _phase = BattlePhase.PlayerSelect;
@@ -110,12 +110,17 @@ public class BattleManager : MonoBehaviour
         }
     }
 
-    private async UniTaskVoid HandleCardUsed(ICardObj card, IBattleUnit target, CancellationToken ct)
+    private void HandleCardUsed(ICardObj card, IReadOnlyEnemyUnit target, CancellationToken ct)
+    {
+        RequestPlayCard(card, target, ct).Forget();
+    }
+
+    private async UniTaskVoid RequestPlayCard(ICardObj card, IReadOnlyEnemyUnit target, CancellationToken ct)
     {
         await PlayCardActionAsync(card, target, ct);
     }
 
-    public async UniTask PlayCardActionAsync(ICardObj card, IBattleUnit target, CancellationToken ct)
+    private async UniTask PlayCardActionAsync(ICardObj card, IReadOnlyEnemyUnit target, CancellationToken ct)
     {
         _phase = BattlePhase.TimelineRunning;
         // ロック開始
@@ -141,7 +146,7 @@ public class BattleManager : MonoBehaviour
     /// </summary>
     /// <param name="ct"></param>
     /// <returns></returns>
-    public async UniTask ExecuteTurnEndFlowAsync(CancellationToken ct)
+    private async UniTask ExecuteTurnEndFlowAsync(CancellationToken ct)
     {
         Debug.Log("=== Turn End Phase ===");
         _phase = BattlePhase.TurnEnd;
@@ -155,7 +160,7 @@ public class BattleManager : MonoBehaviour
         await _executor.DiscardAllHandAsync(ct);
     }
 
-    public void SetInteraction(bool isProcessing) { }
+    private void SetInteraction(bool isProcessing) { }
 
     public void OnPushTurnEndButton()
     {
@@ -167,7 +172,7 @@ public class BattleManager : MonoBehaviour
 
     private void OnDestroy()
     {
-        BattleEventBus.Card.OnCardUsed -= (card, target, ct) => HandleCardUsed(card, target, ct).Forget();
+        BattleEventBus.Card.OnCardUsed -= HandleCardUsed;
     }
 
 }

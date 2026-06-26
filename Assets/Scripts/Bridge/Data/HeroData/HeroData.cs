@@ -16,7 +16,6 @@ public class HeroData : ScriptableObject
     [SerializeField] public GameObject Live2DModelPrefab { get; set; }
     [SerializeField] private Sprite _portrait;
     [SerializeField] public List<CardData> StartingDeck;
-    [SerializeField] public GameObject UIPrefab;    // HPバーなどのUIPrefab
     [SerializeField] public int ModelScale;
     [SerializeField] public GameObject ModelPrefab;
     public float ModelYOffset;

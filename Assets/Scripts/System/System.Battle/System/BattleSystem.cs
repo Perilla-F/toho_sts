@@ -43,7 +43,7 @@ public class BattleSystem : MonoBehaviour, IBattleSystem
             foreach (var actionData in actionDatas)
             {
                 int priority = enemy.EnemyType == EnemyType.Normal ? 2 : 1;
-                var enemyEvent = new EnemyActionEvent(_hero, enemy, actionData, actionData.ScheduledTime, priority);
+                var enemyEvent = new EnemyActionEvent(enemy.EventIcon, enemy.EnemyID, actionData, actionData.ScheduledTime, priority);
                 _timelineManager.AddEvent(enemyEvent);
             }
         }
@@ -70,19 +70,11 @@ public class BattleSystem : MonoBehaviour, IBattleSystem
     }
 
     /// <summary>
-    /// 最終ダメージ計算
+    /// 攻撃実行
     /// </summary>
-    /// <param name="user"></param>
-    /// <param name="target"></param>
-    /// <param name="value"></param>
-    /// <returns></returns>
-    public int CalculateDamage(IBattleUnit user, IBattleUnit target, int value)
-    {
-        var damage = user.StatusCount("strength") + value;
-        if (target.Effects.Exists(e => e.Data.EffectId == "broken")) damage += damage / 2;
-        return damage;
-    }
-
+    /// <param name="attacker"></param>
+    /// <param name="defender"></param>
+    /// <param name="baseDamage"></param>
     public void ExecuteAttack(IBattleUnit attacker, IBattleUnit defender, int baseDamage)
     {
         // 1. 計算：ダメージ量を確定させる
@@ -97,9 +89,15 @@ public class BattleSystem : MonoBehaviour, IBattleSystem
             defender.HPResource.LoseHP(finalDamage);
         }
 
+        defender.UpdateHpBar();
         Debug.Log($"最終ダメージ: {damageToDeal}, 防御後の被ダメージ: {finalDamage}");
     }
 
+    /// <summary>
+    /// ドロー命令
+    /// </summary>
+    /// <param name="count"></param>
+    /// <returns></returns>
     public async UniTask DrawMultipleAsync(int count)
     {
         for (int i = 0; i < count; i++)

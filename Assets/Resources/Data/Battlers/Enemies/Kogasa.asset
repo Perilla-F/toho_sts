@@ -19,7 +19,7 @@ MonoBehaviour:
   RewardGold: 20
   EnemyAI: {fileID: 11400000, guid: f8abb0d3a8e4ae14baa581bcf9a0e7d7, type: 2}
   EnemyType: 0
-  UIPrefab: {fileID: 2858867881816413968, guid: bfb9275c2eb0dfc468e2710ecbabdbd7, type: 3}
+  UIPrefab: {fileID: 5391724587414834065, guid: bfb9275c2eb0dfc468e2710ecbabdbd7, type: 3}
   ModelPrefab: {fileID: 3330288960262451253, guid: 3a393e19fcfc3f24c811e428c64b9bb1, type: 3}
   ModelYOffset: 50
   IdleClip: {fileID: 7400000, guid: a911a1515e24cf549a9127f1e3987a90, type: 2}

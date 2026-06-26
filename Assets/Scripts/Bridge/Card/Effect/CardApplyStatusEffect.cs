@@ -9,5 +9,6 @@ public class CardApplyStatusEffect : CardEffectDefinition
     public override void Execute(ICardContext context, IBattleUnit target, int amount)
     {
         target.AddEffect(Effect, amount);
+        BattleEventBus.View.OnUpdateHp(target);
     }
 }

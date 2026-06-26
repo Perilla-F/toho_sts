@@ -4,10 +4,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using Cysharp.Threading.Tasks;
 
-/// <summary>
-/// System層とUI層の間でイベントを中継するブリッジクラス（イベントブローカー）。
-/// 全てのイベントは静的に定義され、どこからでも購読・発行が可能。
-/// </summary>
 public static class BattleEventBus
 {
     public static class Battle
@@ -37,7 +33,7 @@ public static class BattleEventBus
 
     public static class Card
     {
-        public static Action<ICardObj, IBattleUnit, CancellationToken> OnCardUsed;
+        public static Action<ICardObj, IReadOnlyEnemyUnit, CancellationToken> OnCardUsed;
         public static Action<ICardObj, IBattleContext, CancellationToken> OnCardDrawn;
 
         /// <summary>
@@ -83,18 +79,19 @@ public static class BattleEventBus
         /// <summary>
         /// カード演出のために発行されるイベント
         /// </summary>
-        public static Action<CardData, IReadOnlyCardContext, UniTaskCompletionSource> OnCardUsed;
+        public static Action<IReadOnlyCardContext, UniTaskCompletionSource> OnCardUsed;
 
         /// <summary>
         /// 敵の攻撃演出のために発行されるイベント
         /// </summary>
-        public static Action<IReadOnlyBattleUnit, UniTaskCompletionSource> OnEnemyAttackEffect;
+        public static Action<int, UniTaskCompletionSource> OnEnemyAttackEffect;
 
     }
 
     public static class View
     {
-        public static Action OnChangedHPCount;
+        public static Action<IReadOnlyBattleUnit> OnUpdateHp;
+        public static Action<IReadOnlyBattleUnit, StatusEffect> OnUpdateBuffIcon;
         public static Action OnChangedManaCount;
         public static Action OnChangedDeckCount;
         public static Action OnChangedDiscardCount;

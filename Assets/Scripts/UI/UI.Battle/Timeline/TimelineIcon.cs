@@ -33,20 +33,20 @@ public class TimelineIcon : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
         switch (battleEvent)
         {
             case PlayerActionEvent pe:
-                iconImage.sprite = pe.Hero.PlayerEventIcon;
+                iconImage.sprite = pe.EventIcon;
                 actionName.text = pe.Card.Source.Data.CardName;
                 Count = pe.Card.Delay + currentTime;
                 countDown.text = pe.Card.Delay.ToString();
                 break;
             case EnemyActionEvent ee:
                 _enemyId = ee.EnemyId;
-                iconImage.sprite = ee.Enemy.EventIcon;
+                iconImage.sprite = ee.EventIcon;
                 actionName.text = ee.ActionName;
                 Count = ee.action.ScheduledTime;
                 countDown.text = (Count - currentTime).ToString();
                 break;
             case PreviewActionEvent pre:
-                iconImage.sprite = pre.Hero.PlayerEventIcon;
+                iconImage.sprite = pre.EventIcon;
                 actionName.text = pre.Card.Source.Data.CardName;
                 Count = pre.Card.Delay + currentTime;
                 countDown.text = pre.Card.Delay.ToString();

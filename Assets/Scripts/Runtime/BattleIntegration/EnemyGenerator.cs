@@ -8,13 +8,15 @@ public class EnemyGenerator : MonoBehaviour
     [SerializeField] private Transform _modelPosition;
     [SerializeField] private Canvas _canvas;
 
-    private IEnemyManager _enemyManager;
+    private EnemyManager _enemyManager;
+    private ModelRegistory _modelRegistory;
 
     private int _nextEnemyId = 0;
 
-    public void Init(IEnemyManager enemyManager)
+    public void Init(EnemyManager enemyManager, ModelRegistory modelRegistory)
     {
         _enemyManager = enemyManager;
+        _modelRegistory = modelRegistory;
     }
 
     /// <summary>
@@ -40,7 +42,7 @@ public class EnemyGenerator : MonoBehaviour
             // 1. UIの生成
             EnemyUI enemyUI = Instantiate(enemyData.UIPrefab, _uiPosition).GetComponent<EnemyUI>();
             enemyUI.transform.localPosition = uiPos;
-            enemyUI.Bind(enemyUnit.HPResource);
+            enemyUI.Bind(enemyUnit);
 
             var modelObj = Instantiate(enemyData.ModelPrefab, enemyUI.transform);
             modelObj.transform.localPosition += Vector3.up * enemyData.ModelYOffset;
@@ -54,15 +56,9 @@ public class EnemyGenerator : MonoBehaviour
             var enemyModel = modelObj.GetComponent<EnemyModel>();
             enemyModel.Initialize(enemyUnit, enemyData, motionController, motionFade);
 
-            // バインド
-            enemyUnit.BindUI(enemyModel, enemyUI);
-
-            // EventListenerを追加
-            EnemyUIEventListener listener = new EnemyUIEventListener();
-            listener.Initialize(enemyUnit.EnemyID, enemyUI);
-
             // Bridgeに登録
-            _enemyManager.RegisterEnemy(enemyUnit);
+            _enemyManager.RegisterEnemy(id, enemyUnit);
+            _modelRegistory.RegisterModel(enemyUnit, enemyModel);
         }
     }
 

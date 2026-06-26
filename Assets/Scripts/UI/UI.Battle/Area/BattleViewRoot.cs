@@ -15,15 +15,20 @@ public class BattleViewRoot : MonoBehaviour
 
     public void Awake()
     {
-        BattleEventBus.Battle.OnBattleStart += (context, mana) => BattleStart(context, mana).Forget();
-        BattleEventBus.Turn.OnTurnStart += (turn, ct) => TurnStart(turn, ct).Forget();
+        BattleEventBus.Battle.OnBattleStart += HandleBattleStart;
+        BattleEventBus.Turn.OnTurnStart += HandleTurnStart;
         BattleEventBus.View.OnChangedManaCount += UpdateManaCount;
         BattleEventBus.View.OnChangedDeckCount += UpdateDeckCount;
         BattleEventBus.View.OnChangedDiscardCount += UpdateDiscardCount;
         BattleEventBus.Card.OnCardHovered += PreviewTimelineIcon;
     }
 
-    public async UniTaskVoid BattleStart(IReadOnlyBattleContext context, IMana mana)
+    private void HandleBattleStart(IReadOnlyBattleContext context, IMana mana)
+    {
+        BattleStart(context, mana).Forget();
+    }
+
+    private async UniTaskVoid BattleStart(IReadOnlyBattleContext context, IMana mana)
     {
         ManaView.Setup(mana);
         DeckView.Setup(context.Deck);
@@ -31,27 +36,32 @@ public class BattleViewRoot : MonoBehaviour
         await TurnMessagePanel.ShowMessage("戦闘開始");
     }
 
-    public async UniTaskVoid TurnStart(int turn, CancellationToken ct)
+    private void HandleTurnStart(int turn, CancellationToken ct)
+    {
+        TurnStart(turn, ct).Forget();
+    }
+
+    private async UniTaskVoid TurnStart(int turn, CancellationToken ct)
     {
         await TurnMessagePanel.ShowMessage("第" + KanjiNumberConverteUtil.ConvertToKanjiWithUnits(turn) + "巡目");
     }
 
-    public void UpdateManaCount() => ManaView.UpdateUI();
+    private void UpdateManaCount() => ManaView.UpdateUI();
 
-    public void UpdateDeckCount() => DeckView.UpdateDeckCount();
+    private void UpdateDeckCount() => DeckView.UpdateDeckCount();
 
-    public void UpdateDiscardCount() => DiscardView.UpdateDiscardCount();
+    private void UpdateDiscardCount() => DiscardView.UpdateDiscardCount();
 
     private void PreviewTimelineIcon(IReadOnlyCardObj card, IReadOnlyHeroUnit hero)
     {
-        var previewEvent = new PreviewActionEvent(hero, card, card.Source.Data.Delay);
+        var previewEvent = new PreviewActionEvent(hero, hero.PlayerEventIcon, card, card.Source.Data.Delay);
         TimelineView.ShowPreview(previewEvent);
     }
 
     public void Oestroy()
     {
-        BattleEventBus.Battle.OnBattleStart -= (context, mana) => BattleStart(context, mana).Forget();
-        BattleEventBus.Turn.OnTurnStart -= (turn, ct) => TurnStart(turn, ct).Forget();
+        BattleEventBus.Battle.OnBattleStart -= HandleBattleStart;
+        BattleEventBus.Turn.OnTurnStart -= HandleTurnStart;
         BattleEventBus.View.OnChangedManaCount -= UpdateManaCount;
         BattleEventBus.View.OnChangedDeckCount -= UpdateDeckCount;
         BattleEventBus.View.OnChangedDiscardCount -= UpdateDiscardCount;

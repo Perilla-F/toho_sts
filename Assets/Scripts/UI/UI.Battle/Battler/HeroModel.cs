@@ -5,29 +5,27 @@ using Live2D.Cubism.Framework.MotionFade;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
 
-public class HeroModel : MonoBehaviour, IBattleModel
+public class HeroModel : BaseBattleModel
 {
     private CubismMotionController _motionController;
-    private CubismFadeMotionList _motionList;
     private AnimationClip idle;
 
     private CancellationToken _ct;
 
-    public void Initialize(HeroData data, CubismMotionController controller, CubismFadeMotionList motionList)
+    public void Initialize(HeroData data, CubismMotionController controller)
     {
         idle = data.IdleClip;
         _motionController = controller;
-        _motionList = motionList;
         PlayIdle();
         _ct = this.GetCancellationTokenOnDestroy();
     }
 
-    public void PlayIdle()
+    public override void PlayIdle()
     {
         _motionController.PlayAnimation(idle, isLoop: true);
     }
 
-    public void PlayAttack(AnimationClip attack)
+    public override void PlayAttack(AnimationClip attack)
     {
         _motionController.PlayAnimation(attack, isLoop: false);
 
@@ -36,7 +34,7 @@ public class HeroModel : MonoBehaviour, IBattleModel
         StartCoroutine(ReturnToIdleAfter(duration));
     }
 
-    public void PlayHit(AnimationClip hit)
+    public override void PlayHit(AnimationClip hit)
     {
         _motionController.PlayAnimation(hit, isLoop: false);
 
@@ -45,7 +43,7 @@ public class HeroModel : MonoBehaviour, IBattleModel
         StartCoroutine(ReturnToIdleAfter(duration));
     }
 
-    public async UniTask PlayAttackAnimation()
+    public override async UniTask PlayAttackAnimation()
     {
         // 前に飛び出す -> 戻る
         var originalPos = transform.localPosition;

@@ -6,17 +6,16 @@ using DG.Tweening;
 using Live2D.Cubism.Framework.Motion;
 using Live2D.Cubism.Framework.MotionFade;
 
-public class EnemyModel : MonoBehaviour, IBattleModel
+public class EnemyModel : BaseBattleModel
 {
-    public IBattleUnit Self;
+    public IReadOnlyEnemyUnit Self;
     private AnimationClip idle;
-
 
     private CancellationToken _ct;
     private CubismMotionController _motionController;
     private CubismFadeMotionList _motionList;
 
-    public void Initialize(IBattleUnit enemy, EnemyData data, CubismMotionController motionController, CubismFadeMotionList motionList)
+    public void Initialize(IReadOnlyEnemyUnit enemy, EnemyData data, CubismMotionController motionController, CubismFadeMotionList motionList)
     {
         Self = enemy;
         idle = data.IdleClip;
@@ -27,7 +26,7 @@ public class EnemyModel : MonoBehaviour, IBattleModel
         _ct = this.GetCancellationTokenOnDestroy();
     }
 
-    public void PlayIdle()
+    public override void PlayIdle()
     {
         if (_motionController != null)
         {
@@ -35,7 +34,7 @@ public class EnemyModel : MonoBehaviour, IBattleModel
         }
     }
 
-    public void PlayAttack(AnimationClip attack)
+    public override void PlayAttack(AnimationClip attack)
     {
         _motionController.PlayAnimation(attack, isLoop: false);
 
@@ -44,7 +43,7 @@ public class EnemyModel : MonoBehaviour, IBattleModel
         StartCoroutine(ReturnToIdleAfter(duration));
     }
 
-    public async UniTask PlayAttackAnimation()
+    public override async UniTask PlayAttackAnimation()
     {
         // 前に飛び出す -> 戻る
         var originalPos = transform.localPosition;
@@ -57,7 +56,7 @@ public class EnemyModel : MonoBehaviour, IBattleModel
             .WithCancellation(_ct);
     }
 
-    public void PlayHit(AnimationClip hit)
+    public override void PlayHit(AnimationClip hit)
     {
         _motionController.PlayAnimation(hit, isLoop: false);
 

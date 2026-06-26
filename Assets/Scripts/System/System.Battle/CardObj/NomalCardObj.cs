@@ -20,12 +20,14 @@ public class NomalCardObj : CardObj
         }
 
         Source.Data.ApplyEffects(Selector, context);
+        context.User.DefenseComponent.ApplySimpleBlock(SimpleBlock);
+        BattleEventBus.View.OnUpdateHp?.Invoke(context.User);
 
         // 演出の開始を待機する準備
         var tcs = new UniTaskCompletionSource();
 
         // 演出発火（通知）
-        BattleEventBus.BattleEventAsync.OnCardUsed?.Invoke(Source.Data, context, tcs);
+        BattleEventBus.BattleEventAsync.OnCardUsed?.Invoke(context, tcs);
 
         // 演出が終わるまで待つ
         await tcs.Task;

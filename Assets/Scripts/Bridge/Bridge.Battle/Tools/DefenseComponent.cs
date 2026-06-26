@@ -7,7 +7,6 @@ public class DefenseComponent
 
     public int Consume(int damage)
     {
-        // SimpleBlock(6) -> Block(5) の順に削る例
         int remaining = damage;
 
         // SimpleBlockを削る
@@ -21,5 +20,25 @@ public class DefenseComponent
         remaining -= consumeBlock;
 
         return remaining; // 残ったダメージを返す
+    }
+
+    public void ApplyBlock(int amount)
+    {
+        Block += amount;
+    }
+
+    public void ApplySimpleBlock(int amount)
+    {
+        SimpleBlock += amount;
+    }
+
+    public void ClearBlock()
+    {
+        Block = 0;
+    }
+
+    public void ClearSimpleBlock()
+    {
+        SimpleBlock = 0;
     }
 }

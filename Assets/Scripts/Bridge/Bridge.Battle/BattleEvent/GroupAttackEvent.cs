@@ -8,10 +8,11 @@ public class GroupAttackEvent : BattleEvent
     public List<IBattleUnit> Participants;
     public IBattleUnit Leader;
     public float GroupMultiplier = 1.0f;
-    public GroupAttackEvent(List<IBattleUnit> participants, IBattleUnit leader, int scheduledTime, int priority) : base(scheduledTime, priority)
+    public GroupAttackEvent(List<IBattleUnit> participants, IBattleUnit leader, Sprite eventIcon, int scheduledTime, int priority) : base(eventIcon, scheduledTime, priority)
     {
         Participants = participants;
         Leader = leader;
+        EventIcon = eventIcon;
     }
 
     public override async UniTask Execute(IBattleContext context)
@@ -29,7 +30,7 @@ public class GroupAttackEvent : BattleEvent
         int damagePerUnit = Mathf.RoundToInt(Leader.StatusCount("strength"));
         int totalDamage = Mathf.RoundToInt(damagePerUnit + GroupMultiplier);
 
-        context.Hero.TakeDamageAsync(totalDamage);
+        context.BattleSystem.ExecuteAttack(Leader, context.Hero, totalDamage);
     }
 
     private async UniTask HandleGroupCancel(IHeroUnit player, IBattleContext context)

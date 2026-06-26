@@ -10,6 +10,7 @@ public class BattleBootstrap : MonoBehaviour
     [SerializeField] private BattleCommandExecutor _commander;
     [SerializeField] private HeroGenerator _heroGenerator;
     [SerializeField] private EnemyGenerator _enemyGenerator;
+    [SerializeField] private BattleEffectPlayer _battleEffectPlayer;
     [SerializeField] private GameObject cardPrefab;
 
     private CancellationToken _ct;
@@ -26,10 +27,12 @@ public class BattleBootstrap : MonoBehaviour
 
         var _timelineManager = new TimelineManager();
         var enemyManager = new EnemyManager();
+        var modelRegistory = new ModelRegistory();
         var CardPoolManager = new CardPoolManager(cardPrefab);
         _battleViewRoot.TimelineView.Initialize(_timelineManager);
+        _battleEffectPlayer.Initialized(enemyManager, modelRegistory);
 
-        var hero = _heroGenerator.GenerateHero(gameContext.Hero);
+        var hero = _heroGenerator.GenerateHero(gameContext.Hero, modelRegistory);
         var battleContext = BattleContextFactory.Create(_battleSystem, hero, game, enemyManager, _timelineManager);
         _battleSystem.Setup(battleContext, hero, enemyManager, _timelineManager, audioManager);
 
@@ -39,7 +42,7 @@ public class BattleBootstrap : MonoBehaviour
         _battleManager.Initialize(_battleSystem, hero, enemyManager, _timelineManager, battleContext);
         _commander.Initialize(hero, battleContext, _battleSystem, enemyManager, _timelineManager, HandUIManager);
 
-        _enemyGenerator.Init(enemyManager);
+        _enemyGenerator.Init(enemyManager, modelRegistory);
         _enemyGenerator.SpawnEnemies(encounter);
         _battleManager.BattleStart(_ct);
     }

@@ -5,21 +5,8 @@ using UnityEngine.Events;
 using UnityEngine.UI;
 using Cysharp.Threading.Tasks;
 
-public class EnemyUnit : IEnemyUnit
+public class EnemyUnit : BaseBattleUnit, IEnemyUnit
 {
-    public string BattlerName { get; private set; }
-    public HPResource HPResource { get; private set; }
-    int IDamageable.CurrentHP => HPResource.GetHP();
-    public List<StatusEffect> Effects { get; private set; }
-    public AnimationClip IdleClip { get; private set; }
-    public AnimationClip AttackClip { get; private set; }
-    public AnimationClip HitClip { get; private set; }
-    public AnimationClip BuffClip { get; private set; }
-    public IBattleModel Model { get; private set; }
-    public IBattleUI UI { get; private set; }
-    public RuntimeAnimatorController AnimatorController { get; }
-    public DefenseComponent DefenseComponent { get; } = new DefenseComponent();
-
     public EnemyType EnemyType { get; private set; }
     public ConditionType currentCondition { get; private set; }
     public ConditionType lastCondition { get; private set; }
@@ -42,28 +29,13 @@ public class EnemyUnit : IEnemyUnit
         BuffClip = data.BuffClip;
 
         Effects = new List<StatusEffect>();
+        DefenseComponent.Block = 0;
+        DefenseComponent.SimpleBlock = 0;
     }
 
     public void SetID(int id)
     {
         EnemyID = id;
-    }
-
-    public void BindUI(IBattleModel model, IBattleUI ui)
-    {
-        Model = model;
-        UI = ui;
-    }
-
-    public bool HasStatus(string effectId)
-    {
-        return Effects.Find(e => e.Data.EffectId == effectId) != null;
-    }
-
-    public int StatusCount(string effectId)
-    {
-        if (Effects.Find(e => e.Data.EffectId == effectId) == null) return 0;
-        return Effects.Find(e => e.Data.EffectId == effectId).Stacks;
     }
 
     /// <summary>
