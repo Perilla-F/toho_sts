@@ -7,15 +7,14 @@ using UnityEngine.AddressableAssets;
 public class CardData : ScriptableObject
 {
     public string CardName;
+    public int CardID;
+    public HeroType Hero;
     public CardRarity Rarity;
     public AssetReferenceSprite CardIllustration;
     public List<ResourceCost> Costs;
     public int Delay;
-    public int UpgradedLevel;
     public bool IsUpgraded;
     public CardType CardType;
-    public string Description;
-    public int SimpleBlock = 0;
     public List<CardEffectInstance> CardEffects;
     public CardEffectTarget CardEffectTarget;
 

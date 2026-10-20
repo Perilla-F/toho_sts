@@ -6,6 +6,7 @@ using UnityEngine;
 public class BattleDeck : IBattleDeck
 {
     private Queue<ICardObj> _deckCards = new Queue<ICardObj>();
+    IReadOnlyList<IReadOnlyCardObj> IReadOnlyBattleDeck.DeckCards => _deckCards.ToList();
 
     /// <summary>
     /// 山札Queue<CardObj>→Queue<CardObj>のシャッフル

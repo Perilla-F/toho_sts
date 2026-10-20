@@ -7,7 +7,7 @@ public interface IPoolableCard
     void BindCard(ICardObj obj, IReadOnlyBattleContext context);
 
     // プールから取り出された時の初期化（データの注入）
-    void SetupCardData(CardData data);
+    void SetupCardData(ICardObj source, IReadOnlyBattleContext context);
 
     // プールに戻る直前の掃除（Addressablesの解放など）
     void ResetForPool();

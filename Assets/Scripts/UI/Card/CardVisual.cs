@@ -6,6 +6,7 @@ using UnityEngine.ResourceManagement.AsyncOperations;
 using Cysharp.Threading.Tasks;
 using System.Threading;
 using System.Collections.Generic;
+using UnityEngine.PlayerLoop;
 
 public class CardVisual : MonoBehaviour
 {
@@ -29,26 +30,49 @@ public class CardVisual : MonoBehaviour
     private static HashSet<string> _loadingKeys = new();
 
     /// <summary>
-    /// 外部からCardDataを設定し、UIを更新する
+    /// バトル外のUI生成
     /// </summary>
-    public void UpdateVisual(CardData data)
+    public void UpdateVisual(SourceCard source)
     {
-        if (data == null)
+        if (source.Data == null)
         {
             Debug.LogWarning("CardData is null!");
             return;
         }
         // 1. テキスト情報の更新
-        nameText.text = data.CardName;
-        descriptionText.text = data.Description;
+        nameText.text = source.Data.CardName;
+        descriptionText.text = UpdateDescription(source);
 
         // 2. レアリティに応じたフレームの切り替え
-        SetFrame(data.Rarity);
-        SetCost(data.Costs);
+        SetFrame(source.Data.Rarity);
+        SetCost(source.Data.Costs);
 
-        delayText.text = data.Delay.ToString();
+        delayText.text = source.Data.Delay.ToString();
 
-        LoadIllustrationAsync(data.CardIllustration).Forget();
+        LoadIllustrationAsync(source.Data.CardIllustration).Forget();
+    }
+
+    /// <summary>
+    /// バトル中のUI生成
+    /// </summary>
+    public void UpdateVisual(IReadOnlyCardObj card, IReadOnlyBattleContext context)
+    {
+        if (card.Source.Data == null)
+        {
+            Debug.LogWarning("CardData is null!");
+            return;
+        }
+        // 1. テキスト情報の更新
+        nameText.text = card.Source.Data.CardName;
+        descriptionText.text = UpdateDescription(card, context, targetEnemy: null);
+
+        // 2. レアリティに応じたフレームの切り替え
+        SetFrame(card.Source.Data.Rarity);
+        SetCost(card.Source.Data.Costs);
+
+        delayText.text = card.Source.Data.Delay.ToString();
+
+        LoadIllustrationAsync(card.Source.Data.CardIllustration).Forget();
     }
 
     private void SetFrame(CardRarity rarity)
@@ -137,6 +161,93 @@ public class CardVisual : MonoBehaviour
         {
             _loadingKeys.Remove(newKey);
         }
+    }
+
+    /// <summary>
+    /// バトル中ターゲットに合わせてUIを更新
+    /// </summary>
+    public void UpdatePreviewTarget(IReadOnlyCardObj card, IReadOnlyBattleContext battleContext, IReadOnlyEnemyUnit targetEnemy)
+    {
+        UpdateDescription(card, battleContext, targetEnemy);
+    }
+
+    /// <summary>
+    /// 複数のCardEffectInstanceから説明文を組み立てて結合する(バトル外)
+    /// </summary>
+    private string UpdateDescription(SourceCard source)
+    {
+        if (source.Data.CardEffects == null || source.Data.CardEffects.Count == 0)
+        {
+            return string.Empty;
+        }
+
+        List<string> effectTexts = new List<string>();
+
+        foreach (var effectInstance in source.Data.CardEffects)
+        {
+            // 定義データ（SO）が存在するかチェック
+            if (effectInstance.Definition != null)
+            {
+                string desc = effectInstance.Definition.GetPreviewDescription(effectInstance.Amount, playerContext: null);
+                effectTexts.Add(desc);
+            }
+        }
+
+        // 複数効果がある場合は改行（\n）などで繋げる
+        return string.Join("\n", effectTexts);
+    }
+
+    /// <summary>
+    /// バトル中の説明文更新
+    /// </summary>
+    private string UpdateDescription(IReadOnlyCardObj card, IReadOnlyBattleContext context, IReadOnlyEnemyUnit targetEnemy)
+    {
+        if (card.Source.Data.CardEffects == null || card.Source.Data.CardEffects.Count == 0)
+        {
+            return string.Empty;
+        }
+
+        List<string> effectTexts = new List<string>();
+
+        foreach (var effectInstance in card.Source.Data.CardEffects)
+        {
+            // 定義データ（SO）が存在するかチェック
+            if (effectInstance.Definition != null)
+            {
+                string desc = effectInstance.Definition.GetPreviewDescription(effectInstance.Amount, context, targetEnemy);
+                effectTexts.Add(desc);
+            }
+        }
+
+        // 複数効果がある場合は改行（\n）などで繋げる
+        return string.Join("\n", effectTexts);
+    }
+
+    /// <summary>
+    /// 複数のCardEffectInstanceから説明文を組み立てて結合する
+    /// </summary>
+    private string UpdateDescription(SourceCard source, IReadOnlyBattleContext context, IReadOnlyEnemyUnit targetEnemy)
+    {
+        if (source.Data.CardEffects == null || source.Data.CardEffects.Count == 0)
+        {
+            return string.Empty;
+        }
+
+        List<string> effectTexts = new List<string>();
+
+        foreach (var effectInstance in source.Data.CardEffects)
+        {
+            // 定義データ（SO）が存在するかチェック
+            if (effectInstance.Definition != null)
+            {
+                if (effectInstance.Definition.EffectType == CardEffectType.Damage && targetEnemy != null) { }
+                string desc = effectInstance.Definition.GetPreviewDescription(effectInstance.Amount, context);
+                effectTexts.Add(desc);
+            }
+        }
+
+        // 複数効果がある場合は改行（\n）などで繋げる
+        return string.Join("\n", effectTexts);
     }
 
     public void Cleanup()

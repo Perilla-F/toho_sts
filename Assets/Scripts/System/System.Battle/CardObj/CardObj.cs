@@ -6,30 +6,17 @@ using System;
 
 public abstract class CardObj : ICardObj
 {
-    public SourceCard Source { get; private set; }
-    public CardEffectTarget TargetType { get; private set; }
-    public readonly ResourceRegistry ResourceRegistry;
+    public SourceCard Source { get; protected set; }
+    public CardEffectTarget TargetType { get; protected set; }
     public readonly EnemyTargetSelector Selector;
-    public int SimpleBlock { get; private set; }
-    public int Delay { get; private set; }
+    public int Delay { get; protected set; }
 
-    public CardObj(SourceCard source, ResourceRegistry resourceRegistry, EnemyTargetSelector selector)
+    public CardObj(SourceCard source, EnemyTargetSelector selector)
     {
         Source = source;
-        SimpleBlock = source.Data.SimpleBlock;
-        ResourceRegistry = resourceRegistry;
         Selector = selector;
         Delay = source.Data.Delay;
         TargetType = Source.Data.CardEffectTarget;
-    }
-
-    /// <summary>
-    /// CardObj→SourceCard変換
-    /// </summary>
-    /// <returns></returns>
-    public SourceCard GetSource()
-    {
-        return Source;
     }
 
     public virtual async UniTask Use(ICardContext context)

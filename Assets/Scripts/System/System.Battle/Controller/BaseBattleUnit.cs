@@ -7,8 +7,9 @@ public abstract class BaseBattleUnit : IBattleUnit
 {
     public string BattlerName { get; protected set; }
     public HPResource HPResource { get; protected set; }
-    int IDamageable.CurrentHP => HPResource.GetHP();
+    int IReadOnlyDamageable.CurrentHP => HPResource.GetHP();
     public List<StatusEffect> Effects { get; protected set; }
+    IReadOnlyList<StatusEffect> IReadOnlyBattleUnit.Effects => Effects;
     public AnimationClip IdleClip { get; protected set; }
     public AnimationClip AttackClip { get; protected set; }
     public AnimationClip HitClip { get; protected set; }

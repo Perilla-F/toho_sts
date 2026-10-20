@@ -24,11 +24,6 @@ public class MapManager
         _context.SetStageIndex(1);
     }
 
-    public void Inject(GameManager gameManager)
-    {
-        _gameManager = gameManager;
-    }
-
     public void GenerateMap()
     {
         _context.SetMapData(_generator.GenerateMapData());
@@ -44,11 +39,6 @@ public class MapManager
         var clickable = _generator.GetClickable(pos);
         _gameManager.RequestSave();
         OnCellSelectionChanged?.Invoke(pos, clickable);
-    }
-
-    public MapSaveData CreateSaveData()
-    {
-        return new MapSaveData(_context.MapData, _context.CurrentCell.x, _context.CurrentCell.y, _context.StageIndex);
     }
 
     public void RestoreFrom()

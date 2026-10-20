@@ -8,7 +8,7 @@ public class NomalCardObj : CardObj
     public int ChangedManaCost = 0;
     public int ChangedDelay = 0;
 
-    public NomalCardObj(SourceCard source, ResourceRegistry resourceRegistry, EnemyTargetSelector selector) : base(source, resourceRegistry, selector)
+    public NomalCardObj(SourceCard source, EnemyTargetSelector selector) : base(source, selector)
     {
     }
 
@@ -16,12 +16,10 @@ public class NomalCardObj : CardObj
     {
         foreach (var cost in Source.Data.Costs)
         {
-            ResourceRegistry.Get(cost.Type)?.TryConsume(cost.Amount);
+            Source.SourceCost.Get(cost.Type)?.TryConsume(cost.Amount);
         }
 
         Source.Data.ApplyEffects(Selector, context);
-        context.User.DefenseComponent.ApplySimpleBlock(SimpleBlock);
-        BattleEventBus.View.OnUpdateHp?.Invoke(context.User);
 
         // 演出の開始を待機する準備
         var tcs = new UniTaskCompletionSource();
@@ -37,7 +35,7 @@ public class NomalCardObj : CardObj
     {
         foreach (var cost in Source.Data.Costs)
         {
-            var res = ResourceRegistry.Get(cost.Type);
+            var res = Source.SourceCost.Get(cost.Type);
             if (res == null || res.CurrentResource < cost.Amount)
             {
                 Debug.Log("Miss Using");

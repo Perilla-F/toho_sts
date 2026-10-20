@@ -36,7 +36,7 @@ public class MapBootstrap : MonoBehaviour
         _eventManager = new EventManager(_eventDatabase, _gameManager, _flagManager, _context);
         _mapManager = new MapManager(_gameManager, _context, _rule);
 
-        mapPresenter = new MapPresenter(_gameManager, _mapManager, _eventManager, _mapView);
+        mapPresenter = new MapPresenter(_gameManager, _mapManager, _eventManager, _restUIManager, _mapView);
         eventPresenter = new EventPresenter(_eventManager, _eventUIManager, _restUIManager);
 
         if (_context.MapData != null)

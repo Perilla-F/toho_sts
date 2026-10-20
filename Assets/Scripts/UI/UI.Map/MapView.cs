@@ -10,7 +10,7 @@ public class MapView : MonoBehaviour
     [SerializeField] private RectTransform scrollRect;
     [SerializeField] private MapVisualSet visualSet;
 
-    private Dictionary<Vector2Int, Cell> _cells = new();
+    private Dictionary<Vector2Int, CellUI> _cells = new();
 
     public event Action<Vector2Int, CellType> OnCellClicked;
 
@@ -51,7 +51,7 @@ public class MapView : MonoBehaviour
         AdjustContentSize(totalMapHeight, bottomMargin);
     }
 
-    private Cell BuildCell(GameObject prefab, MapCellState state, float yOffset, float size, int width, bool isWide = false)
+    private CellUI BuildCell(GameObject prefab, MapCellState state, float yOffset, float size, int width, bool isWide = false)
     {
         GameObject obj = Instantiate(prefab, content);
         RectTransform rt = obj.GetComponent<RectTransform>();
@@ -73,7 +73,7 @@ public class MapView : MonoBehaviour
             state.GridPos.y * size + yOffset
             );
 
-        Cell cell = obj.GetComponent<Cell>();
+        CellUI cell = obj.GetComponent<CellUI>();
         cell.Initialize(state.Type, state.GridPos, isWide);
         cell.SetIcon(GetIcon(state.Type));
 

@@ -11,6 +11,7 @@ public class BattleBootstrap : MonoBehaviour
     [SerializeField] private HeroGenerator _heroGenerator;
     [SerializeField] private EnemyGenerator _enemyGenerator;
     [SerializeField] private BattleEffectPlayer _battleEffectPlayer;
+    [SerializeField] private DeckViewController _deckViewController;
     [SerializeField] private GameObject cardPrefab;
 
     private CancellationToken _ct;
@@ -38,6 +39,8 @@ public class BattleBootstrap : MonoBehaviour
 
         var HandUIManager = new HandUIManager(_battleViewRoot, battleContext);
         HandUIManager.Setup(CardPoolManager);
+
+        _deckViewController.Setup(battleContext);
 
         _battleManager.Initialize(_battleSystem, hero, enemyManager, _timelineManager, battleContext);
         _commander.Initialize(hero, battleContext, _battleSystem, enemyManager, _timelineManager, HandUIManager);

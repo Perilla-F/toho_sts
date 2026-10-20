@@ -5,6 +5,7 @@ using System.Collections.Generic;
 public class DiscardArea : IDiscardArea
 {
     private List<ICardObj> _discardedCards;
+    IReadOnlyList<IReadOnlyCardObj> IReadOnlyDiscardArea.DiscardedCards => _discardedCards;
 
 
     public int Count => _discardedCards.Count;

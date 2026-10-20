@@ -83,6 +83,9 @@ public class EventManager
         StartStep(data.stepId);
     }
 
-    public void StartRestEvent() { }
+    public void StartRestEvent()
+    {
+        _context.Hero.HPResource.Gain((int)(_context.Hero.HPResource.MaxHP * 0.3f));
+    }
 
 }

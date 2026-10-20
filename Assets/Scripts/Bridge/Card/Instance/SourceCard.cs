@@ -3,6 +3,7 @@ public class SourceCard
 {
     public CardData Data;
     public ResourceRegistry SourceCost;
+    public int UpgradedLevel;
 
     public SourceCard(CardData data, HPResource hPResource, Mana mana)
     {

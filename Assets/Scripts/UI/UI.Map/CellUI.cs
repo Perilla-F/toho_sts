@@ -1,26 +1,27 @@
 using System;
+using Cysharp.Threading.Tasks.Triggers;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 /// <summary>
 /// マップ上の1セルを表すクラス
 /// </summary>
-public class Cell : MonoBehaviour
+public class CellUI : MonoBehaviour, IPointerClickHandler
 {
     [Header("セル情報")]
-    public CellType Type;
+    private CellType Type;
     public Vector2Int GridPos;
     public bool IsWide;
 
     [Header("UI")]
-    public Image IconImage;
-    public GameObject CurrentIcon;
-    public GameObject SelectableEffect;
+    [SerializeField] private Image IconImage;
+    [SerializeField] private GameObject CurrentIcon;
+    [SerializeField] private GameObject SelectableEffect;
 
     [Header("状態管理")]
     public bool Cleared;
 
-    private Button _button;
     public bool IsSelectable;
 
     public event Action<Vector2Int, CellType> OnClicked;
@@ -40,18 +41,8 @@ public class Cell : MonoBehaviour
         if (SelectableEffect != null)
             SelectableEffect.SetActive(false);
         IsSelectable = false;
-        _button = GetComponent<Button>();
-
-        if (_button == null)
-        {
-            Debug.LogError("Cell に Button コンポーネントが必要です！");
-            return;
-        }
 
         Cleared = false;
-
-        // クリック時にMapManagerへ通知
-        _button.onClick.AddListener(OnMouseDown);
     }
 
     public void SetIcon(Sprite icon)
@@ -89,9 +80,9 @@ public class Cell : MonoBehaviour
         Cleared = true;
     }
 
-    private void OnMouseDown()
+    public void OnPointerClick(PointerEventData e)
     {
-        if (!IsSelectable) return;
         OnClicked?.Invoke(GridPos, Type);
     }
+
 }

@@ -12,3 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 96799c7bdf0e36d41a98b401e6cf7cef, type: 3}
   m_Name: CardDamageEffect
   m_EditorClassIdentifier: 
+  EffectType: 0
+  DescriptionTemplate: "\u30C0\u30E1\u30FC\u30B8{0}"

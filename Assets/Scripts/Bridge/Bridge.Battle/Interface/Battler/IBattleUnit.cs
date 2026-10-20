@@ -3,6 +3,7 @@ using UnityEngine;
 
 public interface IBattleUnit : IReadOnlyBattleUnit, IDamageable
 {
+    new List<StatusEffect> Effects { get; }
     public void Heal(int amount);
 
     public void ApplyBlock(int amount);
@@ -24,21 +25,16 @@ public interface IBattleUnit : IReadOnlyBattleUnit, IDamageable
 
 }
 
-public interface IReadOnlyBattleUnit
+public interface IReadOnlyBattleUnit : IReadOnlyDamageable
 {
     public string BattlerName { get; }
     public HPResource HPResource { get; }
-    public List<StatusEffect> Effects { get; }
+    public IReadOnlyList<StatusEffect> Effects { get; }
     public AnimationClip IdleClip { get; }
     public AnimationClip AttackClip { get; }
     public AnimationClip HitClip { get; }
     public AnimationClip BuffClip { get; }
     public DefenseComponent DefenseComponent { get; }
-
-
-    public bool HasStatus(string effectId);
-
-    public int StatusCount(string effectId);
 
     public bool IsAlive();
 

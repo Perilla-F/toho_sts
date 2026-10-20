@@ -10,12 +10,12 @@ using System.Reflection;
 
 public class BattleCard : MonoBehaviour, IPoolableCard, IPointerEnterHandler, IPointerExitHandler, IBeginDragHandler, IDragHandler, IPointerUpHandler, IPointerDownHandler
 {
-    [SerializeField] private CardVisual visual;
+    [SerializeField] public CardVisual visual;
     [SerializeField] public float thresholdY;
 
     public GameObject GameObject => this.gameObject;
     public ICardObj Card;
-    private IReadOnlyBattleContext _context;
+    public IReadOnlyBattleContext context;
 
     private CardData data;
 
@@ -48,16 +48,16 @@ public class BattleCard : MonoBehaviour, IPoolableCard, IPointerEnterHandler, IP
         Card = card;
         data = card.Source.Data;
 
-        _context = context;
+        this.context = context;
 
         _canvas = GetComponentInParent<Canvas>();
 
-        SetupCardData(data);
+        SetupCardData(card, context);
     }
 
-    public void SetupCardData(CardData data)
+    public void SetupCardData(ICardObj card, IReadOnlyBattleContext context)
     {
-        visual.UpdateVisual(data);
+        visual.UpdateVisual(card, context);
     }
 
     /// <summary>
@@ -142,7 +142,7 @@ public class BattleCard : MonoBehaviour, IPoolableCard, IPointerEnterHandler, IP
         }
     }
 
-    private bool CheckEnemyUnderMouse(out IReadOnlyEnemyUnit enemy)
+    public bool CheckEnemyUnderMouse(out IReadOnlyEnemyUnit enemy)
     {
         enemy = null;
 
@@ -306,7 +306,7 @@ public class BattleCard : MonoBehaviour, IPoolableCard, IPointerEnterHandler, IP
         transform.DOScale(1.1f, 0.15f); // 少し大きくするとさらに良い
 
         // タイムライン上にアイコンを載せる
-        BattleEventBus.Card.OnCardHovered?.Invoke(Card, _context.Hero);
+        BattleEventBus.Card.OnCardHovered?.Invoke(Card, context.Hero);
     }
 
     public void HoverCancel()

@@ -17,6 +17,7 @@ public class EventPresenter
         // UIからの入力も購読
         _eventUIManager.OnOptionSelected += HandleOptionSelected;
         _restUIManager.OnRestPush += HandleRestPush;
+        _restUIManager.OnEndRestPush += HandleEndRest;
     }
 
     private void HandleStepStarted(EventStep step)
@@ -37,5 +38,11 @@ public class EventPresenter
     private void HandleRestPush()
     {
         _eventManager.StartRestEvent();
+        _restUIManager.EndEvent();
+    }
+
+    private void HandleEndRest()
+    {
+        _restUIManager.Hide();
     }
 }

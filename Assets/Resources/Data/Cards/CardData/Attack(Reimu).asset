@@ -13,7 +13,9 @@ MonoBehaviour:
   m_Name: Attack(Reimu)
   m_EditorClassIdentifier: 
   CardName: "\u653B\u6483"
-  Rarity: 2
+  CardID: 1011010
+  Hero: 1
+  Rarity: 0
   CardIllustration:
     m_AssetGUID: 88d64aadf9e282c48a93307ea8a66f8a
     m_SubObjectName: 
@@ -23,10 +25,10 @@ MonoBehaviour:
   - Type: 0
     Amount: 1
   Delay: 2
-  UpgradedLevel: 0
   IsUpgraded: 0
   CardType: 0
   Description: "5\u30C0\u30E1\u30FC\u30B8\u3092\u4E0E\u3048\u308B"
+  SimpleBlock: 0
   CardEffects:
   - Definition: {fileID: 11400000, guid: 39d0d4301ceb3b944bdcef00f35ef071, type: 2}
     Amount: 5

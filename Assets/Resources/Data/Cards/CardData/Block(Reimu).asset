@@ -13,7 +13,9 @@ MonoBehaviour:
   m_Name: Block(Reimu)
   m_EditorClassIdentifier: 
   CardName: "\u7D50\u754C"
-  Rarity: 2
+  CardID: 1012010
+  Hero: 1
+  Rarity: 0
   CardIllustration:
     m_AssetGUID: 252eb537694ff31478617cf51f67af61
     m_SubObjectName: 
@@ -23,12 +25,10 @@ MonoBehaviour:
   - Type: 0
     Amount: 1
   Delay: 0
-  UpgradedLevel: 0
   IsUpgraded: 0
   CardType: 1
-  Description: "\u7D50\u754C7\u3092\u5F97\u308B"
   CardEffects:
-  - Definition: {fileID: 11400000, guid: 01b0a2d41ec3e8349bfb617fb16cf5e6, type: 2}
+  - Definition: {fileID: 11400000, guid: 8a138bf62575600439a1e83d671f7e64, type: 2}
     Amount: 7
     Target: 1
   CardEffectTarget: 1

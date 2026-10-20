@@ -10,13 +10,13 @@ public class EventUIManager : MonoBehaviour
     [SerializeField] private GameObject eventPanel;
     [SerializeField] private TextMeshProUGUI descriptionText;
     [SerializeField] private Transform optionRoot;
-    [SerializeField] private Button optionButtonPrefab;
+    [SerializeField] private OptionButton optionButtonPrefab;
     [SerializeField] private Image eventImage;
 
     private UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle<Sprite> currentImageHandle;
     public event Action<EventOption> OnOptionSelected;
 
-    private readonly List<Button> currentButtons = new();
+    private readonly List<OptionButton> currentButtons = new();
 
     public void Awake()
     {
@@ -60,11 +60,18 @@ public class EventUIManager : MonoBehaviour
         foreach (var option in step.Options)
         {
             var btn = Instantiate(optionButtonPrefab, optionRoot);
-            btn.GetComponentInChildren<TextMeshProUGUI>().text = option.Text;
-            btn.onClick.AddListener(() => OnOptionSelected?.Invoke(option));
+            btn.Setup(option, OnOptionSelected);
             currentButtons.Add(btn);
         }
     }
 
     public void Hide() => eventPanel.SetActive(false);
+
+    private void OnDestroy()
+    {
+        if (currentImageHandle.IsValid())
+        {
+            Addressables.Release(currentImageHandle);
+        }
+    }
 }

@@ -12,3 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6b1569d84d9e4034ba402a9b2495ca4a, type: 3}
   m_Name: CardBlockEffect
   m_EditorClassIdentifier: 
+  EffectType: 0
+  DescriptionTemplate: "\u7D50\u754C{0}"

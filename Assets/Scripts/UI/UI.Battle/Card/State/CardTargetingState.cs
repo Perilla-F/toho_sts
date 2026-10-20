@@ -43,6 +43,16 @@ public class CardTargetingState : CardStateBase
                 _owner.ChangeState(new CardFollowingState(_owner));
             return;
         }
+        if (_owner.CheckEnemyUnderMouse(out var enemy))
+        {
+            // マウスの下に敵がいる場合：その敵をターゲットにしたプレビューに切り替える命令を出す
+            _owner.visual.UpdatePreviewTarget(_owner.Card, _owner.context, enemy);
+        }
+        else
+        {
+            // 敵がいない場合：ターゲットなし（通常）のプレビューに戻す
+            _owner.visual.UpdatePreviewTarget(_owner.Card, _owner.context, null);
+        }
         if (Input.GetMouseButton(0) && !_isEntryFromDrag)
         {
             _owner.OnTryUseCard();

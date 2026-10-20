@@ -57,6 +57,7 @@ public class BattleCommandExecutor : MonoBehaviour
         int executionTime = _timeline.CurrentTime + card.Delay;
         var cardAction = new PlayerActionEvent(_hero, card, context, _hero.PlayerEventIcon, executionTime);
         _timeline.AddEvent(cardAction);
+        BattleEventBus.View.OnUpdateHp(_hero);
 
         // 非同期で使用処理を開始
         await HandleCardUsedAsync(card, cardAction, ct);

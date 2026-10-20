@@ -13,6 +13,8 @@ MonoBehaviour:
   m_Name: NijuKekkai
   m_EditorClassIdentifier: 
   CardName: "\u4E8C\u91CD\u7D50\u754C"
+  CardID: 1012020
+  Hero: 1
   Rarity: 1
   CardIllustration:
     m_AssetGUID: 21c49c732942b11439a7310f83c46428
@@ -23,15 +25,13 @@ MonoBehaviour:
   - Type: 0
     Amount: 2
   Delay: 5
-  UpgradedLevel: 0
   IsUpgraded: 0
   CardType: 1
-  Description: "\u5373\u5E2D\u7D50\u754C10\u3001\u7D50\u754C10\u3092\u5F97\u308B"
   CardEffects:
-  - Definition: {fileID: 11400000, guid: 01b0a2d41ec3e8349bfb617fb16cf5e6, type: 2}
+  - Definition: {fileID: 11400000, guid: 8a138bf62575600439a1e83d671f7e64, type: 2}
     Amount: 10
     Target: 1
-  - Definition: {fileID: 11400000, guid: 8a138bf62575600439a1e83d671f7e64, type: 2}
+  - Definition: {fileID: 11400000, guid: 01b0a2d41ec3e8349bfb617fb16cf5e6, type: 2}
     Amount: 10
     Target: 1
   CardEffectTarget: 1

@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 public interface IDiscardArea : IReadOnlyDiscardArea
 {
     public void AddCard(ICardObj cardObj);
@@ -6,5 +8,6 @@ public interface IDiscardArea : IReadOnlyDiscardArea
 
 public interface IReadOnlyDiscardArea
 {
+    public IReadOnlyList<IReadOnlyCardObj> DiscardedCards { get; }
     public int Count { get; }
 }

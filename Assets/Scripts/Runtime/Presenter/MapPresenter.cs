@@ -6,13 +6,15 @@ public class MapPresenter
     private readonly GameManager _gameManager;
     private readonly MapManager _mapManager;
     private readonly EventManager _eventManager;
+    private readonly RestUIManager _restUIManager;
     private readonly MapView _mapView;
 
-    public MapPresenter(GameManager game, MapManager manager, EventManager eventManager, MapView view)
+    public MapPresenter(GameManager game, MapManager manager, EventManager eventManager, RestUIManager restUI, MapView view)
     {
         _gameManager = game;
         _mapManager = manager;
         _eventManager = eventManager;
+        _restUIManager = restUI;
         _mapView = view;
 
         _mapManager.OnMapGenerated += OnMapGenerated;
@@ -49,6 +51,9 @@ public class MapPresenter
                 break;
             case CellType.Event:
                 _eventManager.OnEnterEvent();
+                break;
+            case CellType.Rest:
+                _restUIManager.ShowPanel();
                 break;
         }
     }

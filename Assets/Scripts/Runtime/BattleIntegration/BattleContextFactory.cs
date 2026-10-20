@@ -14,7 +14,7 @@ public static class BattleContextFactory
         foreach (var source in sources)
         {
             // 論理データ生成
-            CardObj cardObj = new NomalCardObj(source, source.SourceCost, selector);
+            CardObj cardObj = new NomalCardObj(source, selector);
 
             deck.AddCard(cardObj);
         }
