@@ -26,11 +26,11 @@ MonoBehaviour:
     Amount: 1
   Delay: 2
   IsUpgraded: 0
+  upgradedCardData: {fileID: 11400000, guid: cd7f34041f44d924db149a040b917c81, type: 2}
   CardType: 0
-  Description: "5\u30C0\u30E1\u30FC\u30B8\u3092\u4E0E\u3048\u308B"
-  SimpleBlock: 0
   CardEffects:
   - Definition: {fileID: 11400000, guid: 39d0d4301ceb3b944bdcef00f35ef071, type: 2}
     Amount: 5
     Target: 2
   CardEffectTarget: 2
+  FlavorText: 

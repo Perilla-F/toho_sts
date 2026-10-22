@@ -1,0 +1,36 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59fb85d134a17e6479cfe3bd4d2758ed, type: 3}
+  m_Name: Block_plus(Reimu)
+  m_EditorClassIdentifier: 
+  CardName: "\u7C21\u6613\u7D50\u754C+"
+  CardID: 1012011
+  Hero: 1
+  Rarity: 0
+  CardIllustration:
+    m_AssetGUID: 252eb537694ff31478617cf51f67af61
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_EditorAssetChanged: 0
+  Costs:
+  - Type: 0
+    Amount: 1
+  Delay: 0
+  IsUpgraded: 1
+  upgradedCardData: {fileID: 11400000, guid: 46dcad6cfe080e249b9e20349555493f, type: 2}
+  CardType: 1
+  CardEffects:
+  - Definition: {fileID: 11400000, guid: 8a138bf62575600439a1e83d671f7e64, type: 2}
+    Amount: 11
+    Target: 1
+  CardEffectTarget: 1
+  FlavorText: 

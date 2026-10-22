@@ -26,6 +26,7 @@ MonoBehaviour:
     Amount: 2
   Delay: 5
   IsUpgraded: 0
+  upgradedCardData: {fileID: 11400000, guid: 737d59bb53568fc4eab9a806d950cab6, type: 2}
   CardType: 1
   CardEffects:
   - Definition: {fileID: 11400000, guid: 8a138bf62575600439a1e83d671f7e64, type: 2}
@@ -35,3 +36,4 @@ MonoBehaviour:
     Amount: 10
     Target: 1
   CardEffectTarget: 1
+  FlavorText: 

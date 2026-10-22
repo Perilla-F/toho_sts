@@ -32,24 +32,29 @@ public class CardVisual : MonoBehaviour
     /// <summary>
     /// バトル外のUI生成
     /// </summary>
-    public void UpdateVisual(SourceCard source)
+    public void UpdateVisual(CardData data)
     {
-        if (source.Data == null)
+        if (data == null)
         {
             Debug.LogWarning("CardData is null!");
             return;
         }
         // 1. テキスト情報の更新
-        nameText.text = source.Data.CardName;
-        descriptionText.text = UpdateDescription(source);
+        string displayName = data.CardName;
+        if (data.IsUpgraded)
+        {
+            displayName = $"<color=#00FF00>{displayName}</color>";
+        }
+        nameText.text = displayName;
+        descriptionText.text = UpdateDescription(data);
 
         // 2. レアリティに応じたフレームの切り替え
-        SetFrame(source.Data.Rarity);
-        SetCost(source.Data.Costs);
+        SetFrame(data.Rarity);
+        SetCost(data.Costs);
 
-        delayText.text = source.Data.Delay.ToString();
+        delayText.text = data.Delay.ToString();
 
-        LoadIllustrationAsync(source.Data.CardIllustration).Forget();
+        LoadIllustrationAsync(data.CardIllustration).Forget();
     }
 
     /// <summary>
@@ -63,7 +68,12 @@ public class CardVisual : MonoBehaviour
             return;
         }
         // 1. テキスト情報の更新
-        nameText.text = card.Source.Data.CardName;
+        string displayName = card.Source.Data.CardName;
+        if (card.Source.Data.IsUpgraded)
+        {
+            displayName = $"<color=#55FF55>{displayName}</color>";
+        }
+        nameText.text = displayName;
         descriptionText.text = UpdateDescription(card, context, targetEnemy: null);
 
         // 2. レアリティに応じたフレームの切り替え
@@ -174,16 +184,16 @@ public class CardVisual : MonoBehaviour
     /// <summary>
     /// 複数のCardEffectInstanceから説明文を組み立てて結合する(バトル外)
     /// </summary>
-    private string UpdateDescription(SourceCard source)
+    private string UpdateDescription(CardData data)
     {
-        if (source.Data.CardEffects == null || source.Data.CardEffects.Count == 0)
+        if (data.CardEffects == null || data.CardEffects.Count == 0)
         {
             return string.Empty;
         }
 
         List<string> effectTexts = new List<string>();
 
-        foreach (var effectInstance in source.Data.CardEffects)
+        foreach (var effectInstance in data.CardEffects)
         {
             // 定義データ（SO）が存在するかチェック
             if (effectInstance.Definition != null)
@@ -226,16 +236,16 @@ public class CardVisual : MonoBehaviour
     /// <summary>
     /// 複数のCardEffectInstanceから説明文を組み立てて結合する
     /// </summary>
-    private string UpdateDescription(SourceCard source, IReadOnlyBattleContext context, IReadOnlyEnemyUnit targetEnemy)
+    private string UpdateDescription(CardData data, IReadOnlyBattleContext context, IReadOnlyEnemyUnit targetEnemy)
     {
-        if (source.Data.CardEffects == null || source.Data.CardEffects.Count == 0)
+        if (data.CardEffects == null || data.CardEffects.Count == 0)
         {
             return string.Empty;
         }
 
         List<string> effectTexts = new List<string>();
 
-        foreach (var effectInstance in source.Data.CardEffects)
+        foreach (var effectInstance in data.CardEffects)
         {
             // 定義データ（SO）が存在するかチェック
             if (effectInstance.Definition != null)

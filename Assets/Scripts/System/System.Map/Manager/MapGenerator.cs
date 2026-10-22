@@ -8,9 +8,9 @@ public class MapGenerator
     [Header("Map Settings")]
     private readonly MapGenerationRule _rule;
 
-    private readonly GameContext _context;
+    private readonly IGameContext _context;
 
-    public MapGenerator(GameContext context, MapGenerationRule rule)
+    public MapGenerator(IGameContext context, MapGenerationRule rule)
     {
         _context = context;
         _rule = rule;

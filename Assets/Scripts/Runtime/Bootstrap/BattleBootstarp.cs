@@ -22,8 +22,8 @@ public class BattleBootstrap : MonoBehaviour
 
         var encounter = ServiceLocator.Get<ISceneLoader>().GetTransitionData<BattleTransitionData>().EncounterData;
         UnityEngine.Debug.Log("The encounter is " + encounter.EncounterID);
-        var game = ServiceLocator.Get<GameManager>();
-        var gameContext = ServiceLocator.Get<GameContext>();
+        var game = ServiceLocator.Get<IGameManager>();
+        var gameContext = ServiceLocator.Get<IGameContext>();
         var audioManager = ServiceLocator.Get<IAudioManager>();
 
         var _timelineManager = new TimelineManager();

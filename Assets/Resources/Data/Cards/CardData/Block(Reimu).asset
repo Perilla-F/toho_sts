@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 59fb85d134a17e6479cfe3bd4d2758ed, type: 3}
   m_Name: Block(Reimu)
   m_EditorClassIdentifier: 
-  CardName: "\u7D50\u754C"
+  CardName: "\u7C21\u6613\u7D50\u754C"
   CardID: 1012010
   Hero: 1
   Rarity: 0
@@ -26,9 +26,11 @@ MonoBehaviour:
     Amount: 1
   Delay: 0
   IsUpgraded: 0
+  upgradedCardData: {fileID: 11400000, guid: 7f30643989d81484b9b05fb649cd6fb8, type: 2}
   CardType: 1
   CardEffects:
   - Definition: {fileID: 11400000, guid: 8a138bf62575600439a1e83d671f7e64, type: 2}
     Amount: 7
     Target: 1
   CardEffectTarget: 1
+  FlavorText: 

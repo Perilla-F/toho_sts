@@ -1,6 +1,6 @@
 public static class BattleContextFactory
 {
-    public static BattleContext Create(BattleSystem battleSystem, HeroUnit hero, GameManager game, IEnemyManager enemyManager, TimelineManager timelineManager)
+    public static BattleContext Create(BattleSystem battleSystem, HeroUnit hero, IGameManager game, IEnemyManager enemyManager, TimelineManager timelineManager)
     {
         var heroUnit = hero;
 

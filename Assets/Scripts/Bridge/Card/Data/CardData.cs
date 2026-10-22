@@ -14,9 +14,12 @@ public class CardData : ScriptableObject
     public List<ResourceCost> Costs;
     public int Delay;
     public bool IsUpgraded;
+    [SerializeField] private CardData upgradedCardData;
+    public CardData UpgradedCardData => upgradedCardData;
     public CardType CardType;
     public List<CardEffectInstance> CardEffects;
     public CardEffectTarget CardEffectTarget;
+    public string FlavorText;
 
     public void ApplyEffects(ITargetSelector selector, ICardContext context)
     {

@@ -6,13 +6,13 @@ public class MapBootstrap : MonoBehaviour
 {
 
     [Header("Managers")]
-    private GameManager _gameManager;
+    private IGameManager _gameManager;
     private ISaveService _saveManager;
     private MapManager _mapManager;
     private EventManager _eventManager;
     private FlagManager _flagManager;
 
-    private GameContext _context;
+    private IGameContext _context;
 
     private MapPresenter mapPresenter;
     private EventPresenter eventPresenter;
@@ -28,9 +28,9 @@ public class MapBootstrap : MonoBehaviour
 
     private void Awake()
     {
-        _gameManager = ServiceLocator.Get<GameManager>();
+        _gameManager = ServiceLocator.Get<IGameManager>();
         _saveManager = ServiceLocator.Get<ISaveService>();
-        _context = ServiceLocator.Get<GameContext>();
+        _context = ServiceLocator.Get<IGameContext>();
 
         _flagManager = new FlagManager();
         _eventManager = new EventManager(_eventDatabase, _gameManager, _flagManager, _context);

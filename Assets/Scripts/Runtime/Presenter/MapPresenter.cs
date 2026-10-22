@@ -3,13 +3,13 @@ using UnityEngine;
 
 public class MapPresenter
 {
-    private readonly GameManager _gameManager;
+    private readonly IGameManager _gameManager;
     private readonly MapManager _mapManager;
     private readonly EventManager _eventManager;
     private readonly RestUIManager _restUIManager;
     private readonly MapView _mapView;
 
-    public MapPresenter(GameManager game, MapManager manager, EventManager eventManager, RestUIManager restUI, MapView view)
+    public MapPresenter(IGameManager game, MapManager manager, EventManager eventManager, RestUIManager restUI, MapView view)
     {
         _gameManager = game;
         _mapManager = manager;

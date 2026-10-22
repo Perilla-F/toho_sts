@@ -5,11 +5,25 @@ using Cysharp.Threading.Tasks;
 
 public abstract class CardEffectDefinition : ScriptableObject
 {
-    public CardEffectType EffectType;
+    [SerializeField] private CardEffectType effectType;
+    public CardEffectType EffectType => effectType;
 
     [TextArea(2, 4)]
-    [Tooltip("例: 敵に {0} ダメージを与える")]
+    [Tooltip("例: 結界 {0} を与える")]
     public string DescriptionTemplate;
+
+    [TextArea(2, 4)]
+    [Tooltip("状態異常データがない場合などに手動で入力する詳細テキスト")]
+    [SerializeField] private string manualKeywordDetail;
+
+    public virtual string KeywordDetail
+    {
+        get
+        {
+            // デフォルトでは手動入力されたテキストを返す
+            return manualKeywordDetail;
+        }
+    }
 
     public abstract void Execute(ICardContext context, IBattleUnit target, int amount);
 

@@ -10,9 +10,13 @@ public class GameBootstrap : MonoBehaviour
     [SerializeField] private SaveManager saveManagerPrefab;
     [SerializeField] private AudioManager audioManagerPrefab;
     [SerializeField] private SceneLoader sceneLoaderPrefab;
+    [SerializeField] private CardDetailPopupManager cardDetailPopupManagerPrefab;
 
     [Header("SystemPrefabs")]
     [SerializeField] private SaveScheduler saveSchedulerPrefab;
+
+    [Header("ObjectPrefabs")]
+    [SerializeField] GameObject popupCanvasRoot;
 
     public GameManager _gameManager;
 
@@ -27,11 +31,13 @@ public class GameBootstrap : MonoBehaviour
         var audio = Instantiate(audioManagerPrefab);
         var loader = Instantiate(sceneLoaderPrefab);
         var scheduler = Instantiate(saveSchedulerPrefab);
+        var popupCanvas = Instantiate(popupCanvasRoot);
 
         DontDestroyOnLoad(save);
         DontDestroyOnLoad(audio);
         DontDestroyOnLoad(loader);
         DontDestroyOnLoad(scheduler);
+        DontDestroyOnLoad(popupCanvas);
         ServiceLocator.Register<ISaveService>(save);
         ServiceLocator.Register<IAudioManager>(audio);
         ServiceLocator.Register<ISceneLoader>(loader);
@@ -39,15 +45,15 @@ public class GameBootstrap : MonoBehaviour
 
         // コンテキスト作成
         var context = new GameContext();
-        ServiceLocator.Register<GameContext>(context);
+        ServiceLocator.Register<IGameContext>(context);
 
         // ゲームマネージャー作成
         _gameManager = new GameManager(loader, save, scheduler, context);
-        ServiceLocator.Register<GameManager>(_gameManager);
+        ServiceLocator.Register<IGameManager>(_gameManager);
 
         // PlayerManager作成
         var playerManager = new PlayerManager(_gameManager);
-        ServiceLocator.Register<PlayerManager>(playerManager);
+        ServiceLocator.Register<IPlayerManager>(playerManager);
 
         // 最初のシーンをロード（TitleSceneなど）
         ServiceLocator.Get<ISceneLoader>().LoadScene(nextScene);

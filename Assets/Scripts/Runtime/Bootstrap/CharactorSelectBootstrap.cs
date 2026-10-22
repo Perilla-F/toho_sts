@@ -6,11 +6,11 @@ public class CharacterSelectBootstrap : MonoBehaviour
 
     private CharacterSelectPresenter presenter;
 
-    private GameManager gameManager;
+    private IGameManager gameManager;
 
     private void Awake()
     {
-        gameManager = ServiceLocator.Get<GameManager>();
+        gameManager = ServiceLocator.Get<IGameManager>();
         presenter = new CharacterSelectPresenter(gameManager, characterSelectUI);
     }
 }

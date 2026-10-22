@@ -1,15 +1,15 @@
 using System.Collections.Generic;
 
-public class PlayerManager
+public class PlayerManager : IPlayerManager
 {
-    private GameManager _gameManager;
+    private IGameManager _gameManager;
 
-    public PlayerManager(GameManager game)
+    public PlayerManager(IGameManager game)
     {
         _gameManager = game;
     }
 
-    public void Inject(GameManager game)
+    public void Inject(IGameManager game)
     {
         _gameManager = game;
     }

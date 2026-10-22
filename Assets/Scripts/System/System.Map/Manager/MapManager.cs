@@ -7,15 +7,15 @@ using UnityEngine;
 public class MapManager
 {
     private readonly MapGenerator _generator;
-    private GameManager _gameManager;
-    private GameContext _context;
+    private IGameManager _gameManager;
+    private IGameContext _context;
     private MapGenerationRule rule;
 
     // イベント（UIに通知）
     public event Action<Dictionary<Vector2Int, MapCellState>, MapGenerationRule> OnMapGenerated;
     public event Action<Vector2Int, IEnumerable<Vector2Int>> OnCellSelectionChanged;
 
-    public MapManager(GameManager gameManager, GameContext context, MapGenerationRule rule)
+    public MapManager(IGameManager gameManager, IGameContext context, MapGenerationRule rule)
     {
         _gameManager = gameManager;
         _context = context;

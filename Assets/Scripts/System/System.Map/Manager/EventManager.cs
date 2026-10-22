@@ -5,14 +5,14 @@ public class EventManager
 {
     private readonly EventDatabase _eventDatabase;
 
-    private GameManager _gameManager;
+    private IGameManager _gameManager;
     private readonly FlagManager _flagManager;
-    private GameContext _context;
+    private IGameContext _context;
 
     public event Action<EventStep> OnStepStarted;
     public event Action OnEventEnded;
 
-    public EventManager(EventDatabase eventDatabase, GameManager gameManager, FlagManager flagManager, GameContext context)
+    public EventManager(EventDatabase eventDatabase, IGameManager gameManager, FlagManager flagManager, IGameContext context)
     {
         _eventDatabase = eventDatabase;
         _gameManager = gameManager;

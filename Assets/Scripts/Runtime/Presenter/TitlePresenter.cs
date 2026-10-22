@@ -1,10 +1,10 @@
 public class TitlePresenter
 {
-    private GameManager _game;
+    private IGameManager _game;
     private ISaveService _save;
     private readonly TitleUI _ui;
 
-    public TitlePresenter(GameManager game, ISaveService save, TitleUI ui)
+    public TitlePresenter(IGameManager game, ISaveService save, TitleUI ui)
     {
         _game = game;
         _ui = ui;

@@ -1,9 +1,9 @@
 public class CharacterSelectPresenter
 {
-    private GameManager _game;
+    private IGameManager _game;
     private readonly CharacterSelectUI _UI;
 
-    public CharacterSelectPresenter(GameManager game, CharacterSelectUI ui)
+    public CharacterSelectPresenter(IGameManager game, CharacterSelectUI ui)
     {
         _game = game;
         _UI = ui;

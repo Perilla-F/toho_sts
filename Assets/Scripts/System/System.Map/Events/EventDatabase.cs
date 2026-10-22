@@ -27,7 +27,7 @@ public class EventDatabase : ScriptableObject
         return null;
     }
 
-    public MultiStepEvent GetRandomEvent(GameContext context, IFlagManager flagManager)
+    public MultiStepEvent GetRandomEvent(IGameContext context, IFlagManager flagManager)
     {
         if (events == null || events.Count == 0)
         {

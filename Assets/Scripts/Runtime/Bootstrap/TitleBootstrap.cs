@@ -6,12 +6,12 @@ public class TitleBootstrap : MonoBehaviour
 
     private TitlePresenter presenter;
 
-    private GameManager gameManager;
+    private IGameManager gameManager;
     private ISaveService saveService;
 
     private void Awake()
     {
-        gameManager = ServiceLocator.Get<GameManager>();
+        gameManager = ServiceLocator.Get<IGameManager>();
         saveService = ServiceLocator.Get<ISaveService>();
         presenter = new TitlePresenter(gameManager, saveService, titleUI);
     }

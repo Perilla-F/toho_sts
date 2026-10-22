@@ -3,15 +3,15 @@ using System;
 using UnityEngine;
 using UnityEditorInternal;
 
-public class GameManager
+public class GameManager : IGameManager
 {
     private readonly ISaveService _saveService;
     private readonly ISceneLoader _sceneLoader;
     private readonly ISaveScheduler _saveScheduler;
 
-    private readonly GameContext _context;
+    private readonly IGameContext _context;
 
-    public GameManager(ISceneLoader sceneLoader, ISaveService saveService, ISaveScheduler saveScheduler, GameContext context)
+    public GameManager(ISceneLoader sceneLoader, ISaveService saveService, ISaveScheduler saveScheduler, IGameContext context)
     {
         _sceneLoader = sceneLoader;
         _saveService = saveService;
@@ -24,7 +24,7 @@ public class GameManager
         Debug.Log("GameManager initialized!");
     }
 
-    public void InitializePlayer(HeroData heroData)
+    private void InitializePlayer(HeroData heroData)
     {
         HPResource hPResource = new HPResource(heroData.MaxHP);
         Mana mana = new Mana(heroData.MaxMana);
@@ -37,7 +37,7 @@ public class GameManager
         }
     }
 
-    public void SetHeroBattler(HeroBattler hero)
+    private void SetHeroBattler(HeroBattler hero)
     {
         _context.SetHeroBattler(hero);
     }

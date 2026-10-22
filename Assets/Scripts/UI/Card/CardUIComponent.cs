@@ -1,18 +1,23 @@
 using System;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
-public class CardUIComponent : MonoBehaviour
+public class CardUIComponent : MonoBehaviour, IPointerClickHandler
 {
     [SerializeField] private CardVisual visual;
 
+    private CardData _data;
+    private IReadOnlyCardObj _card;
+
+    // 状況次第でクリックを無効化できるようにするフラグ
+    public bool IsInspectable { get; set; } = true;
+
     // バトル外（デッキ確認画面など）で使う初期化
-    public void SetupForDeckMenu(SourceCard source)
+    public void SetupForDeckMenu(CardData data)
     {
         // バフなしの素の状態で見た目を更新
-        visual.UpdateVisual(source);
-
-        // ドラッグやクリックでプレイできないようにする無効化処理など
-        SetInteractive(false);
+        visual.UpdateVisual(data);
+        _data = data;
     }
 
     // バトル中（山札・捨て札確認画面など）で使う初期化
@@ -21,12 +26,16 @@ public class CardUIComponent : MonoBehaviour
         // バトル中のバフ（強化など）を反映して見た目を更新
         // ※必要に応じてバトル中のコンテキストを渡す
         visual.UpdateVisual(cardObj, battleContext);
-
-        SetInteractive(false);
+        _data = cardObj.Source.Data;
     }
 
-    private void SetInteractive(bool isInteractive)
+    public void OnPointerClick(PointerEventData eventData)
     {
-        // ドラッグ検知やボタン反応のON/OFFを切り替える
+        // クリック無効状態なら何もしない
+        if (!IsInspectable) return;
+
+        // 詳細ポップアップマネージャーを呼び出して自分を表示する
+        ServiceLocator.Get<ICardDetailPopupManager>().OpenPopup(_data);
+        Debug.Log("Popup!!");
     }
 }
