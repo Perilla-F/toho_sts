@@ -1,8 +1,9 @@
 using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using DG.Tweening;
 
-public class CardUIComponent : MonoBehaviour, IPointerClickHandler
+public class CardUIComponent : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler
 {
     [SerializeField] private CardVisual visual;
 
@@ -36,6 +37,25 @@ public class CardUIComponent : MonoBehaviour, IPointerClickHandler
 
         // 詳細ポップアップマネージャーを呼び出して自分を表示する
         ServiceLocator.Get<ICardDetailPopupManager>().OpenPopup(_data);
-        Debug.Log("Popup!!");
+    }
+
+    /// <summary>
+    /// マウスオーバー
+    /// </summary>
+    /// <param name="eventData"></param>
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        if (!IsInspectable) return;
+        transform.DOScale(Vector3.one * 1.1f, 0.15f).SetEase(Ease.OutCubic);
+    }
+
+    /// <summary>
+    /// マウスオーバー解除
+    /// </summary>
+    /// <param name="eventData"></param>
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        if (!IsInspectable) return;
+        transform.DOScale(Vector3.one, 0.15f).SetEase(Ease.OutCubic);
     }
 }

@@ -1,14 +1,14 @@
 using TMPro;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
 
-public class BuffIcon : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
+public class BuffIcon : MonoBehaviour
 {
     [SerializeField] private Image _iconSpace;
     [SerializeField] private TextMeshProUGUI _stacks;
+    [SerializeField] private EffectIconTooltipManager tooltip;
 
     // ロードしたハンドルを保持（後でメモリを解放するため）
     private AsyncOperationHandle<Sprite> _handle;
@@ -18,6 +18,8 @@ public class BuffIcon : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
         this.effect = effect;
         _stacks.text = effect.Stacks.ToString();
+
+        tooltip.SetTooltipContent(effect.Data.DisplayName, effect.Data.Description);
 
         // 以前のロードがあれば解放してメモリを空ける
         if (_handle.IsValid())
@@ -50,13 +52,4 @@ public class BuffIcon : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         }
     }
 
-    public void OnPointerEnter(PointerEventData eventData)
-    {
-        string title = effect.Data.DisplayName;
-        string desc = effect.Data.Description;
-    }
-
-    public void OnPointerExit(PointerEventData eventData)
-    {
-    }
 }

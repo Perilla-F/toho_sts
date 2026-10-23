@@ -1,18 +1,18 @@
 using System.Linq;
 using System.Threading;
-using UnityEditor.SceneManagement;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using TMPro;
 using DG.Tweening;
 using Cysharp.Threading.Tasks;
+using System.Collections.Generic;
 
-public class TimelineIcon : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
+public class TimelineIcon : MonoBehaviour
 {
     [SerializeField] private Image iconImage;
     [SerializeField] private TextMeshProUGUI actionName;
     [SerializeField] private TextMeshProUGUI countDown;
+    [SerializeField] private TimelineTooltipManager tooltip;
 
     public BattleEvent BattleEvent;
 
@@ -44,6 +44,7 @@ public class TimelineIcon : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
                 actionName.text = ee.ActionName;
                 Count = ee.action.ScheduledTime;
                 countDown.text = (Count - currentTime).ToString();
+                tooltip.SetTooltipContent(GetEnemyActionDescriptions());
                 break;
             case PreviewActionEvent pre:
                 iconImage.sprite = pre.EventIcon;
@@ -125,12 +126,7 @@ public class TimelineIcon : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
         await UniTask.WhenAll(fadeTask, heightTask);
     }
 
-    public void UpdateCountDown(int count)
-    {
-        countDown.text = count.ToString();
-    }
-
-    public void OnPointerEnter(PointerEventData eventData)
+    public List<EffectDescription> GetEnemyActionDescriptions()
     {
         if (BattleEvent is EnemyActionEvent ee)
         {
@@ -144,17 +140,15 @@ public class TimelineIcon : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
                     Description = e.Data.Description
                 }).ToList();
 
-                BattleTooltipManager.Instance.Show(tooltipData);
+                return tooltipData;
             }
         }
-        else
-        {
-            return;
-        }
+        return null;
     }
 
-    public void OnPointerExit(PointerEventData eventData)
+    public void UpdateCountDown(int count)
     {
-        BattleTooltipManager.Instance.Hide();
+        countDown.text = count.ToString();
     }
+
 }
